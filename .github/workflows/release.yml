@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*', '[0-9]*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (leave empty to use XXX_VERSION)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xxx-client-*
+          merge-multiple: true
+          path: release
+      - name: Verify version and checksums
+        id: version
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
+        run: |
+          python3 - <<'PYTHON'
+          import hashlib
+          import os
+          from pathlib import Path
+          import re
+          version = re.search(r'#define XXX_VERSION "([^"]+)"', Path('src/game/version.h').read_text()).group(1)
+          tag = os.environ.get('RELEASE_TAG') or version
+          if tag not in (version, 'v' + version):
+              raise SystemExit('Release tag must match XXX_VERSION')
+          archives = sorted(p for p in Path('release').iterdir() if p.suffix in ('.zip', '.xz'))
+          if len(archives) != 3:
+              raise SystemExit('Expected one package for each desktop platform')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('tag=' + tag + '\n')
+          Path('release/SHA256SUMS').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in archives))
+          PYTHON
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: xxx client ${{ steps.version.outputs.tag }}
+          fail_on_unmatched_files: true
+          files: |
+            release/*.zip
+            release/*.tar.xz
+            release/SHA256SUMS
+          body: |
+            DDNet with XUI: glass panels, dark and light themes, editable HUD and a built-in resource catalog.
+
+            XUI menus, editable HUD, player profiles and a built-in resource catalog. Includes the catalog pagination crash fix. The application uses the original DDNet icon.
+
+            Download the package matching your OS and architecture. Windows and Linux packages are built and checked by CI; desktop interaction was tested on macOS. Android, iOS and web builds are not provided.
+
+            The macOS app uses an ad-hoc signature and is not notarized. The Linux archive requires Ubuntu 24.04 system libraries. See README.md for requirements, source builds and credits.

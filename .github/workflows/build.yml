@@ -1,0 +1,76 @@
+name: Desktop builds
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  client:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: DDNet libraries
+        if: runner.os == 'Windows'
+        uses: actions/checkout@v5
+        with:
+          repository: ddnet/ddnet-libs
+          ref: c0e6703fbcdbe03df2f26875427ec3951ce4ec21
+          path: ddnet-libs
+      - name: Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build pkg-config python3 cargo rustc libcurl4-openssl-dev libfreetype6-dev libogg-dev libopus-dev libopusfile-dev libpng-dev libsdl2-dev libsqlite3-dev libssl-dev libwavpack-dev zlib1g-dev libvulkan-dev glslang-tools spirv-tools libnotify-dev libgtest-dev libgmock-dev
+      - name: macOS dependencies
+        if: runner.os == 'macOS'
+        run: brew install cmake ninja pkg-config sdl2 freetype libpng opusfile wavpack openssl molten-vk vulkan-headers glslang spirv-tools dylibbundler
+      - name: Windows Vulkan SDK
+        if: runner.os == 'Windows'
+        uses: humbletim/install-vulkan-sdk@v1.2
+        with:
+          version: 1.4.309.0
+          cache: true
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Check source tree
+        run: python scripts/check_public_tree.py
+      - name: Configure Unix
+        if: runner.os != 'Windows'
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF
+      - name: Configure Windows
+        if: runner.os == 'Windows'
+        run: cmake -S . -B build -A x64 -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF
+      - name: Build client
+        run: cmake --build build --config Release --target game-client --parallel 4
+      - name: Core tests
+        if: runner.os == 'Linux'
+        run: |
+          cmake -S . -B build-tests -G Ninja -DCMAKE_BUILD_TYPE=Release -DCLIENT=OFF -DSERVER=ON -DTOOLS=OFF -DDOWNLOAD_GTEST=OFF
+          cmake --build build-tests --target run_cxx_tests --parallel 4
+      - name: Package
+        run: python scripts/package_client.py --build build --output dist
+      - name: Build developer configuration
+        run: |
+          cmake -S . -B build -DDDEV_XX=ON
+          cmake --build build --config Release --target game-client --parallel 4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xxx-client-${{ runner.os }}
+          path: |
+            dist/*.zip
+            dist/*.tar.xz
+          if-no-files-found: error

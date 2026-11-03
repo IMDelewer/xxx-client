@@ -1,0 +1,35 @@
+{
+    "font files": [
+        "DejaVuSans.ttf",
+        "Font_Awesome_6_Free-Solid-900.otf",
+        "GlowSansJ-Compressed-Book.otf",
+        "Inter-Bold.ttf",
+        "Inter-ExtraBold.ttf",
+        "Inter-Medium.ttf",
+        "Inter-Regular.ttf",
+        "Inter-SemiBold.ttf",
+        "Phosphor-Fill.ttf",
+        "Phosphor.ttf",
+        "SourceHanSans.ttc"
+    ],
+    "default": "DejaVu Sans",
+    "language variants": {
+        "japanese": "Glow Sans J Compressed Book",
+        "korean": "Source Han Sans K",
+        "simplified_chinese": "Source Han Sans SC",
+        "traditional_chinese": "Source Han Sans TC"
+    },
+    "fallbacks": [
+        "Source Han Sans"
+    ],
+    "icon": "Font Awesome 6 Free",
+    "ui": {
+        "regular": "Inter Regular",
+        "medium": "Inter Medium",
+        "semibold": "Inter SemiBold",
+        "bold": "Inter Bold",
+        "extrabold": "Inter ExtraBold",
+        "phosphor": "Phosphor Regular",
+        "phosphor fill": "Phosphor-Fill Regular"
+    }
+}

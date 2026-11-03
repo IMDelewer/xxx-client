@@ -1,0 +1,168 @@
+/* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
+/* If you are missing that file, acquire a complete release at teeworlds.com.                */
+#include "motd.h"
+
+#include <base/color.h>
+#include <base/log.h>
+#include <base/log_color.h>
+#include <base/time.h>
+
+#include <engine/graphics.h>
+#include <engine/keys.h>
+#include <engine/shared/config.h>
+#include <engine/textrender.h>
+
+#include <generated/protocol.h>
+
+#include <game/client/components/important_alert.h>
+#include <game/client/gameclient.h>
+
+#include <algorithm>
+#include <chrono>
+
+CMotd::CMotd()
+{
+	m_aServerMotd[0] = '\0';
+	m_ServerMotdTime = 0;
+	m_ServerMotdUpdateTime = 0;
+}
+
+void CMotd::Clear()
+{
+	m_ServerMotdTime = 0;
+	m_TouchRect.reset();
+	Graphics()->DeleteQuadContainer(m_RectQuadContainer);
+	TextRender()->DeleteTextContainer(m_TextContainerIndex);
+}
+
+bool CMotd::IsActive() const
+{
+	return time() < m_ServerMotdTime;
+}
+
+void CMotd::OnStateChange(int NewState, int OldState)
+{
+	if(OldState == IClient::STATE_ONLINE || OldState == IClient::STATE_OFFLINE)
+		Clear();
+}
+
+void CMotd::OnWindowResize()
+{
+	Graphics()->DeleteQuadContainer(m_RectQuadContainer);
+	TextRender()->DeleteTextContainer(m_TextContainerIndex);
+}
+
+void CMotd::OnRender()
+{
+	if(Client()->State() != IClient::STATE_ONLINE && Client()->State() != IClient::STATE_DEMOPLAYBACK)
+		return;
+
+	if(!IsActive())
+		return;
+
+	if(GameClient()->m_ImportantAlert.IsActive())
+	{
+		Clear();
+		return;
+	}
+	return;
+}
+
+void CMotd::OnMessage(int MsgType, void *pRawMsg)
+{
+	if(Client()->State() == IClient::STATE_DEMOPLAYBACK)
+		return;
+
+	if(MsgType == NETMSGTYPE_SV_MOTD)
+	{
+		const CNetMsg_Sv_Motd *pMsg = static_cast<CNetMsg_Sv_Motd *>(pRawMsg);
+
+		// copy it manually to process all \n
+		const char *pMsgStr = pMsg->m_pMessage;
+		const size_t MotdLen = str_length(pMsgStr) + 1;
+		const char *pLast = m_aServerMotd; // for console printing
+		const LOG_COLOR LogColor = color_cast<LOG_COLOR>(color_cast<ColorRGBA>(ColorHSLA(g_Config.m_ClMessageHighlightColor)));
+		for(size_t i = 0, k = 0; i < MotdLen && k < sizeof(m_aServerMotd); i++, k++)
+		{
+			// handle incoming "\\n"
+			if(pMsgStr[i] == '\\' && pMsgStr[i + 1] == 'n')
+			{
+				m_aServerMotd[k] = '\n';
+				i++; // skip the 'n'
+			}
+			else
+			{
+				m_aServerMotd[k] = pMsgStr[i];
+			}
+
+			// print the line to the console when receiving the newline character
+			if(g_Config.m_ClPrintMotd && m_aServerMotd[k] == '\n')
+			{
+				m_aServerMotd[k] = '\0';
+				log_info_color(LogColor, "motd", "%s", pLast);
+				m_aServerMotd[k] = '\n';
+				pLast = m_aServerMotd + k + 1;
+			}
+		}
+		m_aServerMotd[sizeof(m_aServerMotd) - 1] = '\0';
+		if(g_Config.m_ClPrintMotd && *pLast != '\0')
+		{
+			log_info_color(LogColor, "motd", "%s", pLast);
+		}
+
+		if(!IsActive())
+			m_ShownSince = time_get_nanoseconds();
+		m_ServerMotdUpdateTime = time();
+		if(m_aServerMotd[0] && g_Config.m_ClMotdTime)
+			m_ServerMotdTime = m_ServerMotdUpdateTime + time_freq() * g_Config.m_ClMotdTime;
+		else
+			m_ServerMotdTime = 0;
+		TextRender()->DeleteTextContainer(m_TextContainerIndex);
+	}
+}
+
+bool CMotd::OnInput(const IInput::CEvent &Event)
+{
+	if(IsActive() && Event.m_Flags & IInput::FLAG_PRESS && Event.m_Key == KEY_ESCAPE)
+		Clear();
+	return false;
+}
+
+bool CMotd::OnTouchState(std::vector<IInput::CTouchFingerState> &vTouchFingerStates)
+{
+	// Remove the finger that dismissed the MOTD so it does not activate other components until it is released.
+	if(m_DismissTouchFinger.has_value())
+	{
+		const auto DismissFingerState = std::find_if(vTouchFingerStates.begin(), vTouchFingerStates.end(), [&](const IInput::CTouchFingerState &State) {
+			return State.m_Finger == *m_DismissTouchFinger;
+		});
+		if(DismissFingerState == vTouchFingerStates.end())
+			m_DismissTouchFinger.reset();
+		else
+			vTouchFingerStates.erase(DismissFingerState);
+	}
+
+	if(!IsActive())
+		return false;
+	if(GameClient()->m_Chat.IsActive() ||
+		GameClient()->m_GameConsole.IsActive() ||
+		GameClient()->m_Menus.IsActive() ||
+		GameClient()->m_Emoticon.IsActive() ||
+		GameClient()->m_Spectator.IsActive())
+	{
+		return false;
+	}
+
+	if(!m_TouchRect.has_value())
+		return false;
+	// Only fingers pressed down after the MOTD appeared and outside of its rect dismiss it.
+	const auto DismissFinger = std::find_if(vTouchFingerStates.begin(), vTouchFingerStates.end(), [&](const IInput::CTouchFingerState &State) {
+		return State.m_PressTime > m_ShownSince && !m_TouchRect->Inside(State.m_Position);
+	});
+	if(DismissFinger == vTouchFingerStates.end())
+		return false;
+	Clear();
+	m_DismissTouchFinger = DismissFinger->m_Finger;
+	vTouchFingerStates.erase(DismissFinger);
+	return false;
+}

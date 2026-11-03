@@ -1,0 +1,97 @@
+xxx client — original code and XUI design
+Copyright (c) 2026 IMDelewer
+https://github.com/IMDelewer
+
+This is a modified DDNet client. This file licenses only original material
+owned by IMDelewer. Third-party material retains its original terms.
+The complete, unmodified DDNet notice is preserved in licenses/DDNet.txt;
+see licenses/README.md for other authors, components and license texts.
+
+PART I — ORIGINAL SOURCE CODE (zlib)
+==================================
+
+xxx client additions — Copyright (c) 2026 IMDelewer
+
+This notice applies to original xxx client source-code contributions by
+IMDelewer. Upstream and third-party contributions retain their original
+licenses and copyright notices. See licenses/README.md for third-party notices.
+The original visual design is addressed in Part II below.
+
+This software is provided 'as-is', without any express or implied warranty.
+In no event will the authors be held liable for any damages arising from the
+use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software in
+   a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
+
+PART II — ORIGINAL XUI DESIGN
+=============================
+
+XUI Design Attribution License 1.0
+
+Copyright (c) 2026 IMDelewer — https://github.com/IMDelewer.
+
+What this covers
+
+This license covers the original, copyrightable visual expression of XUI
+(xxx client) created by IMDelewer: its distinctive screen compositions,
+original visual assets, and original arrangements of interface elements.
+It applies only to material in which IMDelewer holds the relevant rights.
+
+It does not replace the source-code license in Part I or the licenses
+and notices preserved in licenses/. It does not cover DDNet,
+Teeworlds, T-Client or BestClient code and assets, Phosphor icons, fonts,
+community maps, downloaded teedata artwork, or third-party design elements.
+It does not withdraw permissions already granted under another license.
+
+Permission and attribution
+
+You may use, adapt, reproduce, redistribute and commercially use the covered
+XUI design, provided you give readable attribution containing exactly:
+
+XUI (xxx client)
+
+Include IMDelewer and a link to the original source when practical. Attribution
+must be accessible to an ordinary user or reader:
+
+- For an open-source client, include it in the repository README or in an
+  in-game About/Credits page.
+- For a closed-source client, include it in an in-game About/Credits page or
+  another accessible credits screen distributed with the client.
+- For a published design or mockup, include it with that publication.
+
+A suitable credit is:
+
+Interface design based on XUI (xxx client), by IMDelewer.
+
+This condition applies when covered visual expression is copied from source,
+recreated from screenshots or video, ported to another framework, or reproduced
+with newly written code. Rewriting the implementation does not remove the
+attribution condition for reproducing the covered design. Keep this license
+with distributions of the covered design materials. Mark changes and do not
+claim endorsement by IMDelewer.
+
+Inspiration and general ideas
+
+The project's attribution policy also asks you to credit XUI when it inspired
+your interface. Please do this even if you wrote every line yourself.
+The legally binding permission above concerns protected expression only;
+it does not assert ownership of general ideas, standard controls, glass
+materials, common layouts, independent designs, or anything outside the
+rights granted by applicable law. Mere inspiration by an unprotected idea
+is a request for acknowledgment, not a claim of exclusive rights.
+
+Warranty
+
+The covered material is provided as is, without warranty. To the extent
+permitted by law, the author is not liable for loss arising from its use.
+This license grants no trademark or endorsement rights.

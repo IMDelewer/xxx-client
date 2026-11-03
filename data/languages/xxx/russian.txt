@@ -1,0 +1,2841 @@
+# xxx client strings, loaded on top of russian.txt
+
+%d min
+== %d мин
+
+%d no
+== %d против
+
+%d not voted
+== %d не голосовали
+
+%d online
+== %d в сети
+
+%d results
+== Найдено: %d
+
+%d spectators
+== Зрителей: %d
+
+%d yes
+== %d за
+
+0 disables the extra delay
+== 0 отключает дополнительную задержку
+
+About
+== О клиенте
+
+Accent
+== Акцент
+
+Achievements
+== Достижения
+
+Activity · last 26 weeks · from ddnet.org
+== Активность · последние 26 недель · ddnet.org
+
+Add to favorites
+== В избранное
+
+Address copied
+== Адрес скопирован
+
+Advanced
+== Дополнительно
+
+Aim X axis
+== Ось прицела X
+
+Aim Y axis
+== Ось прицела Y
+
+Alive
+== Живые
+
+Alive color
+== Цвет живых
+
+All
+== Все
+
+All communities
+== Все сообщества
+
+All servers
+== Все серверы
+
+Also color frozen feet
+== Красить и ноги замороженных
+
+Always
+== Всегда
+
+Always keeps the large chat area open
+== «Всегда» держит большое окно чата открытым
+
+Always predict frozen tees
+== Всегда предсказывать замороженных
+
+Angle
+== Угол
+
+Angry
+== Злые
+
+Anti-aliasing
+== Сглаживание
+
+Antiping delay
+== Задержка antiping
+
+Appearance
+== Оформление
+
+Assets
+== Ресурсы
+
+Assets on this computer or the community catalog
+== Ресурсы на компьютере или каталог сообщества
+
+Authed
+== Авторизованные
+
+Back
+== Назад
+
+Background colours
+== Цвета фона
+
+Background map
+== Фоновая карта
+
+Background quads
+== Фоновые квады
+
+Being saved color
+== Цвет спасаемых
+
+Blink
+== Моргание
+
+Block events
+== События блока
+
+Borderless
+== Без рамки
+
+Browse and install community skins, entities, emoticons and more from the web.
+== Скины, entities, эмоции и другое от сообщества прямо из сети.
+
+Camera and weapons
+== Камера и оружие
+
+Camera follows the cursor
+== Камера следует за курсором
+
+Camera, demos and client behaviour
+== Камера, демки и поведение клиента
+
+Catalog
+== Каталог
+
+Center line color
+== Цвет линий центра
+
+Center line width
+== Толщина линий центра
+
+Chat
+== Чат
+
+Chat highlights
+== Упоминания в чате
+
+Chat sounds
+== Звуки чата
+
+Clan above the name
+== Клан над ником
+
+Clan size
+== Размер клана
+
+Classic look
+== Классический вид
+
+Classic menu colour
+== Цвет классического меню
+
+Client
+== Клиент
+
+Client IDs
+== ID игроков
+
+Client echo
+== Эхо клиента
+
+Clips
+== Клипы
+
+Clock always visible
+== Часы всегда видны
+
+Colour of buttons, switches and highlights
+== Цвет кнопок, переключателей и выделений
+
+Colours
+== Цвета
+
+Community skins
+== Скины сообщества
+
+Config folder
+== Папка конфига
+
+Connect
+== Подключиться
+
+Connect dummy
+== Подключить дамми
+
+Connecting
+== Подключение
+
+Continue
+== Продолжить
+
+Controller device
+== Контроллер
+
+Controls
+== Управление
+
+Copy
+== Копировать
+
+Copy address
+== Копировать адрес
+
+Could not reach ddnet.org
+== Не удалось связаться с ddnet.org
+
+Country
+== Страна
+
+Country flag
+== Флаг страны
+
+Crosshair
+== Прицел
+
+Current vote
+== Текущее голосование
+
+Cursor scale
+== Размер курсора
+
+Custom binds
+== Свои бинды
+
+Custom colours
+== Свои цвета
+
+DDNet
+== DDNet
+
+DDRace
+== DDRace
+
+Darken frozen tees
+== Затемнять замороженных
+
+Darkness
+== Затемнение
+
+Demos and replays
+== Демки и повторы
+
+Demos and screenshots
+== Демки и скриншоты
+
+Demos, replays and auto recordings
+== Демки, повторы и автозаписи
+
+Disconnect
+== Отключиться
+
+Disconnect dummy
+== Отключить дамми
+
+Display
+== Экран
+
+Display and renderer
+== Экран и рендер
+
+Door
+== Дверь
+
+Download skins
+== Скачивать скины
+
+Dragger
+== Драггер
+
+Draw outlines
+== Рисовать обводку
+
+Draw tee trails
+== Шлейф за тии
+
+Dummy
+== Дамми
+
+Dummy actions
+== Действия дамми
+
+Dummy copies moves
+== Дамми повторяет движения
+
+Dummy hammers
+== Дамми бьёт молотом
+
+Dynamic camera
+== Динамическая камера
+
+Dynamic island
+== Динамический остров
+
+Edit profile
+== Изменить профиль
+
+Editor
+== Редактор
+
+Entering map
+== Вход на карту
+
+Entities view
+== Вид entities
+
+Everyone
+== Все
+
+Extra map layers marked as detail
+== Дополнительные детальные слои карты
+
+FPS limit
+== Лимит FPS
+
+Fade over length
+== Затухание по длине
+
+Fat skins
+== Толстые скины
+
+Files
+== Файлы
+
+Filters
+== Фильтры
+
+Finish messages
+== Сообщения о финише
+
+Font size
+== Размер шрифта
+
+Free spectate cursor alpha
+== Прозрачность курсора в свободном обзоре
+
+Freeze
+== Фриз
+
+Freeze and deep color
+== Цвет фриза и deep
+
+Freeze and deep tiles
+== Тайлы фриза и deep
+
+Freeze and deep width
+== Толщина фриза и deep
+
+Freeze bars
+== Полосы фриза
+
+Freeze bars inside freeze
+== Полосы фриза внутри фриза
+
+Freeze outline
+== Обводка фриза
+
+Freeze outline color
+== Цвет обводки фриза
+
+Freeze outline width
+== Толщина обводки фриза
+
+Friend heart
+== Сердечко друзей
+
+Friends
+== Друзья
+
+Friends and chat
+== Друзья и чат
+
+Friends list
+== Список друзей
+
+Frozen
+== Замороженные
+
+Frozen color
+== Цвет замороженных
+
+Frozen tee size
+== Размер замороженных
+
+Frozen tees HUD
+== HUD замороженных
+
+Fullscreen
+== Полный экран
+
+Game
+== Игра
+
+Game sounds
+== Игровые звуки
+
+Game textures
+== Игровые текстуры
+
+Game types
+== Режимы
+
+Gameplay
+== Геймплей
+
+General
+== Основное
+
+Generate
+== Создать
+
+Ghost opacity
+== Прозрачность призрака
+
+Graphics
+== Графика
+
+Gun
+== Пистолет
+
+HUD
+== HUD
+
+Hammer rotates with cursor
+== Молот поворачивается за курсором
+
+Hammerfly helper, resets on restart
+== Помощь в hammerfly, сбрасывается при перезапуске
+
+Happy
+== Радостные
+
+Health, shields and ammo
+== Здоровье, броня и патроны
+
+Hide tees that are on screen
+== Скрывать тех, кто на экране
+
+Hide your latency by predicting your own tee
+== Скрывает пинг, предсказывая твою тии
+
+High detail
+== Высокая детализация
+
+Higher input latency
+== Задержка ввода выше
+
+Highlight
+== Выделение
+
+Highlighted
+== Упоминания
+
+Home
+== Главная
+
+Hook and unhook color
+== Цвет hook и unhook
+
+Hook and unhook tiles
+== Тайлы hook и unhook
+
+Hook and unhook width
+== Толщина hook и unhook
+
+Hook strength
+== Сила хука
+
+Hook strength size
+== Размер силы хука
+
+Hookable
+== Можно зацепить
+
+Hours this year
+== Часов за год
+
+How others see you
+== Как тебя видят другие
+
+ID size
+== Размер ID
+
+Icon
+== Иконка
+
+In game
+== В игре
+
+In the scoreboard, chat and spectator menu
+== В таблице, чате и меню зрителя
+
+Indicator offset
+== Отступ индикатора
+
+Indicator opacity
+== Прозрачность индикатора
+
+Indicator radius
+== Радиус индикатора
+
+Inline
+== В строку
+
+Installed
+== Установленные
+
+Island
+== Остров
+
+Island size
+== Размер острова
+
+Join
+== Играть
+
+Join game
+== Войти в игру
+
+Join local server
+== Зайти на локальный сервер
+
+Join your last server or pick one below
+== Зайди на последний сервер или выбери ниже
+
+Jumps indicator
+== Индикатор прыжков
+
+Keep the race timer pill visible when there is nothing to report
+== Показывать таймер, когда нет уведомлений
+
+Keep your best race as a demo
+== Сохранять лучший забег в демку
+
+Key press size
+== Размер нажатий
+
+Key presses
+== Нажатия клавиш
+
+Keys and mouse
+== Клавиши и мышь
+
+Kick
+== Кик
+
+Kill
+== Убить
+
+Kill color
+== Цвет kill
+
+Kill feed
+== Лента убийств
+
+Kill messages
+== Сообщения об убийствах
+
+Kill tiles
+== Kill-тайлы
+
+Kill width
+== Толщина kill
+
+Lasers
+== Лазеры
+
+Last finishes
+== Последние финиши
+
+Last server
+== Последний сервер
+
+Left swatch is the outline, right one the core
+== Левый цвет обводка, правый сердцевина
+
+Like gun
+== Как пистолет
+
+List every video mode
+== Все видеорежимы
+
+Live preview
+== Предпросмотр
+
+Loading stats from ddnet.org…
+== Загрузка статистики с ddnet.org…
+
+Loading the server list...
+== Загрузка списка серверов…
+
+Long pain
+== Долгая боль
+
+Lower update rate to save power
+== Пониженная частота для экономии энергии
+
+Map download
+== Загрузка карты
+
+Map · server
+== Карта · сервер
+
+Master
+== Общая
+
+Master switch for everything below
+== Главный переключатель для всего ниже
+
+Maximum offset
+== Максимальный отступ
+
+Maximum rows
+== Максимум рядов
+
+Maximum tee distance
+== Максимальная дистанция
+
+May add input delay
+== Может добавить задержку
+
+May cause delay
+== Может вызвать задержку
+
+Mentions
+== Упоминания
+
+Menu music
+== Музыка в меню
+
+Menu theme
+== Тема меню
+
+Message colours
+== Цвета сообщений
+
+Messages, filters and colours
+== Сообщения, фильтры и цвета
+
+Miss
+== Мимо
+
+Movement
+== Движение
+
+Movement info
+== Данные движения
+
+Mute in background
+== Без звука в фоне
+
+Name colours
+== Цвета ников
+
+Name plates
+== Ники
+
+Names in team colours
+== Ники цветами команд
+
+Names, hook lines and lasers
+== Ники, линии хука и лазеры
+
+Network
+== Сеть
+
+Ninja or darkened skins for frozen tees
+== Ниндзя или тёмные скины у замороженных
+
+No clan
+== Без клана
+
+No demos match your search
+== Демок по запросу не найдено
+
+No demos yet. Record one with the demo button in game.
+== Демок пока нет. Запиши кнопкой записи в игре.
+
+No finishes on ddnet.org yet
+== На ddnet.org пока нет финишей
+
+No players
+== Нет игроков
+
+No tees, no background
+== Без тии и фона
+
+Nobody else is here
+== Здесь больше никого
+
+Nobody you know is online right now
+== Никого из друзей нет в сети
+
+None
+== Нет
+
+Normal
+== Обычные
+
+Normal view
+== Обычный вид
+
+Not set
+== Не выбрана
+
+Nothing found
+== Ничего не найдено
+
+Notification duration
+== Длительность уведомлений
+
+Notification sound
+== Звук уведомлений
+
+Notifications, votes and now playing
+== Уведомления, голосования и музыка
+
+Now playing
+== Сейчас играет
+
+Number
+== Число
+
+Off
+== Выкл
+
+Off-screen player indicators
+== Индикаторы игроков за экраном
+
+Offset
+== Отступ
+
+Old style records
+== Рекорды в старом стиле
+
+On
+== Вкл
+
+Only friends
+== Только друзья
+
+Only frozen tees
+== Только замороженные
+
+Only in entities view
+== Только в виде entities
+
+Only save new records
+== Сохранять только рекорды
+
+Only team members
+== Только команда
+
+Only while in a team
+== Только в команде
+
+Opacity
+== Прозрачность
+
+Open
+== Открыть
+
+Open in your file manager
+== Открыть в файловом менеджере
+
+Open teedata.net
+== Открыть teedata.net
+
+Other
+== Прочее
+
+Other players
+== Другие игроки
+
+Other servers
+== Прочие серверы
+
+Other teams opacity
+== Прозрачность других команд
+
+Others
+== Чужие
+
+Others width
+== Толщина у других
+
+Otherwise only while the scoreboard is open
+== Иначе только при открытой таблице
+
+Own
+== Свои
+
+Own line
+== Отдельной строкой
+
+Pain
+== Боль
+
+Parent folder
+== Назад
+
+Partial
+== Частично
+
+Pause
+== Пауза
+
+Pin as tab
+== Закрепить вкладкой
+
+Ping circle
+== Кружок пинга
+
+Pinned
+== Закреплённые
+
+Player
+== Игрок
+
+Players
+== Игроки
+
+Plays most with
+== Чаще всего играет с
+
+Points
+== Очки
+
+Points by category
+== Очки по категориям
+
+Points this year
+== Очков за год
+
+Popular now
+== Популярное
+
+Position
+== Позиция
+
+Predict dummy
+== Предсказывать дамми
+
+Predict events
+== Предсказывать события
+
+Predict freeze
+== Предсказывать фриз
+
+Predict grenades
+== Предсказывать гранаты
+
+Predict movement
+== Предсказывать движение
+
+Predict players
+== Предсказывать игроков
+
+Predict weapons
+== Предсказывать оружие
+
+Prediction
+== Предсказание
+
+Prediction, dummy and tees
+== Предсказание, дамми и тии
+
+Predicts other players so the game feels lag free
+== Предсказывает других игроков, чтобы не чувствовался лаг
+
+Pulse
+== Пульс
+
+Quality
+== Качество
+
+Quit
+== Выход
+
+Race
+== Забег
+
+Race ghost
+== Призрак забега
+
+Race, ghost and replays
+== Забеги, призрак и повторы
+
+Races your best time next to you
+== Повторяет твой лучший забег рядом с тобой
+
+Rainbow
+== Радуга
+
+Rainbow for other tees
+== Радуга у других
+
+Rainbow hook
+== Радужный хук
+
+Rainbow mode
+== Режим радуги
+
+Rainbow speed
+== Скорость радуги
+
+Rainbow tee
+== Радужная тии
+
+Rainbow weapon
+== Радужное оружие
+
+Random
+== Случайно
+
+Rank #%d · %d points · plays on %s
+== Ранг #%d · %d очков · играет на %s
+
+Rank pills
+== Плашки рейтинга
+
+Reason (optional)
+== Причина (необязательно)
+
+Record demo
+== Записать демку
+
+Reload
+== Перезагрузить
+
+Reload background map
+== Перезагрузить фоновую карту
+
+Remove from favorites
+== Убрать из избранного
+
+Render weapons as gun
+== Рисовать оружие как пистолет
+
+Replay length
+== Длина повтора
+
+Replays
+== Повторы
+
+Reset chat input on escape
+== Сбрасывать ввод чата по Esc
+
+Reset to default
+== Сбросить
+
+Resets on restart
+== Сбрасывается при перезапуске
+
+Resolution
+== Разрешение
+
+Restore every key bind, mouse and controller setting
+== Вернуть все бинды, мышь и контроллер к стандартным
+
+Resume
+== Продолжить
+
+Rifle
+== Лазер
+
+Rotate
+== Поворот
+
+Run local server
+== Запустить локальный сервер
+
+Same clan
+== Свой клан
+
+Saves
+== Сохранения
+
+Search country
+== Поиск страны
+
+Search map, server or address
+== Поиск карты, сервера или адреса
+
+Search skins
+== Поиск скинов
+
+Select a server
+== Выбери сервер
+
+Self
+== Свой
+
+Server
+== Сервер
+
+Server browser
+== Браузер серверов
+
+Server info
+== О сервере
+
+Server messages
+== Сообщения сервера
+
+Servers
+== Серверы
+
+Settings
+== Настройки
+
+Show
+== Показывать
+
+Show a pill with notifications at the top of the screen
+== Плашка с уведомлениями вверху экрана
+
+Show cursor in free spectate
+== Курсор в свободном обзоре
+
+Show emotes
+== Показывать эмоции
+
+Show indicators for teammates
+== Индикаторы для тиммейтов
+
+Show katana on frozen tees
+== Катана у замороженных
+
+Show ninja skin
+== Показывать скин ниндзя
+
+Show race timer
+== Показывать таймер забега
+
+Show screen center lines
+== Линии центра экрана
+
+Show tee heads
+== Головы тии
+
+Show tees instead of circles
+== Тии вместо кружков
+
+Show the classic DDRace server and personal best lines
+== Старые строки рекорда сервера и личного рекорда
+
+Show this island template
+== Показать этот шаблон острова
+
+Showing %d of %d, use search to find more
+== Показано %d из %d, используй поиск
+
+Shown under the DDRace HUD
+== Под DDRace HUD
+
+Size
+== Размер
+
+Skin
+== Скин
+
+Skin and colours
+== Скин и цвета
+
+Skin name
+== Имя скина
+
+Skins
+== Скины
+
+Small counter in the top right
+== Маленький счётчик справа сверху
+
+Smooth dynamic camera
+== Плавная динамическая камера
+
+Solid
+== Сплошной
+
+Solo rank
+== Соло ранг
+
+Sound
+== Звук
+
+Source
+== Источник
+
+Sources
+== Источники
+
+Spec
+== Зритель
+
+Spectate
+== Наблюдать
+
+Spectator count
+== Число зрителей
+
+Split deltas
+== Разница по сплитам
+
+Spotify or any MPRIS player
+== Spotify или любой MPRIS-плеер
+
+Stop keys on switch
+== Отпускать клавиши при переключении
+
+Stop recording
+== Остановить запись
+
+Style
+== Стиль
+
+Surprise
+== Удивление
+
+System
+== Системные
+
+System messages
+== Системные сообщения
+
+Taper over length
+== Сужение по длине
+
+Team colours
+== Цвета команд
+
+Team counter text
+== Счётчик команды
+
+Team rank
+== Командный ранг
+
+Tee
+== Тии
+
+Tee trail
+== Шлейф тии
+
+Tees
+== Тии
+
+Tees and weapons
+== Тии и оружие
+
+Teleporter color
+== Цвет телепортов
+
+Teleporter width
+== Толщина телепортов
+
+Teleporters
+== Телепорты
+
+Test
+== Тест
+
+Text entities
+== Текстовые entities
+
+Text entities size
+== Размер текстовых entities
+
+The accent, outlines and trail update here as you change them.
+== Акцент, обводка и шлейф обновляются здесь сразу.
+
+The look of the whole client, with a live preview
+== Внешний вид клиента с предпросмотром
+
+Themes
+== Темы
+
+This server has no vote options
+== На сервере нет вариантов голосования
+
+Tile outlines
+== Обводка тайлов
+
+Timer pill
+== Плашка таймера
+
+Timer, records and ghost
+== Таймер, рекорды и призрак
+
+Tiny tee size
+== Размер маленьких тии
+
+Tiny tees
+== Маленькие тии
+
+Tiny tees for other tees
+== Маленькие тии у других
+
+Tip
+== Кончик
+
+Top offset
+== Отступ сверху
+
+Trail alpha
+== Прозрачность шлейфа
+
+Trail color mode
+== Цвет шлейфа
+
+Trail length
+== Длина шлейфа
+
+Trail solid color
+== Сплошной цвет шлейфа
+
+Trail width
+== Толщина шлейфа
+
+Trails for other tees
+== Шлейф у других
+
+UI scale
+== Масштаб интерфейса
+
+Unfreeze and undeep color
+== Цвет unfreeze и undeep
+
+Unfreeze and undeep tiles
+== Тайлы unfreeze и undeep
+
+Unfreeze and undeep width
+== Толщина unfreeze и undeep
+
+Unlimited
+== Без ограничений
+
+Unpause
+== Снять паузу
+
+Unpin tab
+== Открепить вкладку
+
+Unpredicted shadow
+== Непредсказанная тень
+
+Update rate
+== Частота обновления
+
+Use rifle colours for all
+== Цвета лазера для всех
+
+Use skin colors for frozen tees
+== Цвета скина у замороженных
+
+Vanilla only
+== Только vanilla
+
+Variable distance
+== Переменная дистанция
+
+Visual
+== Визуал
+
+Volume
+== Громкость
+
+Volume and sources
+== Громкость и источники
+
+Vote
+== Голосование
+
+Vote kick
+== Голосовать за кик
+
+Vote spectate
+== Перевести в зрители
+
+Votes
+== Голосования
+
+Votes window after voting
+== Окно голосования после голоса
+
+Weapons, jumps and active effects
+== Оружие, прыжки и эффекты
+
+Welcome
+== Привет
+
+What is shown in game
+== Что видно в игре
+
+When shooting in freeze
+== При стрельбе во фризе
+
+When the window is not focused
+== Когда окно не в фокусе
+
+While aiming
+== При прицеливании
+
+White feet
+== Белые ноги
+
+White feet base skin
+== Скин для белых ног
+
+Whole clan
+== Весь клан
+
+Window mode
+== Режим окна
+
+Windowed
+== Окно
+
+With color
+== С цветом
+
+Words to hide
+== Скрывать слова
+
+World
+== Мир
+
+World and tees
+== Мир и тии
+
+Your line
+== Твоя линия
+
+Your place and the leader on the right
+== Твоё место и лидер справа
+
+Your width
+== Твоя толщина
+
+teedata.net catalog
+== Каталог teedata.net
+
+Eyes
+== Глаза
+
+Play
+== Смотреть
+
+Profile
+== Профиль
+
+Skin list
+== Скины
+
+Your place
+== Ваше место
+
+Watching
+== Наблюдаете
+
+of %d
+== из %d
+
+No time yet
+== Без времени
+
+Player
+== Игрок
+
+Minimap
+== Миникарта
+
+Show minimap
+== Показывать миникарту
+
+Show players on the minimap
+== Игроки на миникарте
+
+Minimap corner
+== Угол миникарты
+
+Top left
+== Слева сверху
+
+Top right
+== Справа сверху
+
+Bottom left
+== Слева снизу
+
+Bottom right
+== Справа снизу
+
+Minimap size
+== Размер миникарты
+
+Minimap zoom
+== Масштаб миникарты
+
+Minimap opacity
+== Прозрачность миникарты
+
+Cursor style
+== Стиль прицела
+
+Game skin
+== Из скина игры
+
+Crosshair
+== Перекрестие
+
+Client
+== Клиент
+
+World
+== Мир
+
+Interface
+== Интерфейс
+
+Appearance
+== Оформление
+
+General
+== Основное
+
+Layout
+== Расположение
+
+HUD editor
+== Редактор HUD
+
+Edit
+== Изменить
+
+Drag modules anywhere, they snap to edges and to each other
+== Перетаскивай модули куда угодно, они примагничиваются к краям и друг к другу
+
+Weapons and jumps
+== Оружие и прыжки
+
+Ranking
+== Рейтинг
+
+Clock
+== Часы
+
+Prediction
+== Предсказание
+
+Speed
+== Скорость
+
+Position
+== Позиция
+
+Done
+== Готово
+
+Reset
+== Сбросить
+
+Camera
+== Камера
+
+Smooth camera
+== Плавная камера
+
+The camera follows your tee softly instead of being glued to it
+== Камера мягко следует за тее, а не приклеена к нему
+
+Look ahead
+== Взгляд вперёд
+
+Shifts the view in the direction you are flying
+== Смещает обзор в сторону полёта
+
+Game feel
+== Ощущение игры
+
+Freeze timer
+== Таймер фриза
+
+Own tee
+== Свой тее
+
+Everyone
+== Все
+
+Seconds left in freeze, under your tee and above others
+== Сколько осталось фриза: под своим тее и над другими
+
+Hook timer
+== Таймер хука
+
+Ring around your tee while you hold a player
+== Кольцо вокруг тее, пока держишь игрока хуком
+
+Hook line
+== Линия хука
+
+Green if the hook will grab, red on unhookable tiles
+== Зелёная, если хук зацепится, красная на нецепляемых тайлах
+
+Players in hook reach
+== Игроки в досягаемости хука
+
+Hitboxes
+== Хитбоксы
+
+Tee hitboxes and your hook range
+== Хитбоксы тее и радиус твоего хука
+
+Trajectory
+== Траектория
+
+Where you fly with the current input, red when it ends in freeze
+== Куда полетишь с текущим вводом, красная, если ведёт во фриз
+
+Trajectory length
+== Длина траектории
+
+Island and timer
+== Остров и таймер
+
+Race timer
+== Таймер забега
+
+Health and ammo
+== Здоровье и патроны
+
+Join a server to edit it over the real game
+== Зайди на сервер, чтобы настраивать поверх игры
+
+Message, Tab to complete names
+== Сообщение, Tab дополняет ники
+
+Whisper
+== Шёпот
+
+Welcome to the server!
+== Добро пожаловать на сервер!
+
+Checkpoint splits
+== Сплиты чекпоинтов
+
+Finish prediction
+== Прогноз финиша
+
+Focus mode
+== Режим фокуса
+
+Hides chat, pills and other players' names. Bind a key: toggle xx_focus 0 1
+== Прячет чат, пилюли и ники других игроков. Забинди клавишу: toggle xx_focus 0 1
+
+Vote
+== Голосование
+
+Broadcast
+== Объявление
+
+Assist
+== Помощь
+
+Precise aim (hold)
+== Точный прицел (удерживать)
+
+Snap aim to 8 directions (hold)
+== Прицел по 8 направлениям (удерживать)
+
+Aim angle step 15°
+== Шаг угла прицела 15°
+
+Rescue hook (hold)
+== Хук спасения (удерживать)
+
+Dummy fires its weapon
+== Дамми стреляет своим оружием
+
+Dummy boost (hold)
+== Буст дамми (удерживать)
+
+Dummy holds position
+== Дамми держит точку
+
+Dummy follows you
+== Дамми идёт за тобой
+
+Snap Tap
+== Snap Tap
+
+Holding left and right: the last pressed key wins instead of stopping
+== Зажаты влево и вправо: побеждает последняя нажатая, без остановки
+
+Precise aim sensitivity
+== Чувствительность точного прицела
+
+Mouse speed while the precise aim key is held
+== Скорость мыши, пока зажата клавиша точного прицела
+
+Save jump
+== Спасительный прыжок
+
+Jumps for you when an air jump keeps you out of freeze
+== Прыгает сам, если прыжок в воздухе спасает от фриза
+
+Rescue hint
+== Подсказка спасения
+
+Shows the hook angle that pulls you out of a freeze trajectory
+== Показывает угол хука, который вытащит из траектории во фриз
+
+Dummy unfreezes you
+== Дамми размораживает тебя
+
+With laser or hammer when it can reach you
+== Лазером или молотком, когда достаёт
+
+Dummy hooks you out
+== Дамми вытаскивает хуком
+
+When you are about to fly into freeze
+== Когда ты вот-вот улетишь во фриз
+
+Weapon paths
+== Траектории оружия
+
+Laser and shotgun bounces, gun and grenade arcs with the explosion radius
+== Отскоки лазера и дробовика, дуги пистолета и гранаты с радиусом взрыва
+
+Limbo
+== Лимбо
+
+Click: teleport · Wheel up: save · Wheel down: back 1 s · Kill: to save · 1/2/3: speed
+== Клик: телепорт · Колесо вверх: сохранить · вниз: назад 1 с · Kill: к сохранению · 1/2/3: скорость
+
+Limbo (practice locally)
+== Лимбо (тренировка локально)
+
+Grenade jump
+== Рокет-джамп
+
+Fire with the grenade while standing: the client jumps and shoots under you in time
+== Огонь гранатой стоя на земле: клиент сам прыгает и стреляет под ноги в тайминг
+
+Mouse speed while the precise aim key is held, walking also moves in tiny steps
+== Скорость мыши, пока зажата клавиша точного прицела; ходьба тоже идёт мелкими шагами
+
+Movement help
+== Помощь в движении
+
+Snap Tap, save jump, grenade jump and precise aim
+== Snap Tap, спасительный прыжок, рокет-джамп и точный прицел
+
+Self unfreeze
+== Самоанфриз
+
+Flying through freeze: shoots a bouncing laser that hits you after the exit
+== Пролетая фриз: стреляет лазером с отскоком, который попадёт в тебя после выхода
+
+What your dummy does on its own
+== Что дамми делает сам
+
+Unfreezes you
+== Размораживает тебя
+
+Laser or hammer once you are out of the freeze tile
+== Лазером или молотком, когда ты уже не на фриз-тайле
+
+Hooks you out
+== Вытаскивает хуком
+
+Boost
+== Буст
+
+Run at the dummy: it jumps and hammers you up
+== Подбеги к дамми: он подпрыгнет и подбросит тебя молотком
+
+Follows you
+== Идёт за тобой
+
+Hitboxes
+== Хитбоксы
+
+Circle
+== Окружность
+
+Body of every tee
+== Тело каждого тее
+
+Center point
+== Точка центра
+
+Freeze and tiles trigger at this point
+== Фриз и тайлы срабатывают по этой точке
+
+Hook range
+== Радиус хука
+
+How far your hook reaches
+== Докуда достаёт твой хук
+
+Timers
+== Таймеры
+
+Paths
+== Траектории
+
+Red when it ends in freeze
+== Красная, если ведёт во фриз
+
+Laser bounces, gun and grenade arcs
+== Отскоки лазера, дуги пистолета и гранаты
+
+The hook angle that pulls you out of a freeze trajectory
+== Угол хука, который вытащит из траектории во фриз
+
+Left and right held: the last pressed wins
+== Зажаты влево и вправо: побеждает последняя нажатая
+
+Jump and fire with the grenade: the shot goes under you in time
+== Прыжок и огонь гранатой: выстрел уходит под ноги в тайминг
+
+Balance on a head (hold)
+== Баланс на голове (удерживать)
+
+Hook and unhook
+== Цепляемые и нецепляемые
+
+Freeze and deep
+== Фриз и deep
+
+Unfreeze and undeep
+== Unfreeze и undeep
+
+Kill
+== Kill
+
+Teleporters
+== Телепорты
+
+Show
+== Показывать
+
+Width
+== Толщина
+
+Color
+== Цвет
+
+Assist, game feel, camera and prediction
+== Помощь, ощущение игры, камера и предсказание
+
+Fire the laser while flying into freeze: the shot is aimed to bounce into you after the exit
+== Стреляешь лазером, влетая во фриз: выстрел наводится так, чтобы отскоком попасть в тебя после выхода
+
+Jump and fire with the grenade in any order: the shot goes under you
+== Прыжок и огонь гранатой в любом порядке: выстрел уходит под ноги
+
+Message of the day
+== Сообщение сервера
+
+Press Esc to close
+== Esc, чтобы закрыть
+
+Join
+== Войти
+
+Record
+== Запись
+
+Stop
+== Стоп
+
+Dummy
+== Дамми
+
+Kill
+== Убить
+
+Walk onto the dummy: you jump and it hammers you up in time (or hold the boost key)
+== Подойди к дамми: ты прыгаешь, и он в тайминг подбрасывает тебя молотком (или держи клавишу буста)
+
+Text position
+== Положение текста
+
+Text background
+== Фон под текстом
+
+Dark pill so the time is readable on any map
+== Тёмная плашка, чтобы время читалось на любой карте
+
+Text size
+== Размер текста
+
+Ring width
+== Толщина кольца
+
+Other tees opacity
+== Прозрачность у других тии
+
+Colour
+== Цвет
+
+Deep freeze colour
+== Цвет глубокого фриза
+
+DDNet freeze bar
+== Полоска фриза DDNet
+
+The classic bar under frozen tees
+== Классическая полоска под замороженными тии
+
+Quick stop
+== Быстрая остановка
+
+Release left and right: the client counter-steers so you stop on the spot
+== Отпускаешь влево и вправо — клиент подруливает, и ты останавливаешься на месте
+
+Balance
+== Баланс
+
+Stay on the head of the player below you. Or hold a key bound to +xx_balance
+== Держаться на голове игрока под тобой. Или зажми клавишу с +xx_balance
+
+Balance dead zone
+== Мёртвая зона баланса
+
+Do nothing while this close to the centre
+== Не двигаться, пока ты так близко к центру
+
+Balance prediction
+== Предсказание баланса
+
+How far ahead both tees are predicted
+== На сколько тиков вперёд предсказываются оба тии
+
+Aim down and fire the grenade on the ground or right after a jump: the client jumps and shoots under you in time
+== Целься вниз и стреляй гранатой на земле или сразу после прыжка — клиент сам подпрыгнет и выстрелит под тебя вовремя
+
+Hold the laser: flying into freeze, it fires at the last moment so the shot bounces back into you after the exit
+== Держи лазер: когда летишь во фриз, клиент стреляет в последний момент, и луч отскакивает в тебя после выхода
+
+Self unfreeze key
+== Клавиша анфриза
+
+Debug log
+== Отладочный лог
+
+Writes to the console why a helper did or did not act
+== Пишет в консоль и в xxx_assist_debug.txt, почему помощник сработал или нет
+
+Version spoofer
+== Спуфер версии
+
+Spoof client version
+== Подменять версию клиента
+
+Servers see another client. For server admins testing anti-cheat. Applies on next connect
+== Серверы видят другой клиент. Для админов, проверяющих античит. Применяется при следующем подключении
+
+Template
+== Шаблон
+
+Version string
+== Строка версии
+
+Empty = real version
+== Пусто — настоящая версия
+
+DDNet version
+== Версия DDNet
+
+Legacy client
+== Старый клиент
+
+Don't send the version packet, server sees no connection ID
+== Не отправлять пакет версии, сервер не увидит ConnectionID
+
+Apply now
+== Применить сейчас
+
+Captured clients
+== Пойманные клиенты
+
+Checksum binary
+== Бинарник для checksum
+
+Checksums captured
+== Checksum-ы захвачены
+
+Path to TClient binary for checksum spoofing (empty = use own)
+== Путь к бинарнику TClient для подмены checksum (пусто = свой)
+
+Start a local server and join it: everyone who connects shows up here. On other servers run xx_debug_clients in rcon
+== Запусти локальный сервер и зайди: все, кто подключится, появятся здесь. На других серверах выполни xx_debug_clients в rcon
+
+Use
+== Включить
+
+Spoofer templates
+== Шаблоны спуфера
+
+Template name
+== Название шаблона
+
+Save current
+== Сохранить текущий
+
+Ring
+== Кольцо
+
+Text
+== Текст
+
+Ring and text
+== Кольцо и текст
+
+Above
+== Сверху
+
+Below
+== Снизу
+
+On the tee
+== На тии
+
+While holding the key
+== Пока зажата клавиша
+
+Automatic
+== Автоматически
+
+While key held
+== Пока зажата клавиша
+
+Helpers
+== Помощники
+
+Self unfreeze (hold)
+== Анфриз (держать)
+
+Used when Helpers → Self unfreeze is set to "While key held"
+== Работает, если в «Помощниках» анфриз стоит «Пока зажата клавиша»
+
+Hook ride (toggle)
+== Hook ride (вкл/выкл)
+
+WASD moves you pixel by pixel, the hook carries you
+== WASD двигает тебя по пикселю, хук несёт
+
+Jet ride (toggle)
+== Jet ride (вкл/выкл)
+
+WASD moves you pixel by pixel with the jetpack gun
+== WASD двигает тебя по пикселю джетпаком
+
+Toggle version spoofer
+== Вкл/выкл спуфер версии
+
+Aim angle
+== Угол прицела
+
+0° is right, counter-clockwise, same as the angle step bind
+== 0° — вправо, против часовой, как в бинде шага угла
+
+Admin
+== Админ
+
+You
+== Ты
+
+Reload map
+== Перезагрузить карту
+
+Test cmds
+== Тест-команды
+
+Clients info
+== Инфо о клиентах
+
+Map name
+== Название карты
+
+Change map
+== Сменить карту
+
+Server name
+== Название сервера
+
+Rename
+== Переименовать
+
+Password (empty = none)
+== Пароль (пусто — без пароля)
+
+Set
+== Задать
+
+Any rcon command
+== Любая rcon-команда
+
+Run
+== Выполнить
+
+Local server · running
+== Локальный сервер · работает
+
+Local server
+== Локальный сервер
+
+The server is running. You are its admin: rcon logs in by itself, and Esc has an Admin tab.
+== Сервер запущен. Ты его админ: в rcon входишь сам, а в Esc есть вкладка «Админ».
+
+Start a server on this PC and join it. You get admin rights right away.
+== Запусти сервер на этом ПК и зайди на него. Права админа будут сразу.
+
+Only me
+== Только я
+
+Nobody else can join
+== Больше никто не сможет зайти
+
+Local network
+== Локальная сеть
+
+Friends on the same Wi-Fi or LAN see it in the LAN tab
+== Друзья в той же сети Wi-Fi или LAN увидят его во вкладке LAN
+
+Listed in the server browser. Needs port 8303 open on your router
+== Виден в браузере серверов. Нужен открытый порт 8303 на роутере
+
+Client captured
+== Клиент пойман
+
+Hook ride
+== Hook ride
+
+Jet ride
+== Jet ride
+
+On: WASD moves you
+== Вкл: WASD двигает тебя
+
+Stop server
+== Остановить сервер
+
+Remote console
+== Консоль сервера
+
+Console
+== Консоль
+
+Loading commands
+== Загрузка команд
+
+Loading maps
+== Загрузка карт
+
+Super
+== Супер
+
+Restart
+== Рестарт
+
+xxx binds
+== Бинды xxx
+
+Keys for the client helpers
+== Клавиши для помощников клиента
+
+Aim
+== Прицел
+
+Enable spoofer
+== Спуфер
+
+Applies on next connect
+== Применяется при следующем подключении
+
+Client profiles
+== Профили клиентов
+
+Path to JSON profile
+== Путь к JSON-профилю
+
+Import JSON
+== Импорт JSON
+
+Export JSON
+== Экспорт JSON
+
+Add a JSON profile to spoofclients
+== Добавьте JSON-профиль в spoofclients
+
+Profile name
+== Название профиля
+
+Selected
+== Выбран
+
+Refresh
+== Обновить
+
+Could not create spoofclients directory
+== Не удалось создать папку spoofclients
+
+Could not remove JSON profile
+== Не удалось удалить JSON-профиль
+
+Invalid client metadata
+== Некорректные данные о клиенте
+
+Invalid checksum snapshot or executable
+== Повреждён снимок контрольных данных или бинарник
+
+Unsupported checksum layout
+== Неподдерживаемая структура контрольных данных
+
+Invalid checksum table sizes
+== Некорректные размеры таблиц контрольных данных
+
+Profile file is too large
+== Файл профиля слишком большой
+
+Malformed JSON profile
+== Повреждённый JSON-профиль
+
+Invalid, incomplete or unsupported JSON profile
+== Повреждённый, неполный или неподдерживаемый JSON-профиль
+
+Could not open profile
+== Не удалось открыть профиль
+
+Invalid profile file size
+== Некорректный размер файла профиля
+
+Could not read profile
+== Не удалось прочитать профиль
+
+Could not encode profile
+== Не удалось сформировать профиль
+
+Could not create profile file
+== Не удалось создать файл профиля
+
+Could not save profile atomically
+== Не удалось сохранить профиль
+
+Profile imported
+== Профиль импортирован
+
+Profile exported
+== Профиль экспортирован
+
+Choose a .json output file
+== Укажите файл .json для экспорта
+
+Menu background
+== Фон меню
+
+3D scene
+== 3D-сцена
+
+Vortex
+== Воронка
+
+Animate background
+== Анимация фона
+
+Inline descriptions
+== Пояснения под настройками
+
+Choose a server
+== Выберите сервер
+
+No friends online
+== Никого нет в сети
+
+Local server is running
+== Локальный сервер запущен
+
+Full map
+== Вся карта
+
+Start area
+== Область старта
+
+Soft light
+== Мягкий свет
+
+Map image
+== Изображение карты
+
+
+Cheats
+== Читы
+
+Spoofer
+== Спуфер
+
+Ride speed
+== Скорость перемещения
+
+Close
+== Закрыть
+
+Previous marker
+== Предыдущая метка
+
+Next marker
+== Следующая метка
+
+Start
+== Начало
+
+End
+== Конец
+
+Save cut
+== Сохранить фрагмент
+
+Remove chat
+== Убрать чат
+
+Render video
+== Экспорт видео
+
+Render demo
+== Экспорт видео
+
+Start paused
+== Начать с паузы
+
+Video rendered
+== Видео сохранено
+
+Rename demo
+== Переименовать демку
+
+Join tutorial
+== Обучение
+
+Looking for a tutorial server
+== Поиск сервера обучения
+
+Cancel
+== Отмена
+
+Save
+== Сохранить
+
+Show chat
+== Показывать чат
+
+Use sounds
+== Со звуком
+
+Show ingame HUD
+== Показывать HUD
+
+Videos directory
+== Папка видео
+
+Animated menu tees
+== Tee друзей на фоне
+
+Menu tee count
+== Количество Tee на фоне
+
+Menu background motion
+== Движение на фоне меню
+
+Demo characters
+== Демонстрационные персонажи
+
+Avoid
+== Авоид
+
+Avoid key
+== Клавиша авоида
+
+Avoid horizon
+== Горизонт предикции авоида
+
+Manual control (hold)
+== Ручное управление (удерживать)
+
+Active features HUD
+== HUD включённых функций
+
+Active features
+== Включённые функции
+
+Ready
+== Готово
+
+Active
+== Активно
+
+Waiting
+== Ожидание
+
+Paused
+== Пауза
+
+Own dummy aimbot
+== Аимбот на своего dummy
+
+Own dummy aim key
+== Клавиша наведения на своего dummy
+
+Aim FOV
+== Область наведения
+
+Aim smoothing
+== Плавность наведения
+
+Offline
+== Не в сети
+
+Avoid mode
+== Режим уклонения
+
+Hint
+== Подсказка
+
+Brake
+== Торможение
+
+Adaptive
+== Адаптивный
+
+Hint only displays danger; Stop releases direction; Brake and Adaptive can countersteer
+== Подсказка показывает опасность; остановка отпускает направление; остальные режимы могут тормозить встречным движением
+
+Avoid advanced
+== Параметры уклонения
+
+Avoid freeze
+== Избегать заморозки
+
+Avoid deep freeze
+== Избегать глубокой заморозки
+
+Avoid live freeze
+== Избегать живой заморозки
+
+Avoid death
+== Избегать смерти
+
+Braking pulse
+== Импульс торможения
+
+Safety margin
+== Запас безопасности
+
+Show danger trajectory
+== Показывать опасную траекторию
+
+Active features appearance
+== Вид списка функций
+
+Background opacity
+== Прозрачность фона
+
+Panel width
+== Ширина панели
+
+Show indicators
+== Показывать индикаторы
+
+Unfreeze aim speed
+== Скорость наведения автоанфриза
+
+Unfreeze aim acceleration
+== Ускорение наведения автоанфриза
+
+Moving the mouse or switching weapons cancels preparation
+== Движение мышью или ручная смена оружия отменяет подготовку
+
+Updating friend status...
+== Обновление статуса друзей…
+
+Ride
+== Райд
+
+Allow rescue jump
+== Разрешить спасение прыжком
+
+Allow rescue hook
+== Разрешить спасение хуком
+
+Hooks map geometry only; your manual control key cancels assistance
+== Зацеп только за карту; бинд ручного управления отменяет помощь
+
+Unfreeze style
+== Режим наведения
+
+Legit
+== Legit
+
+Bot
+== Bot
+
+Legit smoothly aims; Bot selects the angle immediately for a verified shot
+== Legit плавно доводит прицел; Bot сразу выбирает угол проверенного выстрела
+
+%d/%d players
+== %d/%d игроков
+
+Press Escape to clear this bind
+== Нажмите Esc, чтобы убрать назначение
+
+Press a key
+== Нажмите клавишу
+
+No hazards selected
+== Не выбраны опасности
+
+Enable freeze
+== Включить защиту от фриза
+
+Avoid does not intervene until at least one hazard is enabled
+== Авоид не вмешивается, пока не выбран хотя бы один тип опасности
+
+Team chat
+== Командный чат
+
+KyW · Player profile
+== KyW · Профиль игрока
+
+Add friend
+== Добавить в друзья
+
+Remove friend
+== Удалить из друзей
+
+Mute chat
+== Заглушить чат
+
+Unmute chat
+== Включить чат
+
+Show emoticons
+== Показывать эмоции
+
+Hide emoticons
+== Скрыть эмоции
+
+Copy name
+== Копировать ник
+
+Copy message
+== Копировать сообщение
+
+Hours · DDStats
+== Часы · DDStats
+
+Hours this year · DDNet
+== Часы за год · DDNet
+
+Most played maps · DDStats
+== Любимые карты · DDStats
+
+Fake ping
+== Фейк-пинг
+
+Fake Ping
+== Fake Ping
+
+Displayed ping
+== Пинг в интерфейсе
+
+Smooth random
+== Плавный random
+
+Fixed
+== Фиксированный
+
+Ping variation
+== Разброс пинга
+
+Variation period
+== Период изменения
+
+Fake lag
+== Фейк-лаг
+
+Fake Lag
+== Fake Lag
+
+Input delay
+== Задержка ввода
+
+Fake lag key
+== Клавиша фейк-лага
+
+Changes your own ping in TAB and HUD only
+== Меняет только ваш пинг в TAB и HUD
+
+Actually delays your outgoing input packets
+== Задерживает отправку вашего игрового ввода
+
+Air prediction
+== Предикция в воздухе
+
+Blatant
+== Blatant
+
+Grenade save
+== Сейф гранатой
+
+Grenade Save
+== Grenade Save
+
+Grenade save key
+== Клавиша сейфа гранатой
+
+Uses the equipped grenade only after predicting a safe escape
+== Использует выбранную гранату после проверки выхода из опасности
+
+Auto rehook own dummy
+== Автоперехват своего дамми
+
+Auto Rehook
+== Auto Rehook
+
+Rehook margin
+== Запас до перехвата
+
+Follow distance
+== Дистанция следования
+
+Use map hooks while following
+== Хук за карту при следовании
+
+Dummy Boost
+== Dummy Boost
+
+Dummy Follow
+== Dummy Follow
+
+Dummy Rescue
+== Dummy Rescue
+
+
+Search budget
+== Лимит времени поиска
+
+Emote spam
+== Спам эмоциями
+
+Emote Spam
+== Emote Spam
+
+Emote interval
+== Интервал эмоций
+
+Fixed emoticon
+== Постоянная эмоция
+
+Emote spam key
+== Клавиша спама эмоциями
+
+Cycle
+== По кругу
+
+Hint shows danger; Stop releases movement; Legit uses short corrections; Blatant searches the full braking window
+== Подсказка показывает опасность; Stop отпускает движение; Legit делает короткие коррекции; Blatant проверяет весь диапазон торможения
+
+Safe
+== Сейф
+
+Safe movement
+== Защита движением
+
+Safe laser
+== Спасение лазером
+
+Safe grenade
+== Спасение гранатой
+
+Safe hook
+== Спасательный хук
+
+Keep manual fire and hook
+== Сохранять ручную стрельбу и хук
+
+Safe search budget
+== Бюджет просчёта сейфа
+
+Unfreeze search budget
+== Бюджет просчёта анфриза
+
+Aimbot
+== Аимбот
+
+Player aimbot
+== Аимбот по игрокам
+
+Player aimbot key
+== Клавиша аимбота
+
+Player aim FOV
+== FOV аимбота
+
+Show aim FOV
+== Показывать FOV
+
+Player aim smoothing
+== Плавность аимбота
+
+Predict player movement
+== Предикция движения игроков
+
+Aim only on fire or hook
+== Наводить только при стрельбе или хуке
+
+Aim targets
+== Цели аимбота
+
+All players
+== Все игроки
+
+Wars only
+== Только вары
+
+Friends only
+== Только друзья
+
+Include friends
+== Включать друзей
+
+Triggerbot
+== Триггербот
+
+Trigger confirmation
+== Задержка подтверждения цели
+
+Triggerbot key
+== Клавиша триггербота
+
+Aimbot weapons
+== Оружие аимбота
+
+180 selects the target angle immediately
+== 180 — мгновенное наведение
+
+Uses the same weapon and player filters as the aimbot
+== Использует те же фильтры оружия и игроков, что и аимбот
+
+Your team list is always excluded; !war name and !team name toggle local lists
+== Игроки команды исключены; !war имя и !team имя изменяют локальные списки
+
+Spinbot
+== Спинбот
+
+Clockwise
+== По часовой стрелке
+
+Counterclockwise
+== Против часовой стрелки
+
+Spin speed
+== Скорость вращения
+
+Other players see rotating aim; your cursor stays unchanged and actions take priority
+== Другие видят вращение; ваш курсор остаётся на месте, выстрел и хук имеют приоритет
+
+Ping visible to everyone
+== Пинг виден всем
+
+The server measures delayed snapshot acknowledgements; updates and minimum ping depend on the server
+== Сервер измеряет задержку подтверждения снимков; частота обновлений и минимальный пинг зависят от сервера
+
+DDStats unavailable
+== DDStats недоступен
+
+Loading DDStats…
+== Загрузка DDStats…
+
+Retry DDStats
+== Повторить DDStats
+
+Wars and team
+== Вары и команда
+
+War
+== Вар
+
+Add war
+== Добавить в вары
+
+Remove war
+== Убрать из варов
+
+Add teammate
+== Добавить в команду
+
+Remove teammate
+== Убрать из команды
+
+Prepares the grenade only after predicting a safe escape
+== Достаёт гранату после проверки пути спасения
+
+Combines movement corrections, laser, grenade and rescue hook; verified actions take priority
+== Объединяет движение, лазер, гранату и спасательный хук; выбирает проверенное действие
+
+Theme
+== Тема
+
+Dark
+== Тёмная
+
+Light
+== Светлая
+
+Liquid glass
+== Жидкое стекло
+
+Panel transparency
+== Прозрачность панелей
+
+Backdrop blur
+== Размытие фона
+
+Choose PNG…
+== Выбрать PNG…
+
+Default background
+== Стандартный фон
+
+Restore
+== Восстановить
+
+Could not load the background image
+== Не удалось загрузить изображение фона
+
+Could not open the file chooser
+== Не удалось открыть окно выбора файла
+
+Could not read the selected path
+== Не удалось прочитать выбранный путь
+
+Install zenity or kdialog to use the file chooser
+== Для выбора файла установите zenity или kdialog
+
+Entities
+== Энтити
+
+Weapons
+== Оружие
+
+Emoticons
+== Эмоции
+
+Particles
+== Частицы
+
+Map tiles
+== Тайлы карт
+
+Search assets
+== Поиск ресурсов
+
+Community assets from teedata.net. Original artwork belongs to its authors.
+== Ресурсы сообщества teedata.net. Права на изображения принадлежат их авторам.
+
+No assets found
+== Ресурсы не найдены
+
+Install
+== Установить
+
+Downloading…
+== Скачивание…
+
+Page %d · %d assets
+== Страница %d · ресурсов: %d
+
+Drag modules to position them. Guides help align them.
+== Перетаскивайте модули. Направляющие помогут их выровнять.
+
+Other elements
+== Другие элементы
+
+Reset layout
+== Сбросить расположение
+
+Built with help from
+== При участии
+
+Licenses
+== Лицензии
+
+DDNet contributors
+== Участники DDNet
+
+DDNet and Teeworlds: zlib. BestClient contributions: MIT. Fonts, icons and other assets retain their own licenses. See licenses/DDNet.txt and licenses/README.md.
+== DDNet и Teeworlds: zlib. Вклад BestClient: MIT. Шрифты, иконки и другие ресурсы сохраняют свои лицензии. См. licenses/DDNet.txt и licenses/README.md.
+
+Original interface design: XUI (xxx client), IMDelewer. When reusing the design, credit XUI (xxx client) in your README or in-game About page. See LICENSE.
+== Оригинальный дизайн интерфейса: XUI (xxx client), IMDelewer. При использовании дизайна укажите XUI (xxx client) в README или игровом разделе «О клиенте». См. LICENSE.
+
+DDNet / DDRace / Teeworlds — game, networking, physics and editor.
+== DDNet / DDRace / Teeworlds — игра, сеть, физика и редактор.
+
+T-Client — adapted visual features and custom communities. Tater and contributors.
+== T-Client — адаптированные визуальные функции и список сообществ. Tater и соавторы.
+
+BestClient — adapted client features and HUD editor ideas. RoflikBEST and BestProject contributors.
+== BestClient — адаптированные функции клиента и идеи редактора HUD. RoflikBEST и соавторы BestProject.
+
+Author
+== Автор
+
+Repository
+== Репозиторий
+
+Hide panel · Tab
+== Скрыть панель · Tab
+
+Move this panel by its title. Tab hides or shows it.
+== Перемещайте панель за заголовок. Tab скрывает и показывает её.
