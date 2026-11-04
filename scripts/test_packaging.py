@@ -3,6 +3,8 @@ import io
 import json
 import os
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -83,6 +85,37 @@ class ReleaseNotesTests(unittest.TestCase):
 
 
 class MacosCompatibilityTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which("cmake"), "CMake is required for framework discovery")
+    def test_headers_come_from_the_selected_framework(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            framework = root / "SDL2.framework"
+            headers = framework / "Headers"
+            headers.mkdir(parents=True)
+            (headers / "SDL_assert.h").write_text("")
+            module = Path(__file__).resolve().parents[1] / "cmake/FindSDL2.cmake"
+            script = root / "framework.cmake"
+            script.write_text(f'''
+set(APPLE TRUE)
+set(CMAKE_CROSSCOMPILING TRUE)
+set(CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH NO_DEFAULT_PATH)
+set(TARGET_OS mac)
+set(SDL2_LIBRARY "{framework.as_posix()}")
+function(set_extra_dirs_lib)
+endfunction()
+function(set_extra_dirs_include)
+  set(HINTS_SDL2_INCLUDEDIR "{root.as_posix()}/missing-headers" PARENT_SCOPE)
+endfunction()
+function(is_bundled Result)
+  set(${{Result}} TRUE PARENT_SCOPE)
+endfunction()
+include("{module.as_posix()}")
+if(NOT SDL2_INCLUDEDIR STREQUAL "{headers.as_posix()}")
+  message(FATAL_ERROR "The selected framework headers were not found")
+endif()
+''')
+            subprocess.run(["cmake", "-P", str(script)], check=True, capture_output=True, text=True)
+
     def test_missing_framework_cannot_pass_dependency_check(self):
         with tempfile.TemporaryDirectory() as temporary:
             app = Path(temporary) / "xxx.app"

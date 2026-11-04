@@ -16,6 +16,9 @@ else()
   set(CMAKE_FIND_FRAMEWORK LAST)
 endif()
 set_extra_dirs_include(SDL2 sdl "${SDL2_LIBRARY}")
+if(APPLE AND SDL2_LIBRARY MATCHES "\\.framework$")
+  list(PREPEND HINTS_SDL2_INCLUDEDIR "${SDL2_LIBRARY}/Headers")
+endif()
 # Looking for 'SDL.h' directly might accidentally find a SDL instead of SDL 2
 # installation. Look for a header file only present in SDL 2 instead.
 find_path(SDL2_INCLUDEDIR SDL_assert.h
