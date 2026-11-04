@@ -4,7 +4,7 @@
 
 DDNet с интерфейсом XUI: Vulkan, стеклянные панели и настраиваемый HUD.
 
-[![Version](https://img.shields.io/badge/version-0.1.0-ac6cff?style=for-the-badge&labelColor=20202b)](#скачать)
+[![Version](https://img.shields.io/badge/version-0.2.0-ac6cff?style=for-the-badge&labelColor=20202b)](#скачать)
 [![Vulkan](https://img.shields.io/badge/Vulkan-1.1-ac6cff?style=for-the-badge&labelColor=20202b)](#требования)
 [![C++](https://img.shields.io/badge/C%2B%2B-20-8d93a6?style=for-the-badge&labelColor=20202b)](../BUILDING.md)
 [![License](https://img.shields.io/badge/license-XUI_attribution-8d93a6?style=for-the-badge&labelColor=20202b)](../../LICENSE)
@@ -29,6 +29,10 @@ DDNet с интерфейсом XUI: Vulkan, стеклянные панели �
 
 [Светлая тема](../screenshots/appearance-light.png) · [Редактор HUD](../screenshots/hud-editor.png) · [Каталог](../screenshots/catalog.png) · [О клиенте](../screenshots/about.png)
 
+Основные шрифты и кириллица включены. Шрифты для японского, корейского и китайского
+языков можно скачать отдельно в настройках: 29 МБ из официального репозитория
+DDNet, с проверкой SHA256. Первый запуск и игра доступны без этой загрузки.
+
 ## Скачать
 
 Готовые сборки публикуются в [GitHub Releases](https://github.com/IMDelewer/xxx-client/releases)
@@ -36,13 +40,13 @@ DDNet с интерфейсом XUI: Vulkan, стеклянные панели �
 архивы с `SHA256SUMS` после успешной сборки и проверок всех платформ.
 
 Для выпуска нажмите **Actions → Release → Run workflow** или отправьте тег,
-совпадающий с `XXX_VERSION`, например `0.1.0`. Промежуточные сборки остаются
+совпадающий с `XXX_VERSION`, например `0.2.0`. Промежуточные сборки остаются
 в **Actions → Desktop builds → Artifacts**.
 
 | Платформа | Архив | Запуск |
 | --- | --- | --- |
 | Windows x64 | `.zip` | Распаковать и запустить `xxx.exe` |
-| macOS | `.zip` с `xxx.app` | Архитектура и версия ОС зависят от библиотек; текущая локальная arm64-сборка требует macOS 26.0 |
+| macOS | `.dmg` | macOS 12 и новее; перенести `xxx.app` в Applications |
 | Linux | `.tar.xz` | Сборка под библиотеки Ubuntu 24.04; распаковать и запустить `./xxx` |
 
 Android, iOS, web и прочие версии не тестировались; готовых сборок для них нет.

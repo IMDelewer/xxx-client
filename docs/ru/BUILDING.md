@@ -27,24 +27,23 @@ stable toolchain через rustup. Для выбора PNG через сист�
 ### macOS
 
 ```sh
-brew install cmake ninja pkg-config rust python sdl2 freetype libpng \
-  opusfile wavpack openssl molten-vk vulkan-headers glslang spirv-tools
+brew install cmake ninja pkg-config rust python vulkan-headers glslang spirv-tools dylibbundler
+python3 scripts/fetch_macos_dependencies.py --output .cache/runtime
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
   -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON \
-  -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF
+  -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF -DIPO=ON \
+  -DPREFER_BUNDLED_LIBS=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
+  -DDDNET_LIBS_DIR="$PWD/.cache/runtime/ddnet-libs" \
+  -DVULKAN_LIBRARIES="$PWD/.cache/runtime/MoltenVK/libMoltenVK.dylib" \
+  -DVULKAN_INCLUDE_DIRS="$(brew --prefix vulkan-headers)/include"
 cmake --build build --target game-client --parallel
-./build/xxx
-```
-
-Архив с `.app` и библиотеками:
-
-```sh
-brew install dylibbundler
 python3 scripts/package_client.py --build build --output dist
 ```
 
-Пакет имеет локальную ad-hoc подпись. Developer ID и Apple notarization здесь
-не настроены.
+Скрипт получает закреплённые библиотеки DDNet и MoltenVK, независимо от текущих
+Homebrew bottles. Упаковщик создаёт DMG, проверяет подпись и требования всех
+библиотек к macOS 12. Реальную работу на macOS 12 нужно проверять отдельно.
+Подпись ad-hoc; Developer ID и Apple notarization не настроены.
 
 ### Windows x64
 

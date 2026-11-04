@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import json
 from pathlib import Path
 import platform
 import plistlib
@@ -11,14 +12,12 @@ import tempfile
 import zipfile
 
 
-def copy_notices(root, destination):
-    for name in ("README.md", "LICENSE"):
-        shutil.copy2(root / name, destination / name)
+def copy_notices(root, destination, libraries=None):
+    shutil.copy2(root / "docs/PACKAGE.md", destination / "README.md")
+    shutil.copy2(root / "LICENSE", destination / "LICENSE")
     shutil.copytree(root / "licenses", destination / "licenses")
-    shutil.copytree(root / "docs", destination / "docs")
-    shutil.copy2(root / "PROMT.md", destination / "PROMT.md")
     external = destination / "licenses" / "external"
-    for base in (root / "src/engine/external", root / "ddnet-libs"):
+    for base in (root / "src/engine/external", libraries or root / "ddnet-libs"):
         if not base.is_dir():
             continue
         for source in base.rglob("*"):
@@ -59,16 +58,130 @@ def copy_macos_notices(executable, destination):
                 shutil.copy2(source, target)
 
 
+def copy_runtime_data(build, destination):
+    manifest = build / "runtime-data.txt"
+    if not manifest.is_file():
+        raise SystemExit("Reconfigure the build to generate runtime-data.txt")
+    fonts = json.loads((build / "data/fonts/index.json").read_text(encoding="utf-8"))
+    optional = {"data/fonts/" + entry["file"] for entry in fonts.get("optional font files", [])}
+    for entry in sorted(set(manifest.read_text(encoding="utf-8").splitlines())):
+        relative = Path(entry)
+        if relative.is_absolute() or ".." in relative.parts or not entry.startswith("data/"):
+            raise SystemExit(f"Invalid runtime resource: {entry}")
+        if entry in optional or entry.startswith("data/spoofclients/") or relative.suffix in (".vert", ".frag"):
+            raise SystemExit(f"Unexpected release resource: {entry}")
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(build / relative, target)
+
+
+def macho_files(folder):
+    seen = set()
+    for path in folder.rglob("*"):
+        if not path.is_file() or path.resolve() in seen:
+            continue
+        with path.open("rb") as stream:
+            magic = stream.read(4)
+        if magic in (b"\xcf\xfa\xed\xfe", b"\xce\xfa\xed\xfe", b"\xca\xfe\xba\xbe", b"\xca\xfe\xba\xbf"):
+            resolved = path.resolve()
+            if not resolved.is_relative_to(folder.resolve()):
+                raise SystemExit(f"Runtime symlink leaves the application: {path}")
+            seen.add(resolved)
+            yield resolved
+
+
+def expand_macos_path(value, loader, executable):
+    for prefix, parent in (("@executable_path/", executable.parent), ("@loader_path/", loader.parent)):
+        if value.startswith(prefix):
+            return parent / value[len(prefix):]
+    return Path(value) if value.startswith("/") else None
+
+
+def macos_dependency_exists(dependency, loader, executable, runpaths):
+    if dependency.startswith("@rpath/"):
+        candidates = [path / dependency[len("@rpath/"):] for path in runpaths]
+    else:
+        path = expand_macos_path(dependency, loader, executable)
+        candidates = [path] if path is not None else []
+    app = executable.parent.parent.parent.resolve()
+    return any(path.is_file() and path.resolve().is_relative_to(app) for path in candidates)
+
+
+def macos_rpaths(binary):
+    commands = subprocess.run(["otool", "-l", str(binary)], check=True, capture_output=True, text=True).stdout
+    return re.findall(r"cmd LC_RPATH\s+cmdsize \d+\s+path (.*?) \(offset \d+\)", commands)
+
+
+def prepare_macos_binaries(app, minimum_version):
+    architecture = platform.machine().lower()
+    required = tuple(map(int, minimum_version.split(".")))
+    required = (required + (0, 0, 0))[:3]
+    binaries = list(macho_files(app))
+    for binary in binaries:
+        architectures = subprocess.run(["lipo", "-archs", str(binary)], check=True, capture_output=True, text=True).stdout.split()
+        if architecture not in architectures:
+            raise SystemExit(f"Wrong architecture: {binary.name}")
+        if len(architectures) > 1:
+            temporary = binary.with_name(binary.name + ".thin")
+            subprocess.run(["lipo", str(binary), "-thin", architecture, "-output", str(temporary)], check=True)
+            temporary.replace(binary)
+        binary.chmod(0o755)
+        subprocess.run(["strip", "-S", "-x", str(binary)], check=True)
+        commands = subprocess.run(["otool", "-l", str(binary)], check=True, capture_output=True, text=True).stdout
+        versions = re.findall(r"\bminos (\d+(?:\.\d+)*)", commands)
+        versions += re.findall(r"cmd LC_VERSION_MIN_MACOSX\s+cmdsize \d+\s+version (\d+(?:\.\d+)*)", commands)
+        for version in versions:
+            parts = tuple(map(int, version.split(".")))
+            if (parts + (0, 0, 0))[:3] > required:
+                raise SystemExit(f"{binary.name} requires macOS {version}, above the package minimum {minimum_version}")
+    executable = (app / "Contents/MacOS/xxx").resolve()
+    for binary in binaries:
+        paths = macos_rpaths(binary)
+        while paths:
+            subprocess.run(["install_name_tool", "-delete_rpath", paths[0], str(binary)], check=True)
+            paths = macos_rpaths(binary)
+        if binary == executable:
+            subprocess.run(["install_name_tool", "-add_rpath", "@executable_path/../Frameworks", str(binary)], check=True)
+    root_paths = [expand_macos_path(path, executable, executable) for path in macos_rpaths(executable)]
+    for binary in binaries:
+        runpaths = root_paths + [expand_macos_path(path, binary, executable) for path in macos_rpaths(binary)]
+        runpaths = [path for path in runpaths if path is not None]
+        listing = subprocess.run(["otool", "-L", str(binary)], check=True, capture_output=True, text=True).stdout
+        for line in listing.splitlines()[1:]:
+            dependency = line.strip().split(" (", 1)[0]
+            if dependency.startswith(("/usr/lib/", "/System/Library/")):
+                continue
+            if not macos_dependency_exists(dependency, binary, executable, runpaths):
+                raise SystemExit(f"Unresolved dependency in {binary.name}: {dependency}")
+    return binaries
+
+
+def package_report(stage, archive):
+    files = [{"path": str(path.relative_to(stage)), "bytes": path.stat().st_size} for path in stage.rglob("*") if path.is_file() and not path.is_symlink()]
+    files.sort(key=lambda item: item["bytes"], reverse=True)
+    report = {"archive": archive.name, "archive_bytes": archive.stat().st_size, "installed_bytes": sum(item["bytes"] for item in files), "files": files}
+    archive.with_name(archive.name + ".json").write_text(json.dumps(report, indent=2) + "\n")
+    print(f"{archive.name}: {report['archive_bytes'] / 1000000:.1f} MB download, {report['installed_bytes'] / 1000000:.1f} MB installed")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Package xxx client and its runtime resources")
     parser.add_argument("--build", type=Path, required=True)
     parser.add_argument("--output", type=Path, default=Path("dist"))
+    parser.add_argument("--macos-min-version", default="12.0")
+    parser.add_argument("--max-size-mib", type=int, default=45)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     build = args.build.resolve()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    version = re.search(r'#define XXX_VERSION "([^"]+)"', (root / "src/game/version.h").read_text()).group(1)
+    version = re.search(r'#define XXX_VERSION "([^"]+)"', (root / "src/game/version.h").read_text(encoding="utf-8")).group(1)
+    cache = {}
+    for line in (build / "CMakeCache.txt").read_text(encoding="utf-8").splitlines():
+        if "=" in line and not line.startswith(("#", "//")):
+            key, value = line.split("=", 1)
+            cache[key.split(":", 1)[0]] = value
+    libraries = Path(cache.get("DDNET_LIBS_DIR", str(root / "ddnet-libs")))
     system = platform.system()
     executable_name = "xxx.exe" if system == "Windows" else "xxx"
     executable = next((p for p in (build / executable_name, build / "Release" / executable_name) if p.is_file()), None)
@@ -91,8 +204,8 @@ def main():
             target = binary_dir / "xxx"
             shutil.copy2(executable, target)
             target.chmod(0o755)
-            shutil.copytree(build / "data", resources / "data", ignore=shutil.ignore_patterns("spoofclients"))
-            copy_notices(root, resources)
+            copy_runtime_data(build, resources)
+            copy_notices(root, resources, libraries)
             copy_macos_notices(executable, resources)
             shutil.copy2(root / "other/icons/DDNet.icns", resources / "xxx.icns")
             info = {"CFBundleName": "xxx", "CFBundleDisplayName": "xxx client", "CFBundleExecutable": "xxx", "CFBundleIdentifier": "io.github.imdelewer.xxx-client", "CFBundlePackageType": "APPL", "CFBundleShortVersionString": version, "CFBundleVersion": version, "CFBundleIconFile": "xxx.icns", "NSHighResolutionCapable": True}
@@ -100,6 +213,11 @@ def main():
             frameworks = contents / "Frameworks"
             frameworks.mkdir()
             extra_binaries = []
+            sdl = Path(cache.get("SDL2_LIBRARY", ""))
+            if sdl.is_dir() and sdl.suffix == ".framework":
+                bundled_sdl = frameworks / sdl.name
+                shutil.copytree(sdl, bundled_sdl, symlinks=True, ignore=shutil.ignore_patterns("Headers", "PrivateHeaders", "Modules", "_CodeSignature"))
+                extra_binaries.extend(["-x", str(bundled_sdl / "Versions/A/SDL2")])
             listing = subprocess.run(["otool", "-L", str(executable)], check=True, capture_output=True, text=True).stdout
             for line in listing.splitlines()[1:]:
                 dependency = Path(line.strip().split(" (", 1)[0])
@@ -110,43 +228,64 @@ def main():
                     shutil.copy2(library, bundled)
                     copy_macos_notices(library, resources)
                     extra_binaries.extend(["-x", str(bundled)])
-            subprocess.run(["dylibbundler", "-b", "-of", "-x", str(target), *extra_binaries, "-s", str(build), "-d", str(frameworks), "-p", "@executable_path/../Frameworks/"], check=True, stdin=subprocess.DEVNULL, timeout=180)
-            minimum = (10, 15, 0)
-            for binary in [target, *frameworks.rglob("*.dylib")]:
-                commands = subprocess.run(["otool", "-l", str(binary)], check=True, capture_output=True, text=True).stdout
-                versions = re.findall(r"\bminos (\d+(?:\.\d+)*)", commands)
-                versions += re.findall(r"cmd LC_VERSION_MIN_MACOSX\s+cmdsize \d+\s+version (\d+(?:\.\d+)*)", commands)
-                for required in versions:
-                    parts = tuple(map(int, required.split(".")))
-                    minimum = max(minimum, (parts + (0, 0, 0))[:3])
-            info["LSMinimumSystemVersion"] = ".".join(map(str, minimum))
+            searches = ["-s", str(build)]
+            for key in ("VULKAN_LIBRARIES", "FREETYPE_LIBRARY", "PNG_LIBRARY", "SDL2_LIBRARY"):
+                path = Path(cache.get(key, ""))
+                if path.exists():
+                    searches.extend(["-s", str(path.parent)])
+            subprocess.run(["dylibbundler", "-b", "-of", "-x", str(target), *extra_binaries, *searches, "-d", str(frameworks), "-p", "@executable_path/../Frameworks/"], check=True, input="quit\n", text=True, timeout=180)
+            binaries = prepare_macos_binaries(app, args.macos_min_version)
+            info["LSMinimumSystemVersion"] = args.macos_min_version
             (contents / "Info.plist").write_bytes(plistlib.dumps(info))
-            for library in frameworks.rglob("*.dylib"):
-                library.chmod(0o755)
-                subprocess.run(["install_name_tool", "-id", "@executable_path/../Frameworks/" + library.name, str(library)], check=True)
-                subprocess.run(["codesign", "--force", "--sign", "-", str(library)], check=True)
+            vulkan = Path(cache.get("VULKAN_LIBRARIES", ""))
+            if vulkan.is_file():
+                for notice in vulkan.parent.glob("LICENSE*"):
+                    target_notice = resources / "licenses/external/MoltenVK" / notice.name
+                    target_notice.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(notice, target_notice)
+            for binary in binaries:
+                if binary.is_relative_to(frameworks):
+                    relative = binary.relative_to(frameworks).as_posix()
+                    subprocess.run(["install_name_tool", "-id", "@executable_path/../Frameworks/" + relative, str(binary)], check=True)
+                    subprocess.run(["codesign", "--force", "--sign", "-", str(binary)], check=True)
             subprocess.run(["codesign", "--force", "--deep", "--sign", "-", str(app)], check=True)
+            subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True)
+            (stage / "Applications").symlink_to("/Applications", target_is_directory=True)
         else:
             target = stage / executable_name
             shutil.copy2(executable, target)
             target.chmod(0o755)
-            shutil.copytree(build / "data", stage / "data", ignore=shutil.ignore_patterns("spoofclients"))
-            copy_notices(root, stage)
+            copy_runtime_data(build, stage)
+            copy_notices(root, stage, libraries)
             if system == "Windows":
-                for folder in (build, build / "Release"):
-                    if folder.is_dir():
-                        for library in folder.glob("*.dll"):
-                            shutil.copy2(library, stage / library.name)
+                for name in (build / "runtime-libraries.txt").read_text(encoding="utf-8").splitlines():
+                    if Path(name).name != name or not name.lower().endswith(".dll"):
+                        raise SystemExit(f"Invalid runtime library: {name}")
+                    library = next((folder / name for folder in (build, build / "Release") if (folder / name).is_file()), None)
+                    if library is None:
+                        raise SystemExit(f"Missing runtime library: {name}")
+                    shutil.copy2(library, stage / name)
+            elif shutil.which("strip"):
+                subprocess.run(["strip", "--strip-unneeded", str(target)], check=True)
+        resource_root = resources if system == "Darwin" else stage
+        subprocess.run(["python3" if system != "Windows" else "python", str(root / "scripts/check_public_tree.py"), "--package-dir", str(resource_root)], check=True)
         if system == "Linux":
             archive = output / f"{label}.tar.xz"
             with tarfile.open(archive, "w:xz") as bundle:
                 bundle.add(stage, arcname=stage.name)
+        elif system == "Darwin":
+            archive = output / f"{label}.dmg"
+            subprocess.run(["hdiutil", "create", "-quiet", "-ov", "-fs", "HFS+", "-format", "ULFO", "-volname", "xxx client", "-srcfolder", str(stage), str(archive)], check=True)
+            subprocess.run(["hdiutil", "verify", "-quiet", str(archive)], check=True)
         else:
             archive = output / f"{label}.zip"
-            with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as bundle:
+            with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as bundle:
                 for source in stage.rglob("*"):
                     if source.is_file():
                         bundle.write(source, source.relative_to(stage.parent))
+        package_report(stage, archive)
+        if archive.stat().st_size > args.max_size_mib * 1024 * 1024:
+            raise SystemExit(f"Package exceeds the {args.max_size_mib} MiB release budget")
         print(archive)
 
 

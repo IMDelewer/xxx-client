@@ -47,13 +47,15 @@ jobs:
           tag = os.environ.get('RELEASE_TAG') or version
           if tag not in (version, 'v' + version):
               raise SystemExit('Release tag must match XXX_VERSION')
-          archives = sorted(p for p in Path('release').iterdir() if p.suffix in ('.zip', '.xz'))
-          if len(archives) != 3:
+          archives = sorted(p for p in Path('release').iterdir() if p.suffix in ('.zip', '.xz', '.dmg'))
+          groups = ('*-windows-*.zip', '*-darwin-*.dmg', '*-linux-*.tar.xz')
+          if len(archives) != 3 or any(len(list(Path('release').glob(pattern))) != 1 for pattern in groups):
               raise SystemExit('Expected one package for each desktop platform')
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('tag=' + tag + '\n')
           Path('release/SHA256SUMS').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in archives))
           PYTHON
+          python3 scripts/release_notes.py > release/NOTES.md
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v3
         with:
@@ -63,13 +65,7 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             release/*.zip
+            release/*.dmg
             release/*.tar.xz
             release/SHA256SUMS
-          body: |
-            DDNet with XUI: glass panels, dark and light themes, editable HUD and a built-in resource catalog.
-
-            XUI menus, editable HUD, player profiles and a built-in resource catalog. Includes the catalog pagination crash fix. The application uses the original DDNet icon.
-
-            Download the package matching your OS and architecture. Windows and Linux packages are built and checked by CI; desktop interaction was tested on macOS. Android, iOS and web builds are not provided.
-
-            The macOS app uses an ad-hoc signature and is not notarized. The Linux archive requires Ubuntu 24.04 system libraries. See README.md for requirements, source builds and credits.
+          body_path: release/NOTES.md

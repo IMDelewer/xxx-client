@@ -4,7 +4,7 @@
 
 A DDNet client with XUI, a Vulkan interface with glass panels and an editable HUD.
 
-[![Version](https://img.shields.io/badge/version-0.1.0-ac6cff?style=for-the-badge&labelColor=20202b)](#download)
+[![Version](https://img.shields.io/badge/version-0.2.0-ac6cff?style=for-the-badge&labelColor=20202b)](#download)
 [![Vulkan](https://img.shields.io/badge/Vulkan-1.1-ac6cff?style=for-the-badge&labelColor=20202b)](#requirements)
 [![C++](https://img.shields.io/badge/C%2B%2B-20-8d93a6?style=for-the-badge&labelColor=20202b)](docs/BUILDING.md)
 [![License](https://img.shields.io/badge/license-XUI_attribution-8d93a6?style=for-the-badge&labelColor=20202b)](LICENSE)
@@ -29,20 +29,25 @@ input automation, spoofing, fake ping, trajectories, hitboxes and radar.
 
 [Light theme](docs/screenshots/appearance-light.png) · [HUD editor](docs/screenshots/hud-editor.png) · [Resource catalog](docs/screenshots/catalog.png) · [About](docs/screenshots/about.png)
 
+English, Russian and the standard UI fonts are included. Japanese, Korean and Chinese
+fonts are an optional 29 MB download in Settings → General, fetched from a pinned
+version of the official DDNet repository and verified before installation.
+
 ## Download
 
 Packages are published to [GitHub Releases](https://github.com/IMDelewer/xxx-client/releases)
 by the **Release** workflow. It builds Windows, macOS and Linux, then attaches
-the archives and `SHA256SUMS` after all builds and checks pass.
+the packages and `SHA256SUMS` after all builds and checks pass. Release notes
+contain only the matching version entry from [CHANGELOG.md](CHANGELOG.md).
 
 To publish, run **Actions → Release → Run workflow**, or push a tag matching
-`XXX_VERSION`, such as `0.1.0`. Development builds remain available under
+`XXX_VERSION`, such as `0.2.0`. Development builds remain available under
 **Actions → Desktop builds → Artifacts**.
 
 | Target | Package | Notes |
 | --- | --- | --- |
 | Windows x64 | `.zip` | Extract and run `xxx.exe` |
-| macOS | `.zip` containing `xxx.app` | Architecture and minimum macOS version depend on the bundled libraries; the current local arm64 package requires macOS 26.0 |
+| macOS | `.dmg` | macOS 12 or later; drag `xxx.app` to Applications |
 | Linux | `.tar.xz` | Built for Ubuntu 24.04 system libraries; extract and run `./xxx` |
 
 Android, iOS, web and other non-desktop versions have not been tested; no

@@ -37,7 +37,15 @@ jobs:
           sudo apt-get install -y build-essential cmake ninja-build pkg-config python3 cargo rustc libcurl4-openssl-dev libfreetype6-dev libogg-dev libopus-dev libopusfile-dev libpng-dev libsdl2-dev libsqlite3-dev libssl-dev libwavpack-dev zlib1g-dev libvulkan-dev glslang-tools spirv-tools libnotify-dev libgtest-dev libgmock-dev
       - name: macOS dependencies
         if: runner.os == 'macOS'
-        run: brew install cmake ninja pkg-config sdl2 freetype libpng opusfile wavpack openssl molten-vk vulkan-headers glslang spirv-tools dylibbundler
+        run: brew install cmake ninja pkg-config vulkan-headers glslang spirv-tools dylibbundler
+      - uses: actions/cache@v4
+        if: runner.os == 'macOS'
+        with:
+          path: ${{ runner.temp }}/xxx-dependencies
+          key: macos-runtime-c0e6703f-moltenvk-1.4.2-${{ runner.arch }}
+      - name: Pinned macOS runtime
+        if: runner.os == 'macOS'
+        run: python3 scripts/fetch_macos_dependencies.py --output "${{ runner.temp }}/xxx-dependencies"
       - name: Windows Vulkan SDK
         if: runner.os == 'Windows'
         uses: humbletim/install-vulkan-sdk@v1.2
@@ -48,12 +56,24 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Check source tree
         run: python scripts/check_public_tree.py
+      - name: Packaging tests
+        run: python -m unittest discover -s scripts -p "test_packaging.py"
       - name: Configure Unix
-        if: runner.os != 'Windows'
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF
+        if: runner.os == 'Linux'
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF -DIPO=ON
+      - name: Configure macOS
+        if: runner.os == 'macOS'
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON \
+            -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF -DIPO=ON \
+            -DPREFER_BUNDLED_LIBS=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
+            -DDDNET_LIBS_DIR="${{ runner.temp }}/xxx-dependencies/ddnet-libs" \
+            -DVULKAN_LIBRARIES="${{ runner.temp }}/xxx-dependencies/MoltenVK/libMoltenVK.dylib" \
+            -DVULKAN_INCLUDE_DIRS="$(brew --prefix vulkan-headers)/include"
       - name: Configure Windows
         if: runner.os == 'Windows'
-        run: cmake -S . -B build -A x64 -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF
+        run: cmake -S . -B build -A x64 -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF -DIPO=ON
       - name: Build client
         run: cmake --build build --config Release --target game-client --parallel 4
       - name: Core tests
@@ -64,13 +84,25 @@ jobs:
       - name: Package
         run: python scripts/package_client.py --build build --output dist
       - name: Build developer configuration
+        shell: bash
         run: |
-          cmake -S . -B build -DDDEV_XX=ON
-          cmake --build build --config Release --target game-client --parallel 4
+          args=(-S . -B build-dev -DCMAKE_BUILD_TYPE=Release -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON -DVIDEORECORDER=OFF -DDDEV_XX=ON -DINFORM_UPDATE=OFF -DIPO=ON)
+          if [ "$RUNNER_OS" = Windows ]; then
+            args+=(-A x64)
+          else
+            args+=(-G Ninja)
+          fi
+          if [ "$RUNNER_OS" = macOS ]; then
+            args+=(-DPREFER_BUNDLED_LIBS=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 "-DDDNET_LIBS_DIR=$RUNNER_TEMP/xxx-dependencies/ddnet-libs" "-DVULKAN_LIBRARIES=$RUNNER_TEMP/xxx-dependencies/MoltenVK/libMoltenVK.dylib" "-DVULKAN_INCLUDE_DIRS=$(brew --prefix vulkan-headers)/include")
+          fi
+          cmake "${args[@]}"
+          cmake --build build-dev --config Release --target game-client --parallel 4
       - uses: actions/upload-artifact@v4
         with:
           name: xxx-client-${{ runner.os }}
           path: |
             dist/*.zip
+            dist/*.dmg
+            dist/*.json
             dist/*.tar.xz
           if-no-files-found: error

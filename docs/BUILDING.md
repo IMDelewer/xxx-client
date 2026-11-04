@@ -27,18 +27,22 @@ rustup toolchain. Install `zenity` or `kdialog` for the PNG file picker.
 ## macOS
 
 ```sh
-brew install cmake ninja pkg-config rust python sdl2 freetype libpng \
-  opusfile wavpack openssl molten-vk vulkan-headers glslang spirv-tools
+brew install cmake ninja pkg-config rust python vulkan-headers glslang spirv-tools dylibbundler
+python3 scripts/fetch_macos_dependencies.py --output .cache/runtime
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
   -DCLIENT=ON -DSERVER=OFF -DTOOLS=OFF -DVULKAN=ON \
-  -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF
+  -DVIDEORECORDER=OFF -DDDEV_XX=OFF -DINFORM_UPDATE=OFF -DIPO=ON \
+  -DPREFER_BUNDLED_LIBS=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
+  -DDDNET_LIBS_DIR="$PWD/.cache/runtime/ddnet-libs" \
+  -DVULKAN_LIBRARIES="$PWD/.cache/runtime/MoltenVK/libMoltenVK.dylib" \
+  -DVULKAN_INCLUDE_DIRS="$(brew --prefix vulkan-headers)/include"
 cmake --build build --target game-client --parallel
-./build/xxx
 ```
 
-The package includes MoltenVK and other runtime libraries. Its minimum macOS
-version is read from the included Mach-O files, not assumed from the CMake
-compiler target. The current local arm64 package requires macOS 26.0.
+The runtime libraries are pinned independently of Homebrew. Packaging checks every
+Mach-O file against the macOS 12 target, includes only the target architecture,
+verifies the ad-hoc signature and creates a compressed DMG. This checks binary
+requirements; it does not replace testing on an actual macOS 12 installation.
 
 ## Windows x64
 
@@ -65,11 +69,14 @@ python3 scripts/package_client.py --build build --output dist
 
 On Windows, pass `build/Release/xxx.exe` to the check; the packager finds it
 automatically. On macOS, install `dylibbundler` with Homebrew first. Packages
-include runtime assets, documentation and licenses. macOS signing is ad-hoc;
+include runtime assets, a short user guide and licenses. Developer documentation,
+screenshots and optional language fonts stay out of the main package. macOS signing is ad-hoc;
 Developer ID signing and notarization are not configured.
 
 The Linux archive depends on Ubuntu 24.04 system libraries; it is not an AppImage.
-Windows and Linux workflows are configured but have not yet run.
+Package reports record installed and compressed sizes. The default release
+budget is 45 MiB. Run `python3 -m unittest discover -s scripts -p test_packaging.py`
+to check the packaging rules and version-specific release notes.
 
 ## Developer build
 
@@ -106,6 +113,6 @@ No proxy address is hardcoded in the client.
 
 Run the **Release** workflow manually, or push a `v` tag matching `XXX_VERSION`.
 It reuses the desktop build matrix, checks the package count and version, writes
-`SHA256SUMS`, and publishes with `softprops/action-gh-release`. No local GitHub CLI
+`SHA256SUMS`, and publishes with `softprops/action-gh-release`. Release descriptions come from the current entry in `CHANGELOG.md`. No local GitHub CLI
 or manually maintained `dist/` directory is required. The repository must be
 uploaded to GitHub with Actions enabled before this workflow can run.
