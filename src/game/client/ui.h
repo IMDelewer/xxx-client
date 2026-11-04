@@ -466,6 +466,7 @@ private:
 	std::function<void()> m_OnBackButtonPressedFunction;
 
 	CUIRect m_Screen;
+	float m_ScreenHeight = 600.0f;
 
 	std::vector<CUIRect> m_vClips;
 	void UpdateClipping();
@@ -513,6 +514,7 @@ public:
 
 	void Init(IKernel *pKernel);
 	void SetDefaultLabelColor(ColorRGBA Color) { m_DefaultLabelColor = Color; }
+	void SetScreenHeight(float Height) { m_ScreenHeight = Height; }
 	void SetPopupBackgroundRenderer(std::function<void(const CUIRect &, int)> Renderer) { m_PopupBackgroundRenderer = std::move(Renderer); }
 	void SetEditBoxBackgroundRenderer(std::function<void(const CUIRect &, int, bool)> Renderer) { m_EditBoxBackgroundRenderer = std::move(Renderer); }
 	IClient *Client() const { return m_pClient; }

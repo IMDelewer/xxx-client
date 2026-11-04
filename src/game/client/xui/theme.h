@@ -6,6 +6,17 @@
 // Every xxx UI value lives here, in mockup px at 1440x900. Screens never hard-code colours or sizes.
 namespace XuiTheme
 {
+	namespace Editor
+	{
+		constexpr float REFERENCE_HEIGHT = 750.0f;
+		constexpr float GAP = 6.0f;
+		constexpr float PANEL_RADIUS = 8.0f;
+		constexpr float HEADER_HEIGHT = 26.0f;
+		constexpr float TOOLBAR_HEIGHT = 48.0f;
+		constexpr float STATUS_HEIGHT = 22.0f;
+		constexpr float LAYER_ROW_HEIGHT = 18.0f;
+	}
+
 	inline ColorRGBA Rgb(unsigned Hex, float a = 1.0f) { return ColorRGBA(((Hex >> 16) & 0xff) / 255.0f, ((Hex >> 8) & 0xff) / 255.0f, (Hex & 0xff) / 255.0f, a); }
 
 	namespace Color

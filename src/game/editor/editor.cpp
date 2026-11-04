@@ -617,61 +617,6 @@ void CEditor::DoToolbarLayers(CUIRect ToolBar)
 
 		ToolbarTop.VSplitLeft(5.0f, nullptr, &ToolbarTop);
 
-		// brush manipulation
-		{
-			int Enabled = m_pBrush->IsEmpty() ? -1 : 0;
-
-			// flip buttons
-			ToolbarTop.VSplitLeft(25.0f, &Button, &ToolbarTop);
-			static int s_FlipXButton = 0;
-			if(DoButton_FontIcon(&s_FlipXButton, FontIcon::ARROWS_LEFT_RIGHT, Enabled, &Button, BUTTONFLAG_LEFT, "[N] Flip the brush horizontally.", IGraphics::CORNER_L) || (Input()->KeyPress(KEY_N) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
-			{
-				for(auto &pLayer : m_pBrush->m_vpLayers)
-					pLayer->BrushFlipX();
-			}
-
-			ToolbarTop.VSplitLeft(25.0f, &Button, &ToolbarTop);
-			static int s_FlipyButton = 0;
-			if(DoButton_FontIcon(&s_FlipyButton, FontIcon::ARROWS_UP_DOWN, Enabled, &Button, BUTTONFLAG_LEFT, "[M] Flip the brush vertically.", IGraphics::CORNER_R) || (Input()->KeyPress(KEY_M) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
-			{
-				for(auto &pLayer : m_pBrush->m_vpLayers)
-					pLayer->BrushFlipY();
-			}
-			ToolbarTop.VSplitLeft(5.0f, nullptr, &ToolbarTop);
-
-			// rotate buttons
-			ToolbarTop.VSplitLeft(25.0f, &Button, &ToolbarTop);
-			static int s_RotationAmount = 90;
-			bool TileLayer = false;
-			// check for tile layers in brush selection
-			for(auto &pLayer : m_pBrush->m_vpLayers)
-				if(pLayer->m_Type == LAYERTYPE_TILES)
-				{
-					TileLayer = true;
-					s_RotationAmount = std::max(90, (s_RotationAmount / 90) * 90);
-					break;
-				}
-
-			static int s_CcwButton = 0;
-			if(DoButton_FontIcon(&s_CcwButton, FontIcon::ARROW_ROTATE_LEFT, Enabled, &Button, BUTTONFLAG_LEFT, "[R] Rotate the brush counter-clockwise.", IGraphics::CORNER_L) || (Input()->KeyPress(KEY_R) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
-			{
-				for(auto &pLayer : m_pBrush->m_vpLayers)
-					pLayer->BrushRotate(-s_RotationAmount / 360.0f * pi * 2);
-			}
-
-			ToolbarTop.VSplitLeft(30.0f, &Button, &ToolbarTop);
-			auto RotationAmountRes = UiDoValueSelector(&s_RotationAmount, &Button, "", s_RotationAmount, TileLayer ? 90 : 1, 359, TileLayer ? 90 : 1, TileLayer ? 10.0f : 2.0f, "Rotation of the brush in degrees. Use left mouse button to drag and change the value. Hold shift to be more precise.", true, false, IGraphics::CORNER_NONE);
-			s_RotationAmount = RotationAmountRes.m_Value;
-
-			ToolbarTop.VSplitLeft(25.0f, &Button, &ToolbarTop);
-			static int s_CwButton = 0;
-			if(DoButton_FontIcon(&s_CwButton, FontIcon::ARROW_ROTATE_RIGHT, Enabled, &Button, BUTTONFLAG_LEFT, "[T] Rotate the brush clockwise.", IGraphics::CORNER_R) || (Input()->KeyPress(KEY_T) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
-			{
-				for(auto &pLayer : m_pBrush->m_vpLayers)
-					pLayer->BrushRotate(s_RotationAmount / 360.0f * pi * 2);
-			}
-		}
-
 		// Color pipette and palette
 		{
 			const float PipetteButtonWidth = 30.0f;
@@ -725,6 +670,61 @@ void CEditor::DoToolbarLayers(CUIRect ToolBar)
 				m_QuickActionBrushPicker.Call();
 			}
 			ToolbarBottom.VSplitLeft(5.0f, nullptr, &ToolbarBottom);
+		}
+
+		// brush manipulation
+		{
+			int Enabled = m_pBrush->IsEmpty() ? -1 : 0;
+
+			// flip buttons
+			ToolbarBottom.VSplitLeft(25.0f, &Button, &ToolbarBottom);
+			static int s_FlipXButton = 0;
+			if(DoButton_FontIcon(&s_FlipXButton, FontIcon::ARROWS_LEFT_RIGHT, Enabled, &Button, BUTTONFLAG_LEFT, "[N] Flip the brush horizontally.", IGraphics::CORNER_L) || (Input()->KeyPress(KEY_N) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
+			{
+				for(auto &pLayer : m_pBrush->m_vpLayers)
+					pLayer->BrushFlipX();
+			}
+
+			ToolbarBottom.VSplitLeft(25.0f, &Button, &ToolbarBottom);
+			static int s_FlipyButton = 0;
+			if(DoButton_FontIcon(&s_FlipyButton, FontIcon::ARROWS_UP_DOWN, Enabled, &Button, BUTTONFLAG_LEFT, "[M] Flip the brush vertically.", IGraphics::CORNER_R) || (Input()->KeyPress(KEY_M) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
+			{
+				for(auto &pLayer : m_pBrush->m_vpLayers)
+					pLayer->BrushFlipY();
+			}
+			ToolbarBottom.VSplitLeft(5.0f, nullptr, &ToolbarBottom);
+
+			// rotate buttons
+			ToolbarBottom.VSplitLeft(25.0f, &Button, &ToolbarBottom);
+			static int s_RotationAmount = 90;
+			bool TileLayer = false;
+			// check for tile layers in brush selection
+			for(auto &pLayer : m_pBrush->m_vpLayers)
+				if(pLayer->m_Type == LAYERTYPE_TILES)
+				{
+					TileLayer = true;
+					s_RotationAmount = std::max(90, (s_RotationAmount / 90) * 90);
+					break;
+				}
+
+			static int s_CcwButton = 0;
+			if(DoButton_FontIcon(&s_CcwButton, FontIcon::ARROW_ROTATE_LEFT, Enabled, &Button, BUTTONFLAG_LEFT, "[R] Rotate the brush counter-clockwise.", IGraphics::CORNER_L) || (Input()->KeyPress(KEY_R) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
+			{
+				for(auto &pLayer : m_pBrush->m_vpLayers)
+					pLayer->BrushRotate(-s_RotationAmount / 360.0f * pi * 2);
+			}
+
+			ToolbarBottom.VSplitLeft(30.0f, &Button, &ToolbarBottom);
+			auto RotationAmountRes = UiDoValueSelector(&s_RotationAmount, &Button, "", s_RotationAmount, TileLayer ? 90 : 1, 359, TileLayer ? 90 : 1, TileLayer ? 10.0f : 2.0f, "Rotation of the brush in degrees. Use left mouse button to drag and change the value. Hold shift to be more precise.", true, false, IGraphics::CORNER_NONE);
+			s_RotationAmount = RotationAmountRes.m_Value;
+
+			ToolbarBottom.VSplitLeft(25.0f, &Button, &ToolbarBottom);
+			static int s_CwButton = 0;
+			if(DoButton_FontIcon(&s_CwButton, FontIcon::ARROW_ROTATE_RIGHT, Enabled, &Button, BUTTONFLAG_LEFT, "[T] Rotate the brush clockwise.", IGraphics::CORNER_R) || (Input()->KeyPress(KEY_T) && !ModPressed && m_Dialog == DIALOG_NONE && CLineInput::GetActiveInput() == nullptr && !Ui()->IsPopupOpen()))
+			{
+				for(auto &pLayer : m_pBrush->m_vpLayers)
+					pLayer->BrushRotate(s_RotationAmount / 360.0f * pi * 2);
+			}
 		}
 
 		// tile manipulation
@@ -2365,7 +2365,7 @@ void CEditor::RenderLayers(CUIRect LayersBox)
 {
 	CRenderLayersState &State = m_RenderLayersState;
 
-	const float RowHeight = 12.0f;
+	const float RowHeight = XuiTheme::Editor::LAYER_ROW_HEIGHT;
 	char aBuf[64];
 
 	CUIRect UnscrolledLayersBox = LayersBox;
@@ -3507,10 +3507,10 @@ void CEditor::ShowFileDialogError(const char *pFormat, ...)
 void CEditor::RenderModebar(CUIRect View)
 {
 	CUIRect Mentions, IngameMoved, ModeButtons, ModeButton;
-	View.HSplitTop(12.0f, &Mentions, &View);
-	View.HSplitTop(12.0f, &IngameMoved, &View);
+	View.HSplitTop(10.0f, &Mentions, &View);
+	View.HSplitTop(10.0f, &IngameMoved, &View);
 	View.HSplitBottom(22.0f, nullptr, &ModeButtons);
-	const float Width = m_ToolBoxWidth - 5.0f;
+	const float Width = View.w;
 	ModeButtons.VSplitLeft(Width, &ModeButtons, nullptr);
 	const float ButtonWidth = Width / 3;
 
@@ -3676,8 +3676,8 @@ void CEditor::RenderMenubar(CUIRect MenuBar)
 
 	CUIRect FileButton;
 	static int s_FileButton = 0;
-	MenuBar.VSplitLeft(60.0f, &FileButton, &MenuBar);
-	if(DoButton_Ex(&s_FileButton, "File", 0, &FileButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_T, EditorFontSizes::MENU, TEXTALIGN_ML))
+	MenuBar.VSplitLeft(54.0f, &FileButton, &MenuBar);
+	if(DoButton_Ex(&s_FileButton, "File", 0, &FileButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, EditorFontSizes::MENU, TEXTALIGN_ML))
 	{
 		static SPopupMenuId s_PopupMenuFileId;
 		Ui()->DoPopupMenu(&s_PopupMenuFileId, FileButton.x, FileButton.y + FileButton.h - 1.0f, 120.0f, 210.0f, this, PopupMenuFile, PopupProperties);
@@ -3687,8 +3687,8 @@ void CEditor::RenderMenubar(CUIRect MenuBar)
 
 	CUIRect ToolsButton;
 	static int s_ToolsButton = 0;
-	MenuBar.VSplitLeft(60.0f, &ToolsButton, &MenuBar);
-	if(DoButton_Ex(&s_ToolsButton, "Tools", 0, &ToolsButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_T, EditorFontSizes::MENU, TEXTALIGN_ML))
+	MenuBar.VSplitLeft(54.0f, &ToolsButton, &MenuBar);
+	if(DoButton_Ex(&s_ToolsButton, "Tools", 0, &ToolsButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, EditorFontSizes::MENU, TEXTALIGN_ML))
 	{
 		static SPopupMenuId s_PopupMenuToolsId;
 		Ui()->DoPopupMenu(&s_PopupMenuToolsId, ToolsButton.x, ToolsButton.y + ToolsButton.h - 1.0f, 200.0f, 78.0f, this, PopupMenuTools, PopupProperties);
@@ -3698,8 +3698,8 @@ void CEditor::RenderMenubar(CUIRect MenuBar)
 
 	CUIRect SettingsButton;
 	static int s_SettingsButton = 0;
-	MenuBar.VSplitLeft(60.0f, &SettingsButton, &MenuBar);
-	if(DoButton_Ex(&s_SettingsButton, "Settings", 0, &SettingsButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_T, EditorFontSizes::MENU, TEXTALIGN_ML))
+	MenuBar.VSplitLeft(54.0f, &SettingsButton, &MenuBar);
+	if(DoButton_Ex(&s_SettingsButton, "Settings", 0, &SettingsButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, EditorFontSizes::MENU, TEXTALIGN_ML))
 	{
 		static SPopupMenuId s_PopupMenuSettingsId;
 		Ui()->DoPopupMenu(&s_PopupMenuSettingsId, SettingsButton.x, SettingsButton.y + SettingsButton.h - 1.0f, 280.0f, 148.0f, this, PopupMenuSettings, PopupProperties);
@@ -3710,14 +3710,23 @@ void CEditor::RenderMenubar(CUIRect MenuBar)
 	MenuBar.VSplitRight(15.0f, &MenuBar, &Close);
 	MenuBar.VSplitRight(5.0f, &MenuBar, nullptr);
 	MenuBar.VSplitRight(15.0f, &MenuBar, &Help);
-	MenuBar.VSplitRight(5.0f, &Info, nullptr);
+	CUIRect MapTabs;
+	MenuBar.VSplitRight(std::min(260.0f, MenuBar.w * 0.4f), &MapTabs, &Info);
+	MapTabs.VMargin(6.0f, &MapTabs);
+	DoMapTabs(MapTabs);
 
 	char aTimeStr[6];
 	str_timestamp_format(aTimeStr, sizeof(aTimeStr), "%H:%M");
 
 	char aBuf[256];
 	str_format(aBuf, sizeof(aBuf), "X: %.1f, Y: %.1f, Z: %.1f, T: %.1f, A: %.1f, G: %i  %s", MapView()->MouseWorldPos().x / 32.0f, MapView()->MouseWorldPos().y / 32.0f, MapView()->Zoom()->GetValue(), Map()->m_EnvelopeEvaluator.m_AnimateTime * Map()->m_EnvelopeEvaluator.m_AnimateSpeed, Map()->m_EnvelopeEvaluator.m_AnimateSpeed, MapView()->MapGrid()->Factor(), aTimeStr);
-	Ui()->DoLabel(&Info, aBuf, 10.0f, TEXTALIGN_MR);
+	TextRender()->TextColor(XuiTheme::Color::TEXT2);
+	char aInfo[128];
+	str_format(aInfo, sizeof(aInfo), "X %.1f   Y %.1f   Zoom %.0f%%   Grid %d", MapView()->MouseWorldPos().x / 32.0f, MapView()->MouseWorldPos().y / 32.0f, MapView()->Zoom()->GetValue(), MapView()->MapGrid()->Factor());
+	Ui()->DoLabel(&Info, aInfo, 8.5f, TEXTALIGN_MR, {.m_MaxWidth = Info.w, .m_EllipsisAtEnd = true});
+	if(Ui()->MouseInside(&Info))
+		str_copy(m_aTooltip, aBuf);
+	TextRender()->TextColor(TextRender()->DefaultTextColor());
 
 	static int s_HelpButton = 0;
 	if(DoButton_Editor(&s_HelpButton, "?", 0, &Help, BUTTONFLAG_LEFT, "[F1] Open the DDNet Wiki page for the map editor in a web browser."))
@@ -3759,7 +3768,7 @@ void CEditor::Exit()
 void CEditor::Render()
 {
 	// basic start
-	Graphics()->Clear(0.0f, 0.0f, 0.0f);
+	Graphics()->Clear(XuiTheme::Color::BACKGROUND.r, XuiTheme::Color::BACKGROUND.g, XuiTheme::Color::BACKGROUND.b);
 	CUIRect View = *Ui()->Screen();
 	Ui()->MapScreen();
 	m_CursorType = CURSOR_NORMAL;
@@ -3771,18 +3780,23 @@ void CEditor::Render()
 	str_copy(m_aTooltip, "");
 
 	// render checker
-	RenderBackground(View, m_CheckerTexture, 32.0f, 1.0f);
+	RenderBackground(View, m_CheckerTexture, 16.0f, g_Config.m_XxUiTheme ? 0.9f : 0.25f);
 
 	UpdateBrushPicker();
 
 	CUIRect MenuBar, ModeBar, ToolBar, StatusBar, ExtraEditor, ToolBox;
 	if(m_GuiActive)
 	{
-		View.HSplitTop(20.0f, &MenuBar, &View);
-		View.HSplitTop(78.0f, &ToolBar, &View);
+		View.Margin(XuiTheme::Editor::GAP, &View);
+		View.HSplitTop(XuiTheme::Editor::HEADER_HEIGHT, &MenuBar, &View);
+		View.HSplitTop(XuiTheme::Editor::GAP, nullptr, &View);
+		View.HSplitTop(XuiTheme::Editor::TOOLBAR_HEIGHT, &ToolBar, &View);
+		View.HSplitTop(XuiTheme::Editor::GAP, nullptr, &View);
 		View.VSplitLeft(m_ToolBoxWidth, &ToolBox, &View);
+		View.VSplitLeft(XuiTheme::Editor::GAP, nullptr, &View);
 
-		View.HSplitBottom(16.0f, &View, &StatusBar);
+		View.HSplitBottom(XuiTheme::Editor::STATUS_HEIGHT, &View, &StatusBar);
+		View.HSplitBottom(XuiTheme::Editor::GAP, &View, nullptr);
 		if(!m_ShowPicker && m_ActiveExtraEditor != EXTRAEDITOR_NONE)
 			View.HSplitBottom(m_aExtraEditorSplits[(int)m_ActiveExtraEditor], &View, &ExtraEditor);
 	}
@@ -3793,6 +3807,9 @@ void CEditor::Render()
 		ToolBar.y = -100;
 		ToolBar.w = 50;
 		ToolBar.h = 50;
+		CUIRect HiddenTabs = ToolBar;
+		HiddenTabs.h = 20.0f;
+		DoMapTabs(HiddenTabs);
 	}
 
 	//	a little hack for now
@@ -3831,7 +3848,7 @@ void CEditor::Render()
 	}
 
 	auto Panel = [&](const CUIRect &Rect) {
-		IGraphics::SUiRect Style = CXui::HomePanel(6.0f);
+		IGraphics::SUiRect Style = CXui::HomePanel(XuiTheme::Editor::PANEL_RADIUS);
 		Style.m_X = Rect.x;
 		Style.m_Y = Rect.y;
 		Style.m_W = Rect.w;
@@ -3844,25 +3861,22 @@ void CEditor::Render()
 	if(m_GuiActive)
 	{
 		Panel(MenuBar);
-		MenuBar.Margin(2.0f, &MenuBar);
+		MenuBar.Margin(3.0f, &MenuBar);
 
 		Panel(ToolBox);
-		ToolBox.Margin(2.0f, &ToolBox);
+		ToolBox.Margin(5.0f, &ToolBox);
 
 		Panel(ToolBar);
 		ToolBar.Margin(2.0f, &ToolBar);
-		ToolBar.VSplitLeft(m_ToolBoxWidth, &ModeBar, &ToolBar);
+		ToolBar.VSplitLeft(m_ToolBoxWidth - 4.0f, &ModeBar, &ToolBar);
+		ToolBar.VSplitLeft(XuiTheme::Editor::GAP, nullptr, &ToolBar);
 
 		Panel(StatusBar);
-		StatusBar.Margin(2.0f, &StatusBar);
+		StatusBar.Margin(3.0f, &StatusBar);
 	}
 
 	// do the toolbar
 	{
-		CUIRect MapTabs;
-		ToolBar.HSplitTop(20.0f, &MapTabs, &ToolBar);
-		ToolBar.HSplitTop(5.0f, nullptr, &ToolBar);
-		DoMapTabs(MapTabs);
 		if(m_Mode == MODE_LAYERS)
 			DoToolbarLayers(ToolBar);
 		else if(m_Mode == MODE_IMAGES)
@@ -3931,6 +3945,15 @@ void CEditor::Render()
 		DragBar.x -= 2.0f;
 		DragBar.w += 4.0f;
 		DoEditorDragBar(ToolBox, &DragBar, EDragSide::RIGHT, &m_ToolBoxWidth);
+
+		CUIRect Heading;
+		ToolBox.HSplitTop(24.0f, &Heading, &ToolBox);
+		ToolBox.HSplitTop(4.0f, nullptr, &ToolBox);
+		TextRender()->SetFontPreset(EFontPreset::UI_SEMIBOLD);
+		Ui()->DoLabel(&Heading, m_Mode == MODE_LAYERS ? "Layers" : m_Mode == MODE_IMAGES ? "Images" :
+												   "Sounds",
+			11.0f, TEXTALIGN_ML);
+		TextRender()->SetFontPreset(EFontPreset::DEFAULT_FONT);
 
 		if(m_Mode == MODE_LAYERS)
 			RenderLayers(ToolBox);
@@ -4623,6 +4646,7 @@ void CEditor::Init()
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
 	m_pSound = Kernel()->RequestInterface<ISound>();
 	m_UI.Init(Kernel());
+	Ui()->SetScreenHeight(XuiTheme::Editor::REFERENCE_HEIGHT);
 	m_UI.SetPopupBackgroundRenderer([this](const CUIRect &Rect, int Corners) {
 		IGraphics::SUiRect Style = CXui::HomePanel(6.0f);
 		Style.m_X = Rect.x;
@@ -4927,6 +4951,9 @@ void CEditor::OnInput(const IInput::CEvent &Event)
 
 void CEditor::OnRender()
 {
+	const ColorRGBA PreviousOutline = TextRender()->GetTextOutlineColor();
+	TextRender()->TextOutlineColor(ColorRGBA(0, 0, 0, 0));
+	TextRender()->SetDefaultFontPreset(EFontPreset::UI_REGULAR);
 	XuiTheme::UpdateTheme(g_Config.m_XxUiTheme ? 1.0f : 0.0f);
 	Ui()->SetDefaultLabelColor(XuiTheme::Color::TEXT);
 	Ui()->SetMouseSlow(false);
@@ -4976,6 +5003,8 @@ void CEditor::OnRender()
 #if defined(CONF_DEBUG)
 	Map()->CheckIntegrity();
 #endif
+	TextRender()->SetDefaultFontPreset(EFontPreset::DEFAULT_FONT);
+	TextRender()->TextOutlineColor(PreviousOutline);
 }
 
 void CEditor::OnActivate()

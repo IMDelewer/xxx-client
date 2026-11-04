@@ -335,6 +335,7 @@ private:
 	FT_Face m_aUiFaces[7] = {};
 	FT_Face m_VariantFace = nullptr;
 	FT_Face m_SelectedFace = nullptr;
+	EFontPreset m_DefaultFontPreset = EFontPreset::DEFAULT_FONT;
 	std::vector<FT_Face> m_vFallbackFaces;
 	std::vector<FT_Face> m_vFtFaces;
 
@@ -737,6 +738,8 @@ public:
 
 	void SetFontPreset(EFontPreset FontPreset)
 	{
+		if(FontPreset == EFontPreset::DEFAULT_FONT)
+			FontPreset = m_DefaultFontPreset;
 		switch(FontPreset)
 		{
 		case EFontPreset::DEFAULT_FONT:
@@ -749,6 +752,12 @@ public:
 			m_SelectedFace = m_aUiFaces[(int)FontPreset - (int)EFontPreset::UI_REGULAR];
 			break;
 		}
+	}
+
+	void SetDefaultFontPreset(EFontPreset FontPreset)
+	{
+		m_DefaultFontPreset = FontPreset;
+		SetFontPreset(EFontPreset::DEFAULT_FONT);
 	}
 
 	void Clear()
@@ -1413,6 +1422,11 @@ public:
 		m_pGlyphMap->SetFontPreset(FontPreset);
 	}
 
+	void SetDefaultFontPreset(EFontPreset FontPreset) override
+	{
+		m_pGlyphMap->SetDefaultFontPreset(FontPreset);
+	}
+
 	void SetFontLanguageVariant(const char *pLanguageFile) override
 	{
 		for(const auto &Variant : m_vVariants)
@@ -1530,7 +1544,7 @@ public:
 			if((pCursor->m_Flags & TEXTFLAG_RENDER) != 0)
 			{
 				ColorRGBA TextColor = DefaultTextColor();
-				ColorRGBA TextColorOutline = DefaultTextOutlineColor();
+				ColorRGBA TextColorOutline = m_OutlineColor;
 				RenderTextContainer(TextCont, TextColor, TextColorOutline);
 			}
 			DeleteTextContainer(TextCont);

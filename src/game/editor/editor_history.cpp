@@ -193,7 +193,7 @@ void CEditor::RenderEditorHistory(CUIRect View)
 		Props.m_MaxWidth = Label.w;
 		Props.m_EllipsisAtEnd = true;
 		TextRender()->TextColor({.5f, .5f, .5f});
-		TextRender()->TextOutlineColor(TextRender()->DefaultTextOutlineColor());
+		TextRender()->TextOutlineColor(ColorRGBA(0, 0, 0, 0));
 		Ui()->DoLabel(&Label, pCurrentHistory->m_vpRedoActions[i]->DisplayText(), 10.0f, TEXTALIGN_ML, Props);
 		TextRender()->TextColor(TextRender()->DefaultTextColor());
 	}

@@ -1,6 +1,8 @@
 #include <base/color.h>
 #include <base/math.h>
 
+#include <engine/font_icons.h>
+#include <engine/font_icons_phosphor.h>
 #include <engine/shared/config.h>
 
 #include <game/client/ui.h>
@@ -18,54 +20,31 @@ void CEditor::UpdateTooltip(const void *pId, const CUIRect *pRect, const char *p
 
 ColorRGBA CEditor::GetButtonColor(const void *pId, int Checked)
 {
+	const bool Hovered = Ui()->HotItem() == pId;
 	if(Checked < 0)
-		return ColorRGBA(0, 0, 0, 0.5f);
-
+		return XuiTheme::Color::GROUP_FILL;
+	const ColorRGBA Accent = color_cast<ColorRGBA>(ColorHSLA(g_Config.m_XxUiAccent));
 	switch(Checked)
 	{
 	case EditorButtonChecked::DANGEROUS_ACTION:
-		return ColorRGBA(1.0f, 0.0f, 0.0f, Ui()->HotItem() == pId ? 0.75f : 0.5f);
+		return XuiTheme::Color::RED_SOFT.WithAlpha(Hovered ? 0.2f : 0.12f);
 	case EditorButtonChecked::POSITIVE_ACTION:
-		return ColorRGBA(0.0f, 1.0f, 0.0f, Ui()->HotItem() == pId ? 0.75f : 0.5f);
-	case 8: // invisible
+		return XuiTheme::Color::GREEN.WithAlpha(Hovered ? 0.2f : 0.12f);
+	case 8:
 		return ColorRGBA(0, 0, 0, 0);
-	case 7: // selected + game layers
-		if(Ui()->HotItem() == pId)
-			return ColorRGBA(1, 0, 0, 0.4f);
-		return ColorRGBA(1, 0, 0, 0.2f);
-
-	case 6: // game layers
-		if(Ui()->HotItem() == pId)
-			return ColorRGBA(1, 1, 1, 0.4f);
-		return ColorRGBA(1, 1, 1, 0.2f);
-
-	case 5: // selected + image/sound should be embedded
-		if(Ui()->HotItem() == pId)
-			return ColorRGBA(1, 0, 0, 0.75f);
-		return ColorRGBA(1, 0, 0, 0.5f);
-
-	case 4: // image/sound should be embedded
-		if(Ui()->HotItem() == pId)
-			return ColorRGBA(1, 0, 0, 1.0f);
-		return ColorRGBA(1, 0, 0, 0.875f);
-
-	case 3: // selected + unused image/sound
-		if(Ui()->HotItem() == pId)
-			return ColorRGBA(1, 0, 1, 0.75f);
-		return ColorRGBA(1, 0, 1, 0.5f);
-
-	case 2: // unused image/sound
-		if(Ui()->HotItem() == pId)
-			return ColorRGBA(0, 0, 1, 0.75f);
-		return ColorRGBA(0, 0, 1, 0.5f);
-
-	case 1: // selected
-		return color_cast<ColorRGBA>(ColorHSLA(g_Config.m_XxUiAccent)).WithAlpha(Ui()->HotItem() == pId ? 0.85f : 0.65f);
-
-	default: // regular
-		if(Ui()->HotItem() == pId)
-			return XuiTheme::Color::SELECTED;
-		return XuiTheme::Color::GROUP_FILL;
+	case 4:
+	case 5:
+		return XuiTheme::Color::ORANGE.WithAlpha(Checked == 5 ? 0.24f : Hovered ? 0.16f :
+											  0.08f);
+	case 2:
+	case 3:
+		return XuiTheme::Color::CYAN.WithAlpha(Checked == 3 ? 0.24f : Hovered ? 0.16f :
+											0.08f);
+	case 1:
+	case 7:
+		return Accent.WithAlpha(Hovered ? 0.26f : 0.18f);
+	default:
+		return Hovered ? XuiTheme::Color::ROW_HOVER : XuiTheme::Color::GROUP_FILL;
 	}
 }
 
@@ -83,9 +62,14 @@ int CEditor::DoButtonLogic(const void *pId, int Checked, const CUIRect *pRect, i
 
 int CEditor::DoButton_Editor(const void *pId, const char *pText, int Checked, const CUIRect *pRect, int Flags, const char *pToolTip)
 {
-	pRect->Draw(GetButtonColor(pId, Checked), IGraphics::CORNER_ALL, 6.0f);
+	pRect->Draw(GetButtonColor(pId, Checked), IGraphics::CORNER_ALL, 4.0f);
 	CUIRect NewRect = *pRect;
-	Ui()->DoLabel(&NewRect, pText, 10.0f, TEXTALIGN_MC);
+	SLabelProperties Props;
+	Props.m_MaxWidth = NewRect.w;
+	Props.m_EllipsisAtEnd = true;
+	if(Checked < 0)
+		Props.SetColor(XuiTheme::Color::TEXT3);
+	Ui()->DoLabel(&NewRect, pText, EditorFontSizes::MENU, TEXTALIGN_MC, Props);
 	Checked %= 2;
 	return DoButtonLogic(pId, Checked, pRect, Flags, pToolTip);
 }
@@ -121,10 +105,63 @@ int CEditor::DoButton_FontIcon(const void *pId, const char *pText, int Checked, 
 {
 	pRect->Draw(GetButtonColor(pId, Checked), Corners, 3.0f);
 
-	TextRender()->SetFontPreset(EFontPreset::ICON_FONT);
-	TextRender()->SetRenderFlags(ETextRenderFlags::TEXT_RENDER_FLAG_ONLY_ADVANCE_WIDTH | ETextRenderFlags::TEXT_RENDER_FLAG_NO_X_BEARING | ETextRenderFlags::TEXT_RENDER_FLAG_NO_Y_BEARING);
-	Ui()->DoLabel(pRect, pText, FontSize, TEXTALIGN_MC);
-	TextRender()->SetRenderFlags(0);
+	static const struct
+	{
+		const char *m_pOriginal;
+		const char *m_pIcon;
+	} s_aIcons[] = {
+		{FontIcon::BACKWARD_STEP, Ph::SKIP_BACK},
+		{FontIcon::PLAY, Ph::PLAY},
+		{FontIcon::PAUSE, Ph::PAUSE},
+		{FontIcon::CIRCLE_CHEVRON_DOWN, Ph::CARET_DOWN},
+		{FontIcon::BORDER_ALL, Ph::GRID_FOUR},
+		{FontIcon::MINUS, Ph::MINUS},
+		{FontIcon::MAGNIFYING_GLASS, Ph::MAGNIFYING_GLASS},
+		{FontIcon::PLUS, Ph::PLUS},
+		{FontIcon::UNDO, Ph::ARROW_COUNTER_CLOCKWISE},
+		{FontIcon::REDO, Ph::ARROW_CLOCKWISE},
+		{FontIcon::ARROWS_LEFT_RIGHT, Ph::ARROWS_HORIZONTAL},
+		{FontIcon::ARROWS_UP_DOWN, Ph::ARROWS_VERTICAL},
+		{FontIcon::ARROW_ROTATE_LEFT, Ph::ARROW_ARC_LEFT},
+		{FontIcon::ARROW_ROTATE_RIGHT, Ph::ARROW_ARC_RIGHT},
+		{FontIcon::EYE_DROPPER, Ph::EYEDROPPER},
+		{FontIcon::BRUSH, Ph::PAINT_BRUSH},
+		{FontIcon::LAYER_GROUP, Ph::STACK},
+		{FontIcon::IMAGE, Ph::IMAGE},
+		{FontIcon::MUSIC, Ph::MUSIC_NOTES},
+		{FontIcon::EYE, Ph::EYE},
+		{FontIcon::EYE_SLASH, Ph::EYE_SLASH},
+		{FontIcon::CIRCLE, Ph::CIRCLE},
+	};
+	const unsigned PreviousFlags = TextRender()->GetRenderFlags();
+	const char *pIcon = nullptr;
+	for(const auto &Icon : s_aIcons)
+		if(str_comp(pText, Icon.m_pOriginal) == 0)
+		{
+			pIcon = Icon.m_pIcon;
+			break;
+		}
+	const ColorRGBA PreviousColor = TextRender()->GetTextColor();
+	TextRender()->TextColor(Checked < 0 ? XuiTheme::Color::TEXT3 : PreviousColor == TextRender()->DefaultTextColor() ? XuiTheme::Color::TEXT :
+															   PreviousColor);
+	if(pIcon)
+	{
+		const float Size = FontSize + 2.0f;
+		TextRender()->SetFontPreset(EFontPreset::PHOSPHOR);
+		TextRender()->SetRenderFlags(TEXT_RENDER_FLAG_FULL_ADVANCE | TEXT_RENDER_FLAG_CENTERED_GLYPH);
+		CTextCursor Cursor;
+		Cursor.SetPosition(pRect->Center() - vec2(Size * 0.5f, Size * 0.5f));
+		Cursor.m_FontSize = Size;
+		TextRender()->TextEx(&Cursor, pIcon);
+	}
+	else
+	{
+		TextRender()->SetFontPreset(EFontPreset::ICON_FONT);
+		TextRender()->SetRenderFlags(TEXT_RENDER_FLAG_ONLY_ADVANCE_WIDTH | TEXT_RENDER_FLAG_NO_X_BEARING | TEXT_RENDER_FLAG_NO_Y_BEARING);
+		Ui()->DoLabel(pRect, pText, FontSize, TEXTALIGN_MC);
+	}
+	TextRender()->TextColor(PreviousColor);
+	TextRender()->SetRenderFlags(PreviousFlags);
 	TextRender()->SetFontPreset(EFontPreset::DEFAULT_FONT);
 
 	return DoButtonLogic(pId, Checked, pRect, Flags, pToolTip);
@@ -160,7 +197,14 @@ int CEditor::DoButton_DraggableEx(const void *pId, const char *pText, int Checke
 	SLabelProperties Props;
 	Props.m_MaxWidth = Rect.w;
 	Props.m_EllipsisAtEnd = true;
-	Ui()->DoLabel(&Rect, pText, FontSize, TEXTALIGN_MC, Props);
+	if(Checked == 1 || Checked == 3 || Checked == 5 || Checked == 7)
+	{
+		CUIRect Marker = *pRect;
+		Marker.w = 2.0f;
+		Marker.HMargin(3.0f, &Marker);
+		Marker.Draw(color_cast<ColorRGBA>(ColorHSLA(g_Config.m_XxUiAccent)), IGraphics::CORNER_ALL, 1.0f);
+	}
+	Ui()->DoLabel(&Rect, pText, FontSize, TEXTALIGN_ML, Props);
 
 	if(Ui()->MouseInside(pRect))
 	{

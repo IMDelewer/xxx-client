@@ -397,7 +397,7 @@ public:
 	};
 	EExtraEditor m_ActiveExtraEditor = EXTRAEDITOR_NONE;
 	float m_aExtraEditorSplits[NUM_EXTRAEDITORS] = {250.0f, 250.0f, 250.0f};
-	float m_ToolBoxWidth = 100.0f;
+	float m_ToolBoxWidth = 156.0f;
 
 	bool m_ShowEnvelopePreview = false;
 	enum class EEnvelopePreview

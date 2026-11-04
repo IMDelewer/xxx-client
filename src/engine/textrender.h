@@ -210,6 +210,7 @@ public:
 	virtual bool LoadFonts() = 0;
 	virtual bool LoadFontFile(const char *pFilename, const char *pFallbackFamily = nullptr) = 0;
 	virtual void SetFontPreset(EFontPreset FontPreset) = 0;
+	virtual void SetDefaultFontPreset(EFontPreset FontPreset) = 0;
 	virtual void SetFontLanguageVariant(const char *pLanguageFile) = 0;
 
 	virtual void SetRenderFlags(unsigned Flags) = 0;
