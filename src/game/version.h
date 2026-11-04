@@ -22,6 +22,6 @@ extern const char *GIT_SHORTREV_HASH;
 
 // xxx
 #define CLIENT_NAME "xxx"
-#define XXX_VERSION "0.2.0"
+#define XXX_VERSION "0.2.1"
 
 #endif

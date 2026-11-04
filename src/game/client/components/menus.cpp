@@ -109,6 +109,8 @@ void CMenus::RenderLoadingDirect(const char *pCaption, const char *pContent, std
 	const float Padding = 28.0f * Scale;
 	const float ContentWidth = Width - 2.0f * Padding;
 	const SLabelProperties LabelProps = {.m_MaxWidth = ContentWidth, .m_EllipsisAtEnd = true};
+	const ColorRGBA PreviousOutline = TextRender()->GetTextOutlineColor();
+	TextRender()->TextOutlineColor(ColorRGBA(0, 0, 0, 0));
 	CUIRect Label = {Card.x + Padding, Card.y + Padding, ContentWidth, 28.0f * Scale};
 	TextRender()->SetFontPreset(EFontPreset::UI_SEMIBOLD);
 	TextRender()->TextColor(XuiTheme::Color::TEXT);
@@ -143,6 +145,7 @@ void CMenus::RenderLoadingDirect(const char *pCaption, const char *pContent, std
 		Fill.Draw(Accent, IGraphics::CORNER_ALL, Track.h * 0.5f);
 	}
 	TextRender()->SetFontPreset(EFontPreset::DEFAULT_FONT);
+	TextRender()->TextOutlineColor(PreviousOutline);
 	TextRender()->TextColor(TextRender()->DefaultTextColor());
 
 	Graphics()->SetColor(1.0, 1.0, 1.0, 1.0);

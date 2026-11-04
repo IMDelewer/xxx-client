@@ -4,7 +4,7 @@
 
 DDNet с интерфейсом XUI: Vulkan, стеклянные панели и настраиваемый HUD.
 
-[![Version](https://img.shields.io/badge/version-0.2.0-ac6cff?style=for-the-badge&labelColor=20202b)](#скачать)
+[![Version](https://img.shields.io/badge/version-0.2.1-ac6cff?style=for-the-badge&labelColor=20202b)](#скачать)
 [![Vulkan](https://img.shields.io/badge/Vulkan-1.1-ac6cff?style=for-the-badge&labelColor=20202b)](#требования)
 [![C++](https://img.shields.io/badge/C%2B%2B-20-8d93a6?style=for-the-badge&labelColor=20202b)](../BUILDING.md)
 [![License](https://img.shields.io/badge/license-XUI_attribution-8d93a6?style=for-the-badge&labelColor=20202b)](../../LICENSE)
@@ -40,7 +40,7 @@ DDNet, с проверкой SHA256. Первый запуск и игра до�
 архивы с `SHA256SUMS` после успешной сборки и проверок всех платформ.
 
 Для выпуска нажмите **Actions → Release → Run workflow** или отправьте тег,
-совпадающий с `XXX_VERSION`, например `0.2.0`. Промежуточные сборки остаются
+совпадающий с `XXX_VERSION`, например `0.2.1`. Промежуточные сборки остаются
 в **Actions → Desktop builds → Artifacts**.
 
 | Платформа | Архив | Запуск |

@@ -4,7 +4,7 @@
 
 A DDNet client with XUI, a Vulkan interface with glass panels and an editable HUD.
 
-[![Version](https://img.shields.io/badge/version-0.2.0-ac6cff?style=for-the-badge&labelColor=20202b)](#download)
+[![Version](https://img.shields.io/badge/version-0.2.1-ac6cff?style=for-the-badge&labelColor=20202b)](#download)
 [![Vulkan](https://img.shields.io/badge/Vulkan-1.1-ac6cff?style=for-the-badge&labelColor=20202b)](#requirements)
 [![C++](https://img.shields.io/badge/C%2B%2B-20-8d93a6?style=for-the-badge&labelColor=20202b)](docs/BUILDING.md)
 [![License](https://img.shields.io/badge/license-XUI_attribution-8d93a6?style=for-the-badge&labelColor=20202b)](LICENSE)
@@ -41,7 +41,7 @@ the packages and `SHA256SUMS` after all builds and checks pass. Release notes
 contain only the matching version entry from [CHANGELOG.md](CHANGELOG.md).
 
 To publish, run **Actions → Release → Run workflow**, or push a tag matching
-`XXX_VERSION`, such as `0.2.0`. Development builds remain available under
+`XXX_VERSION`, such as `0.2.1`. Development builds remain available under
 **Actions → Desktop builds → Artifacts**.
 
 | Target | Package | Notes |
