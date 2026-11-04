@@ -64,8 +64,8 @@ ColorRGBA CEditor::GetButtonColor(const void *pId, int Checked)
 
 	default: // regular
 		if(Ui()->HotItem() == pId)
-			return XuiTheme::Color::GHOST_HOVER;
-		return XuiTheme::Color::GHOST;
+			return XuiTheme::Color::SELECTED;
+		return XuiTheme::Color::GROUP_FILL;
 	}
 }
 

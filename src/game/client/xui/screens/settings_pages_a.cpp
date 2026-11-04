@@ -68,13 +68,39 @@ namespace SettingsUi
 			const auto &vLanguages = g_Localization.Languages();
 			if(V < 0 || V >= (int)vLanguages.size())
 				return;
-			str_copy(g_Config.m_ClLanguagefile, vLanguages[V].m_Filename.c_str());
-			Game()->OnLanguageChange(); }, []() {
+			Game()->m_OptionalFonts.SelectLanguage(vLanguages[V].m_Filename.c_str()); }, []() {
 			std::vector<std::string> vNames;
 			for(const auto &Language : g_Localization.Languages())
-				vNames.push_back(Language.m_Name);
+				vNames.push_back(Game()->m_OptionalFonts.Installed() ? Language.m_Name : COptionalFonts::LanguageName(Language.m_Filename.c_str(), Language.m_Name.c_str()));
 			return vNames; })
 			.Icon(Ph::TRANSLATE);
+
+		S.Custom("Additional languages", []() {
+			CXui &U = Ui();
+			COptionalFonts &Fonts = Game()->m_OptionalFonts;
+			STextStyle Style;
+			Style.m_Size = 13.0f;
+			Style.m_Color = XuiTheme::Color::TEXT2;
+			Style.m_Wrap = true;
+			if(Fonts.Installed())
+				U.Text(Localize("Additional fonts installed"), Style);
+			else if(Fonts.Downloading())
+			{
+				char aProgress[64];
+				str_format(aProgress, sizeof(aProgress), Localize("Downloading fonts: %d%%"), Fonts.Progress());
+				U.Text(aProgress, Style);
+				if(U.Button(Localize("Cancel"), {.m_pKey = "fonts.cancel"}).m_Clicked)
+					Fonts.Cancel();
+			}
+			else
+			{
+				U.Text(Localize("Japanese, Korean and Chinese fonts · 29 MB"), Style);
+				if(Fonts.Error()[0])
+					U.Text(Localize(Fonts.Error()), Style);
+				if(U.Button(Localize("Download"), {.m_pKey = "fonts.download"}).m_Clicked)
+					Fonts.Start();
+			}
+		});
 
 		S.Toggle("Skip the main menu", &g_Config.m_ClSkipStartMenu);
 		S.Slider("Update rate", &g_Config.m_ClRefreshRate, 0, 1000, " Hz").Zero("Unlimited");
@@ -106,36 +132,6 @@ namespace SettingsUi
 					 ViewPath("themes", true);
 			 });
 		 }).Desc("Open in your file manager");
-		S.VirtualDropdown(
-			 "Menu theme", []() {
-			const std::vector<CTheme> &vThemes = Game()->m_MenuBackground.GetThemes();
-			for(int i = 0; i < (int)vThemes.size(); i++)
-				if(str_comp(vThemes[i].m_Name.c_str(), g_Config.m_ClMenuMap) == 0)
-					return i;
-			return 0; }, [](int V) {
-			const std::vector<CTheme> &vThemes = Game()->m_MenuBackground.GetThemes();
-			if(V < 0 || V >= (int)vThemes.size())
-				return;
-			str_copy(g_Config.m_ClMenuMap, vThemes[V].m_Name.c_str());
-			Game()->m_MenuBackground.LoadMenuBackground(vThemes[V].m_HasDay, vThemes[V].m_HasNight); }, []() {
-			std::vector<std::string> vNames;
-			for(const CTheme &Theme : Game()->m_MenuBackground.GetThemes())
-			{
-				if(Theme.m_Name.empty())
-					vNames.push_back("(none)");
-				else if(Theme.m_Name == "auto")
-					vNames.push_back("(seasons)");
-				else if(Theme.m_Name == "rand")
-					vNames.push_back("(random)");
-				else if(Theme.m_HasDay && !Theme.m_HasNight)
-					vNames.push_back(Theme.m_Name + " (day)");
-				else if(!Theme.m_HasDay && Theme.m_HasNight)
-					vNames.push_back(Theme.m_Name + " (night)");
-				else
-					vNames.push_back(Theme.m_Name);
-			}
-			return vNames; })
-			.Show([]() { return g_Config.m_XxMenuBackground == 0; });
 
 		S.Header("Camera and weapons");
 		S.VirtualToggle(

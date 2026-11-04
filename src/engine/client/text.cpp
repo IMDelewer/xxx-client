@@ -21,6 +21,7 @@
 #include <cmath>
 #include <cstddef>
 #include <limits>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
@@ -1000,6 +1001,7 @@ class CTextRender : public IEngineTextRender
 
 	CGlyphMap *m_pGlyphMap;
 	std::vector<void *> m_vpFontData;
+	std::vector<std::string> m_vLoadedFontFiles;
 
 	std::vector<SFontLanguageVariant> m_vVariants;
 
@@ -1206,12 +1208,31 @@ public:
 		for(auto *pFontData : m_vpFontData)
 			free(pFontData);
 		m_vpFontData.clear();
+		m_vLoadedFontFiles.clear();
 
 		m_DefaultTextContainerInfo.m_vAttributes.clear();
 
 		m_pConsole = nullptr;
 		m_pGraphics = nullptr;
 		m_pStorage = nullptr;
+	}
+
+	bool LoadFontFile(const char *pFilename, const char *pFallbackFamily = nullptr) override
+	{
+		if(std::find(m_vLoadedFontFiles.begin(), m_vLoadedFontFiles.end(), pFilename) != m_vLoadedFontFiles.end())
+			return true;
+		void *pData;
+		unsigned Size;
+		if(!Storage()->ReadFile(pFilename, IStorage::TYPE_ALL, &pData, &Size))
+			return false;
+		if(!LoadFontCollection(pFilename, static_cast<const FT_Byte *>(pData), (FT_Long)Size))
+		{
+			free(pData);
+			return false;
+		}
+		m_vpFontData.push_back(pData);
+		m_vLoadedFontFiles.emplace_back(pFilename);
+		return pFallbackFamily == nullptr || m_pGlyphMap->AddFallbackFaceByName(pFallbackFamily);
 	}
 
 	bool LoadFonts() override
@@ -1259,20 +1280,7 @@ public:
 
 				char aFontName[IO_MAX_PATH_LENGTH];
 				str_format(aFontName, sizeof(aFontName), "fonts/%s", FontFiles[FontFileIndex].u.string.ptr);
-				void *pFontData;
-				unsigned FontDataSize;
-				if(Storage()->ReadFile(aFontName, IStorage::TYPE_ALL, &pFontData, &FontDataSize))
-				{
-					if(LoadFontCollection(aFontName, static_cast<FT_Byte *>(pFontData), (FT_Long)FontDataSize))
-					{
-						m_vpFontData.push_back(pFontData);
-					}
-					else
-					{
-						free(pFontData);
-					}
-				}
-				else
+				if(!LoadFontFile(aFontName))
 				{
 					log_error("textrender", "Failed to open/read font file '%s'", aFontName);
 					Success = false;

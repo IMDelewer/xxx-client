@@ -1239,15 +1239,6 @@ Trails for other tees
 UI scale
 == Масштаб интерфейса
 
-Unfreeze and undeep color
-== Цвет unfreeze и undeep
-
-Unfreeze and undeep tiles
-== Тайлы unfreeze и undeep
-
-Unfreeze and undeep width
-== Толщина unfreeze и undeep
-
 Unlimited
 == Без ограничений
 
@@ -1521,20 +1512,8 @@ Green if the hook will grab, red on unhookable tiles
 Players in hook reach
 == Игроки в досягаемости хука
 
-Hitboxes
-== Хитбоксы
-
-Tee hitboxes and your hook range
-== Хитбоксы тее и радиус твоего хука
-
-Trajectory
-== Траектория
-
 Where you fly with the current input, red when it ends in freeze
 == Куда полетишь с текущим вводом, красная, если ведёт во фриз
-
-Trajectory length
-== Длина траектории
 
 Island and timer
 == Остров и таймер
@@ -1623,12 +1602,6 @@ Jumps for you when an air jump keeps you out of freeze
 Rescue hint
 == Подсказка спасения
 
-Shows the hook angle that pulls you out of a freeze trajectory
-== Показывает угол хука, который вытащит из траектории во фриз
-
-Dummy unfreezes you
-== Дамми размораживает тебя
-
 With laser or hammer when it can reach you
 == Лазером или молотком, когда достаёт
 
@@ -1668,17 +1641,11 @@ Movement help
 Snap Tap, save jump, grenade jump and precise aim
 == Snap Tap, спасительный прыжок, рокет-джамп и точный прицел
 
-Self unfreeze
-== Самоанфриз
-
 Flying through freeze: shoots a bouncing laser that hits you after the exit
 == Пролетая фриз: стреляет лазером с отскоком, который попадёт в тебя после выхода
 
 What your dummy does on its own
 == Что дамми делает сам
-
-Unfreezes you
-== Размораживает тебя
 
 Laser or hammer once you are out of the freeze tile
 == Лазером или молотком, когда ты уже не на фриз-тайле
@@ -1694,9 +1661,6 @@ Run at the dummy: it jumps and hammers you up
 
 Follows you
 == Идёт за тобой
-
-Hitboxes
-== Хитбоксы
 
 Circle
 == Окружность
@@ -1728,9 +1692,6 @@ Red when it ends in freeze
 Laser bounces, gun and grenade arcs
 == Отскоки лазера, дуги пистолета и гранаты
 
-The hook angle that pulls you out of a freeze trajectory
-== Угол хука, который вытащит из траектории во фриз
-
 Left and right held: the last pressed wins
 == Зажаты влево и вправо: побеждает последняя нажатая
 
@@ -1745,9 +1706,6 @@ Hook and unhook
 
 Freeze and deep
 == Фриз и deep
-
-Unfreeze and undeep
-== Unfreeze и undeep
 
 Kill
 == Kill
@@ -1857,20 +1815,11 @@ Aim down and fire the grenade on the ground or right after a jump: the client ju
 Hold the laser: flying into freeze, it fires at the last moment so the shot bounces back into you after the exit
 == Держи лазер: когда летишь во фриз, клиент стреляет в последний момент, и луч отскакивает в тебя после выхода
 
-Self unfreeze key
-== Клавиша анфриза
-
 Debug log
 == Отладочный лог
 
 Writes to the console why a helper did or did not act
 == Пишет в консоль и в xxx_assist_debug.txt, почему помощник сработал или нет
-
-Version spoofer
-== Спуфер версии
-
-Spoof client version
-== Подменять версию клиента
 
 Servers see another client. For server admins testing anti-cheat. Applies on next connect
 == Серверы видят другой клиент. Для админов, проверяющих античит. Применяется при следующем подключении
@@ -1905,17 +1854,11 @@ Checksum binary
 Checksums captured
 == Checksum-ы захвачены
 
-Path to TClient binary for checksum spoofing (empty = use own)
-== Путь к бинарнику TClient для подмены checksum (пусто = свой)
-
 Start a local server and join it: everyone who connects shows up here. On other servers run xx_debug_clients in rcon
 == Запусти локальный сервер и зайди: все, кто подключится, появятся здесь. На других серверах выполни xx_debug_clients в rcon
 
 Use
 == Включить
-
-Spoofer templates
-== Шаблоны спуфера
 
 Template name
 == Название шаблона
@@ -1953,15 +1896,6 @@ While key held
 Helpers
 == Помощники
 
-Self unfreeze (hold)
-== Анфриз (держать)
-
-Used when Helpers → Self unfreeze is set to "While key held"
-== Работает, если в «Помощниках» анфриз стоит «Пока зажата клавиша»
-
-Hook ride (toggle)
-== Hook ride (вкл/выкл)
-
 WASD moves you pixel by pixel, the hook carries you
 == WASD двигает тебя по пикселю, хук несёт
 
@@ -1970,9 +1904,6 @@ Jet ride (toggle)
 
 WASD moves you pixel by pixel with the jetpack gun
 == WASD двигает тебя по пикселю джетпаком
-
-Toggle version spoofer
-== Вкл/выкл спуфер версии
 
 Aim angle
 == Угол прицела
@@ -2049,9 +1980,6 @@ Listed in the server browser. Needs port 8303 open on your router
 Client captured
 == Клиент пойман
 
-Hook ride
-== Hook ride
-
 Jet ride
 == Jet ride
 
@@ -2088,9 +2016,6 @@ Keys for the client helpers
 Aim
 == Прицел
 
-Enable spoofer
-== Спуфер
-
 Applies on next connect
 == Применяется при следующем подключении
 
@@ -2106,9 +2031,6 @@ Import JSON
 Export JSON
 == Экспорт JSON
 
-Add a JSON profile to spoofclients
-== Добавьте JSON-профиль в spoofclients
-
 Profile name
 == Название профиля
 
@@ -2117,9 +2039,6 @@ Selected
 
 Refresh
 == Обновить
-
-Could not create spoofclients directory
-== Не удалось создать папку spoofclients
 
 Could not remove JSON profile
 == Не удалось удалить JSON-профиль
@@ -2178,9 +2097,6 @@ Menu background
 3D scene
 == 3D-сцена
 
-Vortex
-== Воронка
-
 Animate background
 == Анимация фона
 
@@ -2211,9 +2127,6 @@ Map image
 
 Cheats
 == Читы
-
-Spoofer
-== Спуфер
 
 Ride speed
 == Скорость перемещения
@@ -2320,9 +2233,6 @@ Waiting
 Paused
 == Пауза
 
-Own dummy aimbot
-== Аимбот на своего dummy
-
 Own dummy aim key
 == Клавиша наведения на своего dummy
 
@@ -2371,9 +2281,6 @@ Braking pulse
 Safety margin
 == Запас безопасности
 
-Show danger trajectory
-== Показывать опасную траекторию
-
 Active features appearance
 == Вид списка функций
 
@@ -2385,12 +2292,6 @@ Panel width
 
 Show indicators
 == Показывать индикаторы
-
-Unfreeze aim speed
-== Скорость наведения автоанфриза
-
-Unfreeze aim acceleration
-== Ускорение наведения автоанфриза
 
 Moving the mouse or switching weapons cancels preparation
 == Движение мышью или ручная смена оружия отменяет подготовку
@@ -2409,9 +2310,6 @@ Allow rescue hook
 
 Hooks map geometry only; your manual control key cancels assistance
 == Зацеп только за карту; бинд ручного управления отменяет помощь
-
-Unfreeze style
-== Режим наведения
 
 Legit
 == Legit
@@ -2479,12 +2377,6 @@ Hours this year · DDNet
 Most played maps · DDStats
 == Любимые карты · DDStats
 
-Fake ping
-== Фейк-пинг
-
-Fake Ping
-== Fake Ping
-
 Displayed ping
 == Пинг в интерфейсе
 
@@ -2500,17 +2392,8 @@ Ping variation
 Variation period
 == Период изменения
 
-Fake lag
-== Фейк-лаг
-
-Fake Lag
-== Fake Lag
-
 Input delay
 == Задержка ввода
-
-Fake lag key
-== Клавиша фейк-лага
 
 Changes your own ping in TAB and HUD only
 == Меняет только ваш пинг в TAB и HUD
@@ -2606,18 +2489,6 @@ Keep manual fire and hook
 Safe search budget
 == Бюджет просчёта сейфа
 
-Unfreeze search budget
-== Бюджет просчёта анфриза
-
-Aimbot
-== Аимбот
-
-Player aimbot
-== Аимбот по игрокам
-
-Player aimbot key
-== Клавиша аимбота
-
 Player aim FOV
 == FOV аимбота
 
@@ -2657,14 +2528,8 @@ Trigger confirmation
 Triggerbot key
 == Клавиша триггербота
 
-Aimbot weapons
-== Оружие аимбота
-
 180 selects the target angle immediately
 == 180 — мгновенное наведение
-
-Uses the same weapon and player filters as the aimbot
-== Использует те же фильтры оружия и игроков, что и аимбот
 
 Your team list is always excluded; !war name and !team name toggle local lists
 == Игроки команды исключены; !war имя и !team имя изменяют локальные списки
@@ -2839,3 +2704,30 @@ Hide panel · Tab
 
 Move this panel by its title. Tab hides or shows it.
 == Перемещайте панель за заголовок. Tab скрывает и показывает её.
+
+Additional languages
+== Дополнительные языки
+
+Download fonts for Japanese, Korean and Chinese? The optional download is 29 MB. You can install it later in Settings.
+== Скачать шрифты для японского, корейского и китайского языков? Размер — 29 МБ. Их можно установить позже в настройках.
+
+Later
+== Позже
+
+Additional fonts installed
+== Дополнительные шрифты установлены
+
+Downloading fonts: %d%%
+== Загрузка шрифтов: %d%%
+
+Japanese, Korean and Chinese fonts · 29 MB
+== Японский, корейский и китайский · 29 МБ
+
+Could not load the font package information
+== Не удалось прочитать сведения о шрифтах
+
+Could not download the fonts. Try again.
+== Не удалось скачать шрифты. Попробуйте ещё раз.
+
+Could not load the downloaded fonts
+== Не удалось загрузить скачанные шрифты

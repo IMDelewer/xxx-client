@@ -3831,7 +3831,7 @@ void CEditor::Render()
 	}
 
 	auto Panel = [&](const CUIRect &Rect) {
-		IGraphics::SUiRect Style = CXui::SolidRect(XuiTheme::Glass::PANEL_TOP, 6.0f);
+		IGraphics::SUiRect Style = CXui::HomePanel(6.0f);
 		Style.m_X = Rect.x;
 		Style.m_Y = Rect.y;
 		Style.m_W = Rect.w;
@@ -4623,6 +4623,22 @@ void CEditor::Init()
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
 	m_pSound = Kernel()->RequestInterface<ISound>();
 	m_UI.Init(Kernel());
+	m_UI.SetPopupBackgroundRenderer([this](const CUIRect &Rect, int Corners) {
+		IGraphics::SUiRect Style = CXui::HomePanel(6.0f);
+		Style.m_X = Rect.x;
+		Style.m_Y = Rect.y;
+		Style.m_W = Rect.w;
+		Style.m_H = Rect.h;
+		Style.m_Radii = vec4(Corners & IGraphics::CORNER_TL ? 6.0f : 0.0f, Corners & IGraphics::CORNER_TR ? 6.0f : 0.0f, Corners & IGraphics::CORNER_BR ? 6.0f : 0.0f, Corners & IGraphics::CORNER_BL ? 6.0f : 0.0f);
+		Graphics()->DrawUiRects(&Style, 1);
+	});
+	m_UI.SetEditBoxBackgroundRenderer([](const CUIRect &Rect, int Corners, bool Active) {
+		const ColorRGBA Border = Active ? color_cast<ColorRGBA>(ColorHSLA(g_Config.m_XxUiAccent)) : XuiTheme::Color::GROUP_STROKE;
+		Rect.Draw(Border, Corners, 3.0f);
+		CUIRect Inner;
+		Rect.Margin(1.0f, &Inner);
+		Inner.Draw(XuiTheme::Home::PANEL, Corners, 2.0f);
+	});
 	m_UI.SetPopupMenuClosedCallback([this]() {
 		m_PopupEventWasActivated = false;
 	});
@@ -4911,6 +4927,8 @@ void CEditor::OnInput(const IInput::CEvent &Event)
 
 void CEditor::OnRender()
 {
+	XuiTheme::UpdateTheme(g_Config.m_XxUiTheme ? 1.0f : 0.0f);
+	Ui()->SetDefaultLabelColor(XuiTheme::Color::TEXT);
 	Ui()->SetMouseSlow(false);
 
 	// toggle gui

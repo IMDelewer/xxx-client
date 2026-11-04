@@ -37,9 +37,6 @@ void Glass::Draw(IGraphics *pGraphics, float x, float y, float w, float h, Color
 		Rect.m_Border = ColorRGBA(1.0f, 1.0f, 1.0f, 0.35f);
 		Rect.m_Border2 = ColorRGBA(1.0f, 1.0f, 1.0f, 0.0f);
 		Rect.m_BorderAngle = 90.0f;
-		Rect.m_ShadowOffset = vec2(0.0f, 6.0f);
-		Rect.m_ShadowBlur = 20.0f;
-		Rect.m_Shadow = Tint.WithAlpha(0.3f);
 	}
 	else
 	{
@@ -47,15 +44,15 @@ void Glass::Draw(IGraphics *pGraphics, float x, float y, float w, float h, Color
 		Rect.m_Fill = XuiTheme::Glass::FILL_TOP.WithMultipliedAlpha(Boost);
 		Rect.m_Fill2 = XuiTheme::Glass::FILL_BOTTOM.WithMultipliedAlpha(Boost);
 		Rect.m_BorderWidth = XuiTheme::Glass::RIM_WIDTH;
-		Rect.m_Border = ColorRGBA(1.0f, 1.0f, 1.0f, 0.42f);
-		Rect.m_Border2 = ColorRGBA(1.0f, 1.0f, 1.0f, 0.28f);
+		Rect.m_Border = ColorRGBA(1.0f, 1.0f, 1.0f, 0.16f);
+		Rect.m_Border2 = ColorRGBA(1.0f, 1.0f, 1.0f, 0.08f);
 		Rect.m_BorderAngle = XuiTheme::Glass::RIM_ANGLE;
 		Rect.m_ShadowOffset = vec2(0.0f, XuiTheme::Glass::SHADOW_Y);
 		Rect.m_ShadowBlur = XuiTheme::Glass::SHADOW_BLUR;
 		Rect.m_Shadow = XuiTheme::Glass::SHADOW;
 		Rect.m_Glass = 1.0f;
 		Rect.m_Saturation = XuiTheme::Glass::SATURATION;
-		Rect.m_Refraction = 1.0f;
+		Rect.m_Refraction = 0.35f;
 	}
 	pGraphics->DrawUiRects(&Rect, 1);
 }

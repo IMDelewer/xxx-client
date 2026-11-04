@@ -18,8 +18,6 @@ public:
 	bool Revealing() const { return m_Phase == EPhase::REVEAL; }
 	vec2 MapCenter() const { return m_MapCenter; }
 	float MapZoom() const;
-	float VortexAlpha() const;
-	float VortexBoost() const;
 
 private:
 	enum class EPhase

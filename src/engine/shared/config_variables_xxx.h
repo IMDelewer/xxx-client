@@ -9,6 +9,7 @@
 #endif
 
 // ui
+MACRO_CONFIG_INT(XxFontPrompt, xx_font_prompt, 1, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Offer the optional language fonts on first launch")
 MACRO_CONFIG_INT(XxSettingsTab, xx_settings_tab, 0, 0, 6, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Selected tab of the xxx settings page")
 MACRO_CONFIG_COL(XxUiAccent, xx_ui_accent, 0xBDFFB6, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Accent color of the user interface")
 #if defined(DDEV_XX)
@@ -20,13 +21,6 @@ MACRO_CONFIG_INT(XxGlassTest, xx_glass_test, 0, 0, 1, CFGFLAG_CLIENT, "Render th
 #if defined(DDEV_XX)
 MACRO_CONFIG_INT(XxUiGallery, xx_ui_gallery, 0, 0, 9, CFGFLAG_CLIENT, "Open the XUI widget gallery (1-5 selects the page, 6 context menu, 7 modal, 8 toast, 9 popover)")
 #endif
-MACRO_CONFIG_INT(XxMenuVortexSpeed, xx_menu_vortex_speed, 100, 10, 400, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Speed of the menu background vortex in percent")
-MACRO_CONFIG_INT(XxMenuVortexDensity, xx_menu_vortex_density, 100, 10, 300, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Particle density of the menu background vortex in percent")
-MACRO_CONFIG_INT(XxMenuBackground, xx_menu_background, 2, 0, 2, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Menu background: 0=map, 1=soft light, 2=vortex")
-MACRO_CONFIG_INT(XxMenuTees, xx_menu_tees, 1, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Show friends as tees on the menu map")
-MACRO_CONFIG_INT(XxMenuTeeCount, xx_menu_tee_count, 5, 1, 8, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Maximum tees on the menu map")
-MACRO_CONFIG_INT(XxMenuTeeDemo, xx_menu_tee_demo, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Show explicitly labelled demo tees instead of friends")
-MACRO_CONFIG_INT(XxMenuBackgroundMotion, xx_menu_background_motion, 1, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Animate the menu background and react to the cursor")
 MACRO_CONFIG_INT(XxUiSettingDescriptions, xx_ui_setting_descriptions, 1, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Show setting descriptions inline instead of in help tooltips")
 MACRO_CONFIG_STR(XxCustomCommunitiesUrl, xx_custom_communities_url, 256, "https://raw.githubusercontent.com/TaterClient/ddnet-custom-communities/refs/heads/main/custom-communities-ddnet-info.json", CFGFLAG_CLIENT | CFGFLAG_SAVE, "URL to fetch custom communities from (https), empty to disable")
 MACRO_CONFIG_INT(XxUiScale, xx_ui_scale, 100, 50, 200, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Scale of the XUI interface in percent")
@@ -116,7 +110,6 @@ MACRO_CONFIG_INT(XxNetDump, xx_net_dump, 0, 0, 2, CFGFLAG_SERVER, "Log network m
 MACRO_CONFIG_STR(XxProxyDst, xx_proxy_dst, 256, "", CFGFLAG_SERVER, "UDP proxy destination, hostname or IP with optional port (default 8303; set before startup)")
 MACRO_CONFIG_INT(XxProxyNet, xx_proxy_net, 0, 0, 2, CFGFLAG_SERVER, "Run a UDP proxy and dump to console (0 off, 1 without snapshots/input/preinput/command lists, 2 everything; set before startup)")
 
-// spoofer
 
 // social
 

@@ -810,6 +810,12 @@ vec2 CUi::CalcAlignedCursorPos(const CUIRect *pRect, vec2 TextSize, int Align, c
 	return Cursor;
 }
 
+ColorRGBA CUi::LabelColor() const
+{
+	const ColorRGBA Current = TextRender()->GetTextColor();
+	return Current == TextRender()->DefaultTextColor() ? m_DefaultLabelColor : Current;
+}
+
 CLabelResult CUi::DoLabel(const CUIRect *pRect, const char *pText, float Size, int Align, const SLabelProperties &LabelProps) const
 {
 	const int Flags = GetFlagsForLabelProperties(LabelProps, nullptr);
@@ -822,7 +828,10 @@ CLabelResult CUi::DoLabel(const CUIRect *pRect, const char *pText, float Size, i
 	Cursor.m_Flags |= Flags;
 	Cursor.m_vColorSplits = LabelProps.m_vColorSplits;
 	Cursor.m_LineWidth = (float)LabelProps.m_MaxWidth;
+	const ColorRGBA PreviousColor = TextRender()->GetTextColor();
+	TextRender()->TextColor(LabelColor());
 	TextRender()->TextEx(&Cursor, pText, -1);
+	TextRender()->TextColor(PreviousColor);
 	if(Cursor.m_Truncated && LabelProps.m_pTooltipId)
 	{
 		DoToolTip({LabelProps.m_pTooltipId,
@@ -853,12 +862,13 @@ void CUi::DoLabel(CUIElement::SUIElementRect &RectEl, const CUIRect *pRect, cons
 	}
 	Cursor.m_LineWidth = LabelProps.m_MaxWidth;
 
-	RectEl.m_TextColor = TextRender()->GetTextColor();
+	const ColorRGBA PreviousColor = TextRender()->GetTextColor();
+	RectEl.m_TextColor = LabelColor();
 	RectEl.m_TextOutlineColor = TextRender()->GetTextOutlineColor();
 	TextRender()->TextColor(TextRender()->DefaultTextColor());
 	TextRender()->TextOutlineColor(TextRender()->DefaultTextOutlineColor());
 	TextRender()->CreateTextContainer(RectEl.m_UITextContainer, &Cursor, pText, StrLen);
-	TextRender()->TextColor(RectEl.m_TextColor);
+	TextRender()->TextColor(PreviousColor);
 	TextRender()->TextOutlineColor(RectEl.m_TextOutlineColor);
 	RectEl.m_Cursor = std::move(Cursor);
 }
@@ -867,7 +877,7 @@ void CUi::DoLabelStreamed(CUIElement::SUIElementRect &RectEl, const CUIRect *pRe
 {
 	const int ReadCursorGlyphCount = pReadCursor == nullptr ? -1 : pReadCursor->m_GlyphCount;
 	bool NeedsRecreate = false;
-	bool ColorChanged = RectEl.m_TextColor != TextRender()->GetTextColor() || RectEl.m_TextOutlineColor != TextRender()->GetTextOutlineColor();
+	bool ColorChanged = RectEl.m_TextColor != LabelColor() || RectEl.m_TextOutlineColor != TextRender()->GetTextOutlineColor();
 	if((!RectEl.m_UITextContainer.Valid() && pText[0] != '\0' && StrLen != 0) || RectEl.m_Width != pRect->w || RectEl.m_Height != pRect->h || ColorChanged || RectEl.m_ReadCursorGlyphCount != ReadCursorGlyphCount)
 	{
 		NeedsRecreate = true;
@@ -1020,10 +1030,16 @@ bool CUi::DoEditBox(CLineInput *pLineInput, const CUIRect *pRect, float FontSize
 	}
 
 	// Render
-	pRect->Draw(ms_LightButtonColorFunction.GetColor(Active, HotItem() == pLineInput), Corners, 3.0f);
+	if(m_EditBoxBackgroundRenderer)
+		m_EditBoxBackgroundRenderer(*pRect, Corners, Active);
+	else
+		pRect->Draw(ms_LightButtonColorFunction.GetColor(Active, HotItem() == pLineInput), Corners, 3.0f);
 	ClipEnable(pRect);
 	Textbox.x -= ScrollOffset;
+	const ColorRGBA PreviousColor = TextRender()->GetTextColor();
+	TextRender()->TextColor(LabelColor());
 	const STextBoundingBox BoundingBox = pLineInput->Render(&Textbox, FontSize, TEXTALIGN_ML, Changed || CursorChanged, -1.0f, 0.0f, vColorSplits);
+	TextRender()->TextColor(PreviousColor);
 	ClipDisable();
 
 	// Scroll left or right if necessary

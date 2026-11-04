@@ -26,7 +26,6 @@ static constexpr float REVEAL_BLUR_TIME = 0.45f;
 static constexpr float REVEAL_ZOOM_TIME = 0.55f;
 static constexpr float REVEAL_UI_TIME = 0.3f;
 static constexpr float RETURN_TIME = 0.9f;
-static constexpr float LOADING_VORTEX_BOOST = 3.2f;
 static const char *const ACTIVITY_ID = "connect";
 
 static float EaseOut(float T)
@@ -133,20 +132,6 @@ float CTransition::MapZoom() const
 	if(!GameClient()->m_Camera.ZoomAllowed())
 		return 1.0f;
 	return 1.0f / SCENE_SCALE;
-}
-
-float CTransition::VortexAlpha() const
-{
-	if(m_Phase == EPhase::LOADING && m_MapReady)
-		return 1.0f - EaseOut((Now() - m_MapReadyTime) / FADE_IN_TIME);
-	if(m_Phase == EPhase::REVEAL || m_Phase == EPhase::GAME)
-		return 0.0f;
-	return EaseOut((Now() - m_ReturnStart) / RETURN_TIME);
-}
-
-float CTransition::VortexBoost() const
-{
-	return m_Phase == EPhase::LOADING ? LOADING_VORTEX_BOOST : 1.0f;
 }
 
 void CTransition::UpdateActivity()

@@ -358,8 +358,6 @@ void CMenus::Render()
 	if(ClientState != IClient::STATE_ONLINE && ClientState != IClient::STATE_DEMOPLAYBACK)
 	{
 		if(GameClient()->m_Xui.GalleryOpen())
-			GameClient()->m_Vortex.Render(1.0f, GameClient()->m_Transition.VortexBoost());
-		if(GameClient()->m_Xui.GalleryOpen())
 			return;
 	}
 

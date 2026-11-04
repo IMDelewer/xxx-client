@@ -4519,11 +4519,6 @@ int CClient::HandleChecksum(int Conn, CUuid Uuid, CUnpacker *pUnpacker)
 	return 0;
 }
 
-#ifndef GAME_CLIENT_COMPONENTS_XXX_SPOOFER_H
-#define GAME_CLIENT_COMPONENTS_XXX_SPOOFER_H
-#undef GAME_CLIENT_COMPONENTS_XXX_SPOOFER_H
-#endif
-
 void CClient::ConchainWindowScreen(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData)
 {
 	CClient *pSelf = (CClient *)pUserData;

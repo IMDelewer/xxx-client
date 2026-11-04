@@ -109,6 +109,7 @@ option(STEAM "Build the Steam release version" OFF)
 option(DISCORD "Enable Discord rich presence support" OFF)
 option(DISCORD_DYNAMIC "Enable discovering Discord rich presence libraries at runtime (Linux only)" OFF)
 option(PREFER_BUNDLED_LIBS "Prefer bundled libraries over system libraries" ${AUTO_DEPENDENCIES_DEFAULT})
+set(DDNET_LIBS_DIR "${PROJECT_SOURCE_DIR}/ddnet-libs" CACHE PATH "Directory containing the DDNet runtime libraries")
 option(DEV "Don't generate stuff necessary for packaging, don't strip absolute paths from debug info, enable additional assertions" OFF)
 option(DDEV_XX "Build developer tools and diagnostic commands" OFF)
 if(DDEV_XX)
@@ -499,7 +500,7 @@ function(set_extra_dirs_lib VARIABLE NAME)
     set(TYPE PATHS)
   endif()
   if(TARGET_BITS AND TARGET_OS)
-    set(DIR "ddnet-libs/${NAME}/${LIB_DIR}")
+    set(DIR "${DDNET_LIBS_DIR}/${NAME}/${LIB_DIR}")
     set("${TYPE}_${VARIABLE}_LIBDIR" "${DIR}" PARENT_SCOPE)
     set("EXTRA_${VARIABLE}_LIBDIR" "${DIR}" PARENT_SCOPE)
   endif()
@@ -511,7 +512,7 @@ function(set_extra_dirs_include VARIABLE NAME LIBRARY)
   is_bundled(IS_BUNDLED "${LIBRARY}")
   if(IS_BUNDLED)
     set(TMP_TARGET_OS ${TARGET_OS})
-    set("HINTS_${VARIABLE}_INCLUDEDIR" "ddnet-libs/${NAME}/include" "ddnet-libs/${NAME}/include/${TMP_TARGET_OS}" PARENT_SCOPE)
+    set("HINTS_${VARIABLE}_INCLUDEDIR" "${DDNET_LIBS_DIR}/${NAME}/include" "${DDNET_LIBS_DIR}/${NAME}/include/${TMP_TARGET_OS}" PARENT_SCOPE)
   endif()
 endfunction()
 
@@ -523,7 +524,7 @@ endif()
 
 function(is_bundled VARIABLE PATH)
   if(PATH)
-    string(FIND "${PATH}" "${PROJECT_SOURCE_DIR}" LOCAL_PATH_POS)
+    string(FIND "${PATH}" "${DDNET_LIBS_DIR}/" LOCAL_PATH_POS)
     if(LOCAL_PATH_POS EQUAL 0 AND TARGET_BITS AND TARGET_OS)
       set("${VARIABLE}" ON PARENT_SCOPE)
     else()
@@ -1505,7 +1506,6 @@ set(EXPECTED_DATA
   extras.png
   fonts/DejaVuSans.ttf
   fonts/Font_Awesome_6_Free-Solid-900.otf
-  fonts/GlowSansJ-Compressed-Book.otf
   fonts/Inter-Bold.ttf
   fonts/Inter-ExtraBold.ttf
   fonts/Inter-LICENSE.txt
@@ -1515,7 +1515,6 @@ set(EXPECTED_DATA
   fonts/Phosphor-Fill.ttf
   fonts/Phosphor-LICENSE.txt
   fonts/Phosphor.ttf
-  fonts/SourceHanSans.ttc
   fonts/index.json
   game.png
   gui_buttons.png
@@ -1915,8 +1914,6 @@ set(EXPECTED_DATA
   touch_controls.json
   wordlist.txt
   xxx/icon.png
-  xxx/menu_meadow.png
-  xxx/menu_world.png
   # tidy-alphabetical-end
 )
 
@@ -1926,12 +1923,20 @@ set_glob(DATA GLOB_RECURSE "cfg;frag;json;map;otf;png;rules;ttc;ttf;txt;vert;wv"
 # COPY DATA AND SHARED LIBS
 ########################################################################
 
+set(RUNTIME_DATA_MANIFEST "")
 foreach(datafile ${DATA})
   file(RELATIVE_PATH OUT ${PROJECT_SOURCE_DIR}/data ${datafile})
+  if(NOT OUT MATCHES "\\.(frag|vert)$")
+    string(APPEND RUNTIME_DATA_MANIFEST "data/${OUT}\n")
+  endif()
   get_filename_component(DESTINATION data/${OUT} PATH)
   file(MAKE_DIRECTORY ${DESTINATION})
   file(COPY ${datafile} DESTINATION ${DESTINATION})
 endforeach()
+foreach(shader ${VULKAN_SHADER_FILE_LIST})
+  string(APPEND RUNTIME_DATA_MANIFEST "${shader}\n")
+endforeach()
+file(WRITE "${PROJECT_BINARY_DIR}/runtime-data.txt" "${RUNTIME_DATA_MANIFEST}")
 set(COPY_FILES
   # tidy-alphabetical-start
   ${CRASHDUMP_COPY_FILES}
@@ -1950,6 +1955,14 @@ set(COPY_FILES
   # tidy-alphabetical-end
 )
 file(COPY ${COPY_FILES} DESTINATION .)
+set(RUNTIME_LIBRARY_MANIFEST "")
+foreach(library ${COPY_FILES})
+  if(library MATCHES "\\.dll$")
+    get_filename_component(name ${library} NAME)
+    string(APPEND RUNTIME_LIBRARY_MANIFEST "${name}\n")
+  endif()
+endforeach()
+file(WRITE "${PROJECT_BINARY_DIR}/runtime-libraries.txt" "${RUNTIME_LIBRARY_MANIFEST}")
 
 set(COPY_DIRS ${SDL2_COPY_DIRS})
 file(COPY ${COPY_DIRS} DESTINATION .)
@@ -2272,10 +2285,6 @@ set_src(ENGINE_SHARED GLOB_RECURSE src/engine/shared
   video.h
   websockets.cpp
   websockets.h
-  xx_checksum_capture.cpp
-  xx_checksum_capture.h
-  xx_netdump.cpp
-  xx_netdump.h
   # tidy-alphabetical-end
 )
 set_src(ENGINE_GFX GLOB src/engine/gfx
@@ -2538,6 +2547,8 @@ if(CLIENT)
     components/menu_services/demos.cpp
     components/menu_services/file_dialog.cpp
     components/menu_services/file_dialog.h
+    components/menu_services/fonts.cpp
+    components/menu_services/fonts.h
     components/menu_services/ghosts.cpp
     components/menu_services/map_previews.cpp
     components/menu_services/map_previews.h
@@ -2583,8 +2594,6 @@ if(CLIENT)
     components/xxx/trails.h
     components/xxx/transition.cpp
     components/xxx/transition.h
-    components/xxx/vortex.cpp
-    components/xxx/vortex.h
     dev/frame_metrics.h
     dev/glass_test.cpp
     dev/glass_test.h
@@ -2942,6 +2951,13 @@ if(SERVER)
     xx_proxy.cpp
     xx_proxy.h
     # tidy-alphabetical-end
+  )
+
+  list(APPEND ENGINE_SERVER_WITHOUT_MAIN
+    "${PROJECT_SOURCE_DIR}/src/engine/shared/xx_checksum_capture.cpp"
+    "${PROJECT_SOURCE_DIR}/src/engine/shared/xx_checksum_capture.h"
+    "${PROJECT_SOURCE_DIR}/src/engine/shared/xx_netdump.cpp"
+    "${PROJECT_SOURCE_DIR}/src/engine/shared/xx_netdump.h"
   )
 
   list(REMOVE_ITEM ENGINE_SERVER_WITHOUT_MAIN "${PROJECT_SOURCE_DIR}/src/engine/server/main.cpp")
@@ -3549,11 +3565,10 @@ list(APPEND CPACK_TARGETS ${TARGET_TOOLS})
 if(STEAMAPI_KIND STREQUAL SHARED)
   list(APPEND CPACK_TARGETS ${TARGET_STEAMAPI})
 endif()
-set(CPACK_DIRS data docs licenses)
+set(CPACK_DIRS data licenses)
 list(APPEND CPACK_DIRS ${COPY_DIRS})
 set(CPACK_FILES
   LICENSE
-  PROMT.md
   README.md
   ${COPY_FILES}
 )
@@ -3838,7 +3853,17 @@ if(TARGET_OS STREQUAL "windows")
 elseif(TARGET_OS STREQUAL "mac")
   set(PACKAGE_DEFAULT dmg)
 endif()
-add_custom_target(package_default DEPENDS package_${PACKAGE_DEFAULT})
+if(TARGET game-client)
+  add_custom_target(package_client
+    COMMAND ${Python3_EXECUTABLE} "${PROJECT_SOURCE_DIR}/scripts/package_client.py" --build "${PROJECT_BINARY_DIR}" --output "${PROJECT_BINARY_DIR}/dist"
+    DEPENDS game-client
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    VERBATIM
+  )
+  add_custom_target(package_default DEPENDS package_client)
+else()
+  add_custom_target(package_default DEPENDS package_${PACKAGE_DEFAULT})
+endif()
 
 add_custom_target(package_all DEPENDS ${PACKAGE_TARGETS})
 

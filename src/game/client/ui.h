@@ -483,6 +483,10 @@ private:
 	};
 	std::vector<SPopupMenu> m_vPopupMenus;
 	FPopupMenuClosedCallback m_pfnPopupMenuClosedCallback = nullptr;
+	std::function<void(const CUIRect &, int)> m_PopupBackgroundRenderer;
+	std::function<void(const CUIRect &, int, bool)> m_EditBoxBackgroundRenderer;
+	ColorRGBA m_DefaultLabelColor = ColorRGBA(1, 1, 1, 1);
+	ColorRGBA LabelColor() const;
 
 	static CUi::EPopupMenuFunctionResult PopupMessage(void *pContext, CUIRect View, bool Active);
 	static CUi::EPopupMenuFunctionResult PopupConfirm(void *pContext, CUIRect View, bool Active);
@@ -508,6 +512,9 @@ public:
 	static const float ms_FontmodHeight;
 
 	void Init(IKernel *pKernel);
+	void SetDefaultLabelColor(ColorRGBA Color) { m_DefaultLabelColor = Color; }
+	void SetPopupBackgroundRenderer(std::function<void(const CUIRect &, int)> Renderer) { m_PopupBackgroundRenderer = std::move(Renderer); }
+	void SetEditBoxBackgroundRenderer(std::function<void(const CUIRect &, int, bool)> Renderer) { m_EditBoxBackgroundRenderer = std::move(Renderer); }
 	IClient *Client() const { return m_pClient; }
 	IGraphics *Graphics() const { return m_pGraphics; }
 	IInput *Input() const { return m_pInput; }

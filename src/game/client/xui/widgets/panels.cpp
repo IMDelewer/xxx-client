@@ -24,9 +24,6 @@ IGraphics::SUiRect CXui::HomePanel(float Radius)
 	IGraphics::SUiRect R = GlassRect(Radius, 1.0f - g_Config.m_XxUiTransparency / 100.0f);
 	R.m_BorderWidth = 1.0f;
 	R.m_Border = XuiTheme::Home::BORDER;
-	R.m_Shadow = XuiTheme::Home::SHADOW;
-	R.m_ShadowOffset = vec2(0, 5);
-	R.m_ShadowBlur = 18;
 	return R;
 }
 
@@ -34,8 +31,6 @@ IGraphics::SUiRect CXui::GlassRect(float Radius, float PanelAlpha)
 {
 	IGraphics::SUiRect R{};
 	R.m_Radii = vec4(Radius, Radius, Radius, Radius);
-	if(PanelAlpha >= 0.0f)
-		PanelAlpha = 1.0f - g_Config.m_XxUiTransparency / 100.0f;
 	if(!g_Config.m_XxUiGlass)
 		PanelAlpha = 1.0f;
 	if(PanelAlpha < 0.0f)
@@ -58,7 +53,7 @@ IGraphics::SUiRect CXui::GlassRect(float Radius, float PanelAlpha)
 	R.m_ShadowBlur = XuiTheme::Glass::SHADOW_BLUR;
 	R.m_Glass = g_Config.m_XxUiGlass ? 1.0f : 0.0f;
 	R.m_Saturation = XuiTheme::Glass::SATURATION;
-	R.m_Refraction = 1.0f;
+	R.m_Refraction = 0.35f;
 	return R;
 }
 
@@ -90,9 +85,6 @@ IGraphics::SUiRect CXui::AccentRect(ColorRGBA Accent, float Radius)
 	R.m_Border = ColorRGBA(1, 1, 1, 0.35f);
 	R.m_Border2 = ColorRGBA(1, 1, 1, 0.0f);
 	R.m_BorderAngle = 90.0f;
-	R.m_Shadow = WithAlpha(Accent, 0.3f);
-	R.m_ShadowOffset = vec2(0.0f, 6.0f);
-	R.m_ShadowBlur = 20.0f;
 	return R;
 }
 
@@ -116,7 +108,6 @@ int CXui::GlassPanel(const SBox &B, const FBuild &Children, float Radius, bool D
 	Paint(Node, [Radius, Menu, Dark = Dark || Menu](CXui &Ui, const SRect &R) {
 		IGraphics::SUiRect Glass = Menu || Ui.LightTheme() ? HomePanel(Radius) : GlassRect(Radius, Dark ? XuiTheme::Glass::PANEL_ALPHA : -1.0f);
 		Ui.DrawRect(R, Glass);
-		Ui.DrawRect(R, GlassHairline(Radius));
 	});
 	return Node;
 }

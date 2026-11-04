@@ -56,15 +56,15 @@ namespace XuiTheme
 	namespace Glass
 	{
 		constexpr float BLUR = 22.0f;
-		constexpr float SATURATION = 1.7f;
+		constexpr float SATURATION = 1.15f;
 		inline const ColorRGBA FILL_TOP = ColorRGBA(1, 1, 1, 0.06f);
 		inline const ColorRGBA FILL_BOTTOM = ColorRGBA(1, 1, 1, 0.025f);
 		// rim: 1px stroke, linear gradient at 140deg with stops .42@0 .10@22% 0@45% 0@60% .12@82% .28@100%
 		constexpr float RIM_ANGLE = 140.0f;
 		constexpr float RIM_WIDTH = 1.0f;
-		inline const ColorRGBA SHADOW = ColorRGBA(0, 0, 0, 0.35f);
-		constexpr float SHADOW_Y = 12.0f;
-		constexpr float SHADOW_BLUR = 40.0f;
+		inline const ColorRGBA SHADOW = ColorRGBA(0, 0, 0, 0.18f);
+		constexpr float SHADOW_Y = 4.0f;
+		constexpr float SHADOW_BLUR = 16.0f;
 		inline const ColorRGBA INNER_STROKE = ColorRGBA(1, 1, 1, 0.06f);
 		constexpr float PANEL_ALPHA = 0.74f; // dark tint panel: rgba(14,14,18,a) -> rgba(8,8,10,a+.06)
 		inline const ColorRGBA PANEL_TOP = Rgb(0x0E0E12, PANEL_ALPHA);
@@ -232,12 +232,12 @@ namespace XuiTheme
 
 	namespace Radius
 	{
-		constexpr float XS = 9.0f;
-		constexpr float SM = 14.0f;
-		constexpr float MD = 18.0f;
-		constexpr float LG = 20.0f;
-		constexpr float XL = 22.0f;
-		constexpr float XXL = 26.0f;
+		constexpr float XS = 6.0f;
+		constexpr float SM = 8.0f;
+		constexpr float MD = 10.0f;
+		constexpr float LG = 12.0f;
+		constexpr float XL = 14.0f;
+		constexpr float XXL = 16.0f;
 		constexpr float PILL = -1.0f; // h / 2
 	}
 
@@ -275,25 +275,25 @@ namespace XuiTheme
 			float m_Stiffness;
 			float m_Damping;
 		};
-		constexpr SSpring PRESS = {520.0f, 26.0f}; // .3s cubic-bezier(.2,1.6,.4,1), scale 1.03 hover / .96 press
+		constexpr SSpring PRESS = {520.0f, 26.0f};
 		constexpr SSpring KNOB = {420.0f, 24.0f}; // .4s cubic-bezier(.2,1.5,.4,1)
 		constexpr SSpring INDICATOR = {300.0f, 24.0f}; // .55s cubic-bezier(.25,1.35,.4,1), dock and segmented indicator
 		constexpr SSpring ISLAND = {260.0f, 20.0f}; // .62s cubic-bezier(.2,1.25,.35,1)
 		constexpr SSpring LAYOUT = {260.0f, 26.0f}; // FLIP layout transitions
 		constexpr SSpring HOVER = {420.0f, 34.0f}; // colour and opacity fades, no overshoot
-		constexpr SSpring POP = {480.0f, 28.0f}; // .22s cubic-bezier(.2,1.4,.4,1), menus scale .92 -> 1
-		constexpr SSpring PAGE = {300.0f, 30.0f}; // .45s cubic-bezier(.2,1,.3,1), translateY 10 + scale .985 -> none
+		constexpr SSpring POP = {480.0f, 28.0f};
+		constexpr SSpring PAGE = {300.0f, 30.0f};
 		constexpr float WHEEL_IMPULSE = 620.0f; // px/s per wheel notch, at 900 px window height
 		constexpr float SCROLL_FRICTION = 7.0f;
 		constexpr float GC_SECONDS = 2.0f;
-		constexpr float POP_FROM = 0.92f;
-		constexpr float PAGE_FROM_SCALE = 0.985f;
-		constexpr float PAGE_FROM_Y = 10.0f;
-		constexpr float SWATCH_HOVER_SCALE = 1.15f;
-		constexpr float STAR_HOVER_SCALE = 1.2f;
-		constexpr float HOVER_SCALE = 1.03f;
-		constexpr float PRESS_SCALE = 0.96f;
-		constexpr float ICON_HOVER_SCALE = 1.14f;
+		constexpr float POP_FROM = 1.0f;
+		constexpr float PAGE_FROM_SCALE = 1.0f;
+		constexpr float PAGE_FROM_Y = 0.0f;
+		constexpr float SWATCH_HOVER_SCALE = 1.0f;
+		constexpr float STAR_HOVER_SCALE = 1.0f;
+		constexpr float HOVER_SCALE = 1.0f;
+		constexpr float PRESS_SCALE = 1.0f;
+		constexpr float ICON_HOVER_SCALE = 1.0f;
 		constexpr float FADE = 0.16f;
 		constexpr float STAGGER = 0.02f;
 	}

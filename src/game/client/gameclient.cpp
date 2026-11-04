@@ -167,17 +167,17 @@ void CGameClient::OnConsoleInit()
 					      &m_Motd,
 					      &m_CustomCommunities,
 					      &m_Teedata,
+					      &m_OptionalFonts,
 					      &m_Transition,
 					      &m_Menus,
 					      &m_Xui,
 					      &m_KeyBinder,
 					      &m_GameConsole,
-					      &m_MenuBackground,
 #if defined(DDEV_XX)
 					      &m_GlassTest,
 					      &m_DevInput,
 #endif
-					      &m_Vortex});
+					      &m_MenuBackground});
 
 	// build the input stack
 	m_vpInput.insert(m_vpInput.end(), {&m_KeyBinder, // this will take over all input when we want to bind a key

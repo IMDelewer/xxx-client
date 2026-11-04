@@ -2,15 +2,13 @@
     "font files": [
         "DejaVuSans.ttf",
         "Font_Awesome_6_Free-Solid-900.otf",
-        "GlowSansJ-Compressed-Book.otf",
         "Inter-Bold.ttf",
         "Inter-ExtraBold.ttf",
         "Inter-Medium.ttf",
         "Inter-Regular.ttf",
         "Inter-SemiBold.ttf",
         "Phosphor-Fill.ttf",
-        "Phosphor.ttf",
-        "SourceHanSans.ttc"
+        "Phosphor.ttf"
     ],
     "default": "DejaVu Sans",
     "language variants": {
@@ -19,9 +17,7 @@
         "simplified_chinese": "Source Han Sans SC",
         "traditional_chinese": "Source Han Sans TC"
     },
-    "fallbacks": [
-        "Source Han Sans"
-    ],
+    "fallbacks": [],
     "icon": "Font Awesome 6 Free",
     "ui": {
         "regular": "Inter Regular",
@@ -31,5 +27,19 @@
         "extrabold": "Inter ExtraBold",
         "phosphor": "Phosphor Regular",
         "phosphor fill": "Phosphor-Fill Regular"
-    }
+    },
+    "optional font files": [
+        {
+            "file": "GlowSansJ-Compressed-Book.otf",
+            "family": "Glow Sans J Compressed Book",
+            "size": 9001212,
+            "sha256": "7f084ff775e8e958eb0511c2e396ae4e60e53e19d856cd3555911402a793f0d2"
+        },
+        {
+            "file": "SourceHanSans.ttc",
+            "family": "Source Han Sans",
+            "size": 20331260,
+            "sha256": "aba89747cadf8525e1baa8da817deeefd34a3d61e9c121c70ead7d38098a8e1b"
+        }
+    ]
 }

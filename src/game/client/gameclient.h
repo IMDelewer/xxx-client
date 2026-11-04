@@ -54,6 +54,7 @@
 #include "components/maplayers.h"
 #include "components/mapsounds.h"
 #include "components/menu_background.h"
+#include "components/menu_services/fonts.h"
 #include "components/menu_services/teedata.h"
 #include "components/menus.h"
 #include "components/motd.h"
@@ -81,7 +82,6 @@
 #include "components/xxx/rainbow.h"
 #include "components/xxx/trails.h"
 #include "components/xxx/transition.h"
-#include "components/xxx/vortex.h"
 #include "xui/xui.h"
 
 #include <memory>
@@ -222,11 +222,11 @@ public:
 	CXui m_Xui;
 	CCustomCommunities m_CustomCommunities;
 	CTeedataCatalog m_Teedata;
+	COptionalFonts m_OptionalFonts;
 #if defined(DDEV_XX)
 	CDevInput m_DevInput;
 #endif
 	CTransition m_Transition;
-	CVortex m_Vortex;
 
 private:
 	std::vector<class CComponent *> m_vpAll;

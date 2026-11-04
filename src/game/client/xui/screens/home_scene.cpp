@@ -48,15 +48,24 @@ void CHomeScene::Render(CXui &Ui, CMenus &, vec2 Size)
 	if(!m_Loaded)
 	{
 		CImageInfo Image;
-		const bool Custom = !Path.empty() && pGame->Graphics()->LoadPng(Image, Path.c_str(), IStorage::TYPE_ALL_OR_ABSOLUTE);
-		if(Custom || pGame->Graphics()->LoadPng(Image, "xxx/menu_world.png", IStorage::TYPE_ALL))
+		if(!Path.empty() && pGame->Graphics()->LoadPng(Image, Path.c_str(), IStorage::TYPE_ALL_OR_ABSOLUTE))
 		{
 			m_ImageSize = vec2(Image.m_Width, Image.m_Height);
 			ConvertToRgba(Image);
-			m_Background = pGame->Graphics()->LoadTextureRawMove(Image, 0, "xxx/menu_world.png");
+			m_Background = pGame->Graphics()->LoadTextureRawMove(Image, 0, "menu background");
 		}
 		m_Loaded = true;
 		m_LoadedPath = Path;
+	}
+	if(!m_Background.IsValid())
+	{
+		SBox Background;
+		Background.m_Position = EPos::ABSOLUTE;
+		Background.m_Left = Background.m_Top = Background.m_Right = Background.m_Bottom = 0.0f;
+		Ui.Paint(Ui.Row(Background), [](CXui &U, const SRect &Rc) {
+			U.DrawRect(Rc, CXui::SolidRect(XuiTheme::Color::BACKGROUND, 0));
+		});
+		return;
 	}
 	const vec2 ImageSize = m_ImageSize;
 	const float Scale = std::max(Size.x / ImageSize.x, Size.y / ImageSize.y);

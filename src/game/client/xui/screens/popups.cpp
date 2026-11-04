@@ -112,6 +112,7 @@ bool CXui::HandlesPopup(int Popup)
 	case CMenus::POPUP_RESTART:
 	case CMenus::POPUP_FIRST_LAUNCH:
 	case CMenus::POPUP_LANGUAGE:
+	case CMenus::POPUP_OPTIONAL_FONTS:
 	case CMenus::POPUP_POINTS:
 	case CMenus::POPUP_WARNING:
 		return true;
@@ -122,6 +123,9 @@ bool CXui::HandlesPopup(int Popup)
 
 void CXui::RenderShellPopup(CMenus &M)
 {
+	COptionalFonts &Fonts = GameClient()->m_OptionalFonts;
+	if(M.m_Popup == CMenus::POPUP_NONE && Fonts.Offer())
+		M.m_Popup = CMenus::POPUP_OPTIONAL_FONTS;
 	static bool s_Open = true;
 	const int Popup = M.m_Popup;
 	static int s_PreviousPopup = CMenus::POPUP_NONE;
@@ -149,6 +153,10 @@ void CXui::RenderShellPopup(CMenus &M)
 		case CMenus::POPUP_MESSAGE: Choose(CMenus::BUTTON_CONFIRM); break;
 		case CMenus::POPUP_CONFIRM: Choose(CMenus::BUTTON_CANCEL); break;
 		case CMenus::POPUP_LANGUAGE: M.m_Popup = CMenus::POPUP_FIRST_LAUNCH; break;
+		case CMenus::POPUP_OPTIONAL_FONTS:
+			Fonts.Dismiss();
+			M.m_Popup = CMenus::POPUP_NONE;
+			break;
 		case CMenus::POPUP_FIRST_LAUNCH:
 			Client()->RequestDDNetInfo();
 			M.m_JoinTutorial.m_Queued = false;
@@ -291,10 +299,9 @@ void CXui::RenderShellPopup(CMenus &M)
 				{
 					const bool Active = str_comp(vLanguages[i].m_Filename.c_str(), g_Config.m_ClLanguagefile) == 0;
 					PushId((uint32_t)i + 1);
-					if(NavItem({vLanguages[i].m_Name.c_str(), Active ? Ph::CHECK : nullptr}, Active).m_Clicked && !Active)
+					if(NavItem({Fonts.Installed() ? vLanguages[i].m_Name.c_str() : COptionalFonts::LanguageName(vLanguages[i].m_Filename.c_str(), vLanguages[i].m_Name.c_str()), Active ? Ph::CHECK : nullptr}, Active).m_Clicked && !Active)
 					{
-						str_copy(g_Config.m_ClLanguagefile, vLanguages[i].m_Filename.c_str());
-						GameClient()->OnLanguageChange();
+						Fonts.SelectLanguage(vLanguages[i].m_Filename.c_str());
 					}
 					PopId();
 				}
@@ -305,6 +312,22 @@ void CXui::RenderShellPopup(CMenus &M)
 			});
 			break;
 		}
+
+		case CMenus::POPUP_OPTIONAL_FONTS:
+			Head(*this, Ph::TRANSLATE, Accent(), Localize("Additional languages"), Localize("Download fonts for Japanese, Korean and Chinese? The optional download is 29 MB. You can install it later in Settings."));
+			Buttons(*this, [&]() {
+				if(Btn(*this, Localize("Later"), false, "fonts.later"))
+				{
+					Fonts.Dismiss();
+					M.m_Popup = CMenus::POPUP_NONE;
+				}
+				if(Btn(*this, Localize("Download"), true, "fonts.download") || Enter)
+				{
+					Fonts.Start();
+					M.m_Popup = CMenus::POPUP_NONE;
+				}
+			});
+			break;
 
 		case CMenus::POPUP_FIRST_LAUNCH:
 		{
