@@ -45,6 +45,8 @@ jobs:
           key: macos-runtime-c0e6703f-moltenvk-1.4.2-${{ runner.arch }}
       - name: Pinned macOS runtime
         if: runner.os == 'macOS'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: python3 scripts/fetch_macos_dependencies.py --output "${{ runner.temp }}/xxx-dependencies"
       - name: Windows Vulkan SDK
         if: runner.os == 'Windows'

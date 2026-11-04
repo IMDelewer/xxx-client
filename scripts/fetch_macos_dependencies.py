@@ -4,10 +4,12 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
+import os
 from pathlib import Path
 import platform
 import shutil
 import tarfile
+import urllib.parse
 import urllib.request
 
 
@@ -17,7 +19,13 @@ LIBRARIES = {"curl", "freetype", "opus", "png", "sdl", "wavpack", "zlib"}
 
 
 def download(url):
-    with urllib.request.urlopen(url, timeout=60) as response:
+    headers = {"User-Agent": "xxx-client-build"}
+    token = os.environ.get("GITHUB_TOKEN")
+    target = urllib.parse.urlsplit(url)
+    if token and target.scheme == "https" and target.hostname == "api.github.com":
+        headers["Authorization"] = "Bearer " + token
+    request = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(request, timeout=60) as response:
         return response.read()
 
 

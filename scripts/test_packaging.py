@@ -5,11 +5,13 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from check_public_tree import main as check_public_tree
+from fetch_macos_dependencies import download
 from package_client import copy_runtime_data, macos_dependency_exists, prepare_macos_binaries
 from release_notes import notes_for_version
 
@@ -84,8 +86,25 @@ class ReleaseNotesTests(unittest.TestCase):
                 notes_for_version(changelog, "0.2.0")
 
 
+class MacosDownloadTests(unittest.TestCase):
+    def test_token_is_only_sent_to_the_github_api(self):
+        for url in ("https://api.github.com/repos/ddnet/ddnet-libs/git/trees/pinned", "https://raw.githubusercontent.com/ddnet/ddnet-libs/pinned/file", "https://github.com/KhronosGroup/MoltenVK/releases/download/pinned/runtime.tar", "https://api.github.com.example.invalid/file", "http://api.github.com/repos/ddnet/ddnet-libs/git/trees/pinned"):
+            with self.subTest(url=url), patch.dict(os.environ, {"GITHUB_TOKEN": "test-only-token"}), patch("fetch_macos_dependencies.urllib.request.urlopen") as open_url:
+                open_url.return_value.__enter__.return_value.read.return_value = b"payload"
+                self.assertEqual(download(url), b"payload")
+                request = open_url.call_args.args[0]
+                expected = "Bearer test-only-token" if url.startswith("https://api.github.com/") else None
+                self.assertEqual(request.get_header("Authorization"), expected)
+
+    def test_local_downloads_work_without_a_token(self):
+        with patch.dict(os.environ, {}, clear=True), patch("fetch_macos_dependencies.urllib.request.urlopen") as open_url:
+            open_url.return_value.__enter__.return_value.read.return_value = b"payload"
+            self.assertEqual(download("https://api.github.com/repos/ddnet/ddnet-libs/git/trees/pinned"), b"payload")
+            self.assertIsNone(open_url.call_args.args[0].get_header("Authorization"))
+
+
 class MacosCompatibilityTests(unittest.TestCase):
-    @unittest.skipUnless(shutil.which("cmake"), "CMake is required for framework discovery")
+    @unittest.skipUnless(sys.platform == "darwin" and shutil.which("cmake"), "Framework discovery requires macOS and CMake")
     def test_headers_come_from_the_selected_framework(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -114,7 +133,8 @@ if(NOT SDL2_INCLUDEDIR STREQUAL "{headers.as_posix()}")
   message(FATAL_ERROR "The selected framework headers were not found")
 endif()
 ''')
-            subprocess.run(["cmake", "-P", str(script)], check=True, capture_output=True, text=True)
+            result = subprocess.run(["cmake", "-P", str(script)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_missing_framework_cannot_pass_dependency_check(self):
         with tempfile.TemporaryDirectory() as temporary:
