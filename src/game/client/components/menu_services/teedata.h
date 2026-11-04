@@ -12,6 +12,8 @@
 
 class CTeedataCatalog : public CComponent
 {
+	class CPreviewJob;
+
 public:
 	struct SItem
 	{
@@ -20,6 +22,7 @@ public:
 		IGraphics::CTextureHandle m_Texture;
 		vec2 m_Size = vec2(1, 1);
 		std::shared_ptr<IHttpRequest> m_pPreview;
+		std::shared_ptr<CPreviewJob> m_pDecode;
 		bool m_PreviewRequested = false;
 	};
 	int Sizeof() const override { return sizeof(*this); }

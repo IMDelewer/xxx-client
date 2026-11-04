@@ -51,11 +51,13 @@ private:
 		std::shared_ptr<class IHttpRequest> m_pHttp;
 		SPreview m_Preview;
 		int64_t m_LastUse = 0;
+		size_t m_TextureBytes = 0;
 		bool m_Failed = false;
 		bool m_Thumb = false;
 	};
 
 	void UpdateThumb(const char *pMap, SEntry &Entry);
+	void LoadCurrent();
 	void UnloadCurrent();
 	void FlushDeferred();
 	std::vector<IGraphics::CTextureHandle> m_vDeferredUnload;

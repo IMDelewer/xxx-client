@@ -1390,6 +1390,9 @@ void CGraphics_Threaded::FlushUiRects()
 		m_pCommandBuffer->AddRenderCalls(1);
 		m_UiDrawCalls++;
 	}
+	vBatch.clear();
+	if(m_vUiRectBatch.empty())
+		m_vUiRectBatch.swap(vBatch);
 }
 
 void CGraphics_Threaded::ResetUiFrame()

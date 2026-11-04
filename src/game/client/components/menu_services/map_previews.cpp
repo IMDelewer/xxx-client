@@ -211,8 +211,8 @@ bool CMapPreviews::BuildImage(const CTile *pGame, const CTile *pFront, const CTe
 		}
 	}
 
-	const int Step = std::max(1, (std::max(Width, Height) + 4095) / 4096);
-	Scale = Step > 1 ? 1 : std::max(1, Scale);
+	const int Step = std::max(1, (std::max(Width, Height) + 1023) / 1024);
+	Scale = Step > 1 ? 1 : std::clamp(Scale, 1, std::max(1, 1024 / std::max(Width, Height)));
 	Image.Free();
 	Image.m_Width = (size_t)(Width + Step - 1) / Step * Scale;
 	Image.m_Height = (size_t)(Height + Step - 1) / Step * Scale;
@@ -250,6 +250,10 @@ bool CMapPreviews::BuildImage(CLayers &Layers, int Scale, CImageInfo &Image)
 void CMapPreviews::OnMapLoad()
 {
 	UnloadCurrent();
+}
+
+void CMapPreviews::LoadCurrent()
+{
 	const CMapItemLayerTilemap *pGameLayer = Layers()->GameLayer();
 	if(pGameLayer == nullptr)
 		return;
@@ -262,26 +266,33 @@ void CMapPreviews::OnMapLoad()
 	m_Current.m_Texture = Graphics()->LoadTextureRawMove(Image, 0, "minimap");
 }
 
-
-
-
-
 void CMapPreviews::OnUpdate()
 {
 	FlushDeferred();
-	if(m_Previews.size() <= 48)
-		return;
+	auto EntryBytes = [](const SEntry &Entry) {
+		const size_t Pending = Entry.m_pJob && Entry.m_pJob->State() == IJob::STATE_DONE ? Entry.m_pJob->m_Image.m_Width * Entry.m_pJob->m_Image.m_Height * 4 : 0;
+		return Entry.m_TextureBytes + Pending;
+	};
+	size_t Bytes = 0;
+	for(const auto &[_, Entry] : m_Previews)
+		Bytes += EntryBytes(Entry);
 	const int64_t Now = time_get();
-	for(auto It = m_Previews.begin(); It != m_Previews.end();)
+	while(m_Previews.size() > 48 || Bytes > 32 * 1024 * 1024)
 	{
-		SEntry &Entry = It->second;
-		if(Entry.m_pJob == nullptr && Now - Entry.m_LastUse > time_freq() * 30)
+		auto Oldest = m_Previews.end();
+		for(auto It = m_Previews.begin(); It != m_Previews.end(); ++It)
 		{
-			Graphics()->UnloadTexture(&Entry.m_Preview.m_Texture);
-			It = m_Previews.erase(It);
+			const SEntry &Entry = It->second;
+			if((Entry.m_pJob && !Entry.m_pJob->Done()) || (Entry.m_pHttp && !Entry.m_pHttp->Done()) || Now - Entry.m_LastUse < time_freq() * 2)
+				continue;
+			if(Oldest == m_Previews.end() || Entry.m_LastUse < Oldest->second.m_LastUse)
+				Oldest = It;
 		}
-		else
-			++It;
+		if(Oldest == m_Previews.end())
+			break;
+		Bytes -= EntryBytes(Oldest->second);
+		Graphics()->UnloadTexture(&Oldest->second.m_Preview.m_Texture);
+		m_Previews.erase(Oldest);
 	}
 }
 
@@ -318,6 +329,8 @@ void CMapPreviews::UnloadPreviews()
 	{
 		if(Entry.m_pJob)
 			Entry.m_pJob->Abort();
+		if(Entry.m_pHttp)
+			Entry.m_pHttp->Abort();
 		Graphics()->UnloadTexture(&Entry.m_Preview.m_Texture);
 	}
 	m_Previews.clear();
@@ -327,8 +340,12 @@ CMapPreviews::SPreview CMapPreviews::Preview(const char *pMap, int Crc)
 {
 	if(pMap == nullptr || pMap[0] == '\0')
 		return SPreview();
-	if(m_Current.Valid() && Client()->State() == IClient::STATE_ONLINE && GameClient()->Map()->IsLoaded() && str_comp(pMap, GameClient()->Map()->BaseName()) == 0)
+	if(Client()->State() == IClient::STATE_ONLINE && GameClient()->Map()->IsLoaded() && str_comp(pMap, GameClient()->Map()->BaseName()) == 0)
+	{
+		if(!m_Current.Valid())
+			LoadCurrent();
 		return m_Current;
+	}
 	char aKey[MAX_MAP_LENGTH + 16];
 	str_format(aKey, sizeof(aKey), "%s_%08x", pMap, Crc);
 	auto It = m_Previews.find(aKey);
@@ -336,7 +353,7 @@ CMapPreviews::SPreview CMapPreviews::Preview(const char *pMap, int Crc)
 	{
 		int Running = 0;
 		for(const auto &[_, Entry] : m_Previews)
-			Running += Entry.m_pJob != nullptr;
+			Running += Entry.m_pJob && !Entry.m_pJob->Done();
 		if(Running >= 2)
 			return SPreview();
 		It = m_Previews.emplace(aKey, SEntry()).first;
@@ -351,6 +368,7 @@ CMapPreviews::SPreview CMapPreviews::Preview(const char *pMap, int Crc)
 		{
 			Entry.m_Preview.m_Size = Entry.m_pJob->m_Size;
 			Entry.m_Preview.m_Focus = Entry.m_pJob->m_Focus;
+			Entry.m_TextureBytes = Entry.m_pJob->m_Image.m_Width * Entry.m_pJob->m_Image.m_Height * 4;
 			Entry.m_Preview.m_Texture = Graphics()->LoadTextureRawMove(Entry.m_pJob->m_Image, 0, aKey);
 		}
 		else
@@ -400,6 +418,10 @@ void CMapPreviews::UpdateThumb(const char *pMap, SEntry &Entry)
 		{
 			Entry.m_Preview.m_Size = ivec2(Image.m_Width, Image.m_Height);
 			ConvertToRgba(Image);
+			const size_t Largest = std::max(Image.m_Width, Image.m_Height);
+			if(Largest > 512)
+				ResizeImage(Image, std::max<size_t>(1, Image.m_Width * 512 / Largest), std::max<size_t>(1, Image.m_Height * 512 / Largest));
+			Entry.m_TextureBytes = Image.m_Width * Image.m_Height * 4;
 			Entry.m_Preview.m_Texture = Graphics()->LoadTextureRawMove(Image, 0, aPath);
 			return true;
 		}
@@ -430,7 +452,7 @@ void CMapPreviews::UpdateThumb(const char *pMap, SEntry &Entry)
 	}
 	int Running = 0;
 	for(const auto &[_, Other] : m_Previews)
-		Running += Other.m_pHttp != nullptr;
+		Running += Other.m_pHttp && !Other.m_pHttp->Done();
 	if(Running >= 3)
 		return;
 	Entry.m_Thumb = true;
@@ -441,6 +463,7 @@ void CMapPreviews::UpdateThumb(const char *pMap, SEntry &Entry)
 	str_format(aUrl, sizeof(aUrl), "https://ddnet.org/ranks/maps/%s.png", aEscaped);
 	std::shared_ptr<IHttpRequest> pRequest = HttpGetFile(aUrl, Storage(), aPath, IStorage::TYPE_SAVE);
 	pRequest->Timeout(CTimeout{8000, 0, 500, 10});
+	pRequest->MaxResponseSize(8 * 1024 * 1024);
 	pRequest->LogProgress(HTTPLOG::NONE);
 	pRequest->FailOnErrorStatus(true);
 	Entry.m_pHttp = pRequest;

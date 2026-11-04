@@ -126,6 +126,7 @@ namespace
 				const json_value &T = *Types.u.object.values[i].value;
 				P.m_vCategories.push_back({Types.u.object.values[i].name, (int)Num(T["points"]["points"]), (int)Num(T["points"]["total"]), (int)Num(T["points"]["rank"])});
 			}
+		std::sort(P.m_vCategories.begin(), P.m_vCategories.end(), [](const SCategory &A, const SCategory &B) { return A.m_Points > B.m_Points; });
 		P.m_vActivity.clear();
 		const json_value &Activity = Root["activity"];
 		if(Activity.type == json_array)
@@ -444,10 +445,8 @@ void CXui::RenderProfile(CMenus &M)
 			Categories.m_Padding = SEdges(20.0f);
 			Card(Categories, [&]() {
 				Text(Localize("Points by category"), Style(12.0f, EFont::SEMIBOLD, XuiTheme::Color::TEXT3));
-				std::vector<SCategory> vSorted = P.m_vCategories;
-				std::sort(vSorted.begin(), vSorted.end(), [](const SCategory &A, const SCategory &B) { return A.m_Points > B.m_Points; });
 				int Shown = 0;
-				for(const SCategory &Cat : vSorted)
+				for(const SCategory &Cat : P.m_vCategories)
 				{
 					if(Cat.m_Points <= 0 || Shown++ >= 7)
 						continue;

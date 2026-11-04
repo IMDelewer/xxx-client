@@ -696,11 +696,11 @@ CXui::SText *CXui::GetText(const char *pText, float SizePx, EFont Font, float Wi
 
 void CXui::TrimTextCache()
 {
-	if(m_TextCache.size() < 2000)
+	if(m_TextCache.size() < 2000 || (m_TextCache.size() <= 4096 && m_Frame % 30 != 0))
 		return;
 	for(auto It = m_TextCache.begin(); It != m_TextCache.end();)
 	{
-		if(m_Frame - It->second.m_Used > 120)
+		if(m_Frame - It->second.m_Used > 120 || (m_TextCache.size() > 4096 && It->second.m_Used + 1 < m_Frame))
 		{
 			if(It->second.m_Index.Valid())
 				TextRender()->DeleteTextContainer(It->second.m_Index);
@@ -934,11 +934,11 @@ void CXui::Flush()
 {
 	if(!m_vPendRects.empty())
 	{
-		std::vector<IGraphics::SUiRect> vRects;
-		vRects.reserve(m_vPendRects.size());
+		m_vRectBatch.clear();
+		m_vRectBatch.reserve(m_vPendRects.size());
 		for(const SPendingRect &Rect : m_vPendRects)
-			vRects.push_back(Rect.m_Rect);
-		Graphics()->DrawUiRects(vRects.data(), (int)vRects.size());
+			m_vRectBatch.push_back(Rect.m_Rect);
+		Graphics()->DrawUiRects(m_vRectBatch.data(), (int)m_vRectBatch.size());
 		m_vPendRects.clear();
 	}
 	if(m_vPendDraws.empty())

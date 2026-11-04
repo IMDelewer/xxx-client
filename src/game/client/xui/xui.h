@@ -657,6 +657,7 @@ private:
 	Xui::SXf m_CurXf;
 	float m_CurAlpha = 1.0f;
 	std::vector<SPendingRect> m_vPendRects;
+	std::vector<IGraphics::SUiRect> m_vRectBatch;
 	std::vector<SPendingDraw> m_vPendDraws;
 	std::vector<std::function<void()>> m_vAfterFrame;
 	bool m_ClipOn = false;

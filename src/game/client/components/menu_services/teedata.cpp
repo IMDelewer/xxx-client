@@ -3,9 +3,12 @@
 #include <base/io.h>
 #include <base/str.h>
 
+#include <engine/engine.h>
 #include <engine/external/json-parser/json.h>
+#include <engine/gfx/image_loader.h>
 #include <engine/gfx/image_manipulation.h>
 #include <engine/shared/config.h>
+#include <engine/shared/jobs.h>
 #include <engine/storage.h>
 
 #include <game/client/gameclient.h>
@@ -37,6 +40,40 @@ namespace
 		return Url.size() < 256 ? Url : "";
 	}
 }
+
+class CTeedataCatalog::CPreviewJob : public IJob
+{
+	std::shared_ptr<IHttpRequest> m_pRequest;
+
+public:
+	CImageInfo m_Image;
+	vec2 m_Size = vec2(1, 1);
+	bool m_Ok = false;
+
+	explicit CPreviewJob(std::shared_ptr<IHttpRequest> pRequest) :
+		m_pRequest(std::move(pRequest))
+	{
+		Abortable(false);
+	}
+
+protected:
+	void Run() override
+	{
+		unsigned char *pData;
+		size_t Size;
+		m_pRequest->Result(&pData, &Size);
+		CByteBufferReader Reader(pData, Size);
+		int Incompatible;
+		if(!CImageLoader::LoadPng(Reader, "teedata preview", m_Image, Incompatible) || !ConvertToRgba(m_Image))
+			return;
+		m_Size = vec2(m_Image.m_Width, m_Image.m_Height);
+		const size_t Largest = std::max(m_Image.m_Width, m_Image.m_Height);
+		if(Largest > 512)
+			ResizeImage(m_Image, std::max<size_t>(1, m_Image.m_Width * 512 / Largest), std::max<size_t>(1, m_Image.m_Height * 512 / Largest));
+		m_Ok = true;
+		m_pRequest.reset();
+	}
+};
 
 void CTeedataCatalog::ClearItems()
 {
@@ -208,26 +245,29 @@ void CTeedataCatalog::OnRender()
 	if(m_pInstall && m_pInstall->Done())
 		FinishInstall();
 	int Active = 0;
+	bool Uploaded = false;
 	for(SItem &Item : m_vItems)
 	{
 		if(Item.m_pPreview && Item.m_pPreview->Done())
 		{
 			if(Item.m_pPreview->State() == EHttpState::DONE)
 			{
-				unsigned char *pData;
-				size_t Size;
-				Item.m_pPreview->Result(&pData, &Size);
-				CImageInfo Image;
-				if(Graphics()->LoadPng(Image, pData, Size, "teedata preview"))
-				{
-					Item.m_Size = vec2(Image.m_Width, Image.m_Height);
-					ConvertToRgba(Image);
-					Item.m_Texture = Graphics()->LoadTextureRawMove(Image, 0, "teedata preview");
-				}
+				Item.m_pDecode = std::make_shared<CPreviewJob>(Item.m_pPreview);
+				Engine()->AddJob(Item.m_pDecode);
 			}
 			Item.m_pPreview.reset();
 		}
-		Active += Item.m_pPreview != nullptr;
+		if(Item.m_pDecode && Item.m_pDecode->State() == IJob::STATE_DONE && !Uploaded)
+		{
+			if(Item.m_pDecode->m_Ok)
+			{
+				Item.m_Size = Item.m_pDecode->m_Size;
+				Item.m_Texture = Graphics()->LoadTextureRawMove(Item.m_pDecode->m_Image, 0, "teedata preview");
+				Uploaded = true;
+			}
+			Item.m_pDecode.reset();
+		}
+		Active += Item.m_pPreview != nullptr || Item.m_pDecode != nullptr;
 	}
 	for(SItem &Item : m_vItems)
 	{
