@@ -47,7 +47,7 @@ def main():
             for entry in fonts.get("optional font files", []):
                 if (package / "data/fonts" / entry["file"]).exists():
                     failures.append(f"Optional font bundled in the main package: {entry['file']}")
-        for relative in ("docs/screenshots", "PROMT.md", "data/spoofclients", "data/xxx/menu_meadow.png", "data/xxx/menu_world.png"):
+        for relative in ("docs/screenshots", "PROMT.md", "data/spoofclients", "data/xxx/menu_meadow.png"):
             if (package / relative).exists():
                 failures.append(f"Unexpected package content: {relative}")
     if failures:

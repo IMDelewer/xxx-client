@@ -1,3 +1,5 @@
+from contextlib import redirect_stderr, redirect_stdout
+import io
 import json
 import os
 from pathlib import Path
@@ -5,6 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from check_public_tree import main as check_public_tree
 from package_client import copy_runtime_data, macos_dependency_exists, prepare_macos_binaries
 from release_notes import notes_for_version
 
@@ -43,6 +46,28 @@ class RuntimeManifestTests(unittest.TestCase):
         (self.build / "runtime-data.txt").unlink()
         with self.assertRaises(SystemExit):
             copy_runtime_data(self.build, self.destination)
+
+
+class PackageContentsTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.package = Path(self.temporary.name)
+        (self.package / "data/fonts").mkdir(parents=True)
+        (self.package / "data/fonts/index.json").write_text(json.dumps({"optional font files": [{"file": "optional.ttf"}]}))
+        (self.package / "data/xxx").mkdir()
+        (self.package / "data/xxx/menu_world.png").write_bytes(b"background fixture")
+
+    def check_package(self):
+        with patch("sys.argv", ["check_public_tree.py", "--package-dir", str(self.package)]), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+            return check_public_tree()
+
+    def test_original_background_is_allowed(self):
+        self.assertEqual(self.check_package(), 0)
+
+    def test_optional_fonts_remain_excluded(self):
+        (self.package / "data/fonts/optional.ttf").write_bytes(b"optional font fixture")
+        self.assertEqual(self.check_package(), 1)
 
 
 class ReleaseNotesTests(unittest.TestCase):
