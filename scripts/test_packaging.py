@@ -28,7 +28,7 @@ class RuntimeManifestTests(unittest.TestCase):
         (self.build / "data/spoofclients").mkdir()
         (self.build / "data/spoofclients/private.json").write_text("{}")
         copy_runtime_data(self.build, self.destination)
-        self.assertEqual([str(path.relative_to(self.destination)) for path in self.destination.rglob("*") if path.is_file()], ["data/fonts/index.json"])
+        self.assertEqual([path.relative_to(self.destination).as_posix() for path in self.destination.rglob("*") if path.is_file()], ["data/fonts/index.json"])
 
     def test_rejects_private_fonts_shaders_and_path_traversal(self):
         for entry in ("data/fonts/optional.ttf", "data/spoofclients/private.json", "data/shader/code.frag", "../secret", "/data/secret"):
