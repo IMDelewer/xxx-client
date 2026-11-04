@@ -256,8 +256,6 @@ namespace XuiTheme
 		constexpr float PAGE_SUBTITLE = 13.5f;
 		constexpr float LINE_HEIGHT = 1.21f; // Inter normal line height
 		constexpr float BASELINE_SHIFT = 0.0f; // em, vertical optical correction of text inside its line box
-		constexpr float ICON_SHIFT_X = -0.125f; // em, Phosphor glyphs land right of their advance box
-		constexpr float ICON_SHIFT_Y = 0.19f; // em, and above the line box centre
 		constexpr float BODY = 14.0f;
 		constexpr float SMALL = 13.0f;
 		constexpr float CAPTION = 12.0f;

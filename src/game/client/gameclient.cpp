@@ -604,7 +604,6 @@ void CGameClient::OnConnected()
 		pComponent->OnReset();
 	}
 	Ui()->OnReset();
-	m_Transition.OnMapLoaded();
 
 	ConfigManager()->ResetGameSettings();
 	LoadMapSettings();

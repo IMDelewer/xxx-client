@@ -59,6 +59,7 @@ struct SGlyph
 	float m_OffsetX;
 	float m_OffsetY;
 	float m_AdvanceX;
+	vec2 m_InkCenter;
 
 	float m_aUVs[4];
 };
@@ -547,6 +548,23 @@ private:
 
 		const unsigned Width = RealWidth + x * 2;
 		const unsigned Height = RealHeight + y * 2;
+		Glyph.m_InkCenter = vec2(Width * 0.5f, Height * 0.5f);
+		if(Glyph.m_Face == m_aUiFaces[(int)EFontPreset::PHOSPHOR - (int)EFontPreset::UI_REGULAR] ||
+			Glyph.m_Face == m_aUiFaces[(int)EFontPreset::PHOSPHOR_FILL - (int)EFontPreset::UI_REGULAR])
+		{
+			unsigned Left = RealWidth, Top = RealHeight, Right = 0, Bottom = 0;
+			for(unsigned Py = 0; Py < RealHeight; ++Py)
+				for(unsigned Px = 0; Px < RealWidth; ++Px)
+					if(pBitmap->buffer[Py * pBitmap->pitch + Px] != 0)
+					{
+						Left = std::min(Left, Px);
+						Top = std::min(Top, Py);
+						Right = std::max(Right, Px + 1);
+						Bottom = std::max(Bottom, Py + 1);
+					}
+			if(Right > Left && Bottom > Top)
+				Glyph.m_InkCenter = vec2(x + (Left + Right) * 0.5f, y + (Top + Bottom) * 0.5f);
+		}
 
 		int X = 0;
 		int Y = 0;
@@ -1897,8 +1915,14 @@ public:
 					}
 
 					const float TmpY = (DrawY + pCursor->m_AlignedFontSize);
-					const float CharX = (DrawX + CharKerning) + BearingX + TabularShift;
-					const float CharY = TmpY - BearingY;
+					float CharX = (DrawX + CharKerning) + BearingX + TabularShift;
+					float CharY = TmpY - BearingY;
+					if((RenderFlags & TEXT_RENDER_FLAG_CENTERED_GLYPH) != 0)
+					{
+						const vec2 InkCenter = pGlyph->m_InkCenter * Scale * pCursor->m_AlignedFontSize;
+						CharX = DrawX + CharKerning + Advance * 0.5f - InkCenter.x;
+						CharY = DrawY + pCursor->m_AlignedFontSize * 0.5f + CharHeight - InkCenter.y;
+					}
 
 					// Check if we have any color split
 					ColorRGBA Color = m_Color;

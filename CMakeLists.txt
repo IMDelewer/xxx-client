@@ -1914,6 +1914,7 @@ set(EXPECTED_DATA
   touch_controls.json
   wordlist.txt
   xxx/icon.png
+  xxx/menu_world.png
   # tidy-alphabetical-end
 )
 

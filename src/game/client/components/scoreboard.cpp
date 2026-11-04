@@ -162,7 +162,7 @@ void CScoreboard::OnRender()
 
 	if(!IsActive() && m_MouseUnlocked)
 		LockMouse();
-	if(GameClient()->m_Menus.IsActive() || GameClient()->m_Transition.Revealing() || GameClient()->m_Spectator.IsActive())
+	if(GameClient()->m_Menus.IsActive() || GameClient()->m_Spectator.IsActive())
 		return;
 	GameClient()->m_Xui.RenderGameOverlay(IsActive());
 	return;

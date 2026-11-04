@@ -205,6 +205,11 @@ void CXui::RenderGrade()
 
 void CXui::RenderShell(CMenus &Menus)
 {
+	if(Client()->State() == IClient::STATE_CONNECTING || Client()->State() == IClient::STATE_LOADING)
+	{
+		RenderConnection(Menus);
+		return;
+	}
 	if(m_HudEditor)
 	{
 		RunPage([&]() { RenderHudEditor(); });
@@ -231,12 +236,6 @@ void CXui::RenderShell(CMenus &Menus)
 	if(m_ShellProfile)
 		DockIndex = -1;
 	m_LegacyNode = -1;
-
-	if(Client()->State() == IClient::STATE_CONNECTING || Client()->State() == IClient::STATE_LOADING)
-	{
-		if(Input()->KeyPress(KEY_ESCAPE))
-			Client()->Disconnect();
-	}
 
 	RunPage([&]() {
 		SBox Grade;
@@ -827,42 +826,86 @@ void CXui::RenderShell(CMenus &Menus)
 				Client()->Quit();
 		}
 
-		if(Client()->State() == IClient::STATE_CONNECTING || Client()->State() == IClient::STATE_LOADING)
-			Layer(ELayer::MODAL, [&]() {
-				SBox Wrap;
-				Wrap.m_Position = EPos::ABSOLUTE;
-				Wrap.m_Left = Wrap.m_Right = 24.0f;
-				Wrap.m_Top = 90.0f;
-				Wrap.m_Main = EAlign::CENTER;
-				Row(Wrap, [&]() {
-					SBox Card;
-					Card.m_W = Px(std::min(440.0f, m_ScreenUnits.x - 48.0f));
-					Card.m_Padding = SEdges(18.0f);
-					Card.m_Gap = 10.0f;
-					GlassPanel(Card, [&]() {
-						const int Total = Client()->MapDownloadTotalsize();
-						const int Amount = Client()->MapDownloadAmount();
-						const bool Downloading = Total > 0 && Amount < Total;
+		RenderShellPopup(Menus);
+	});
+}
+
+void CXui::RenderConnection(CMenus &Menus)
+{
+	if(Input()->KeyPress(KEY_ESCAPE))
+	{
+		Client()->Disconnect();
+		return;
+	}
+	RunPage([&]() {
+		m_HomeScene.Render(*this, Menus, m_ScreenUnits);
+		SBox Background;
+		Background.m_Position = EPos::ABSOLUTE;
+		Background.m_Left = Background.m_Top = Background.m_Right = Background.m_Bottom = 0.0f;
+		Paint(Row(Background), [](CXui &U, const SRect &Rc) {
+			U.DrawRect(Rc, SolidRect(WithAlpha(XuiTheme::Color::BACKGROUND, 0.65f), 0));
+		});
+
+		SBox Center = Background;
+		Center.m_Left = Center.m_Top = Center.m_Right = Center.m_Bottom = 24.0f;
+		Center.m_Main = Center.m_Cross = EAlign::CENTER;
+		Column(Center, [&]() {
+			const float Width = std::min(440.0f, m_ScreenUnits.x - 48.0f);
+			SBox Card;
+			Card.m_W = Px(Width);
+			Card.m_Padding = SEdges(28.0f);
+			Card.m_Gap = 24.0f;
+			GlassPanel(Card, [&]() {
+				const int Total = Client()->MapDownloadTotalsize();
+				const int Amount = std::max(0, Client()->MapDownloadAmount());
+				const bool Downloading = Total > 0 && Amount < Total;
+				SBox Header;
+				Header.m_W = Grow();
+				Header.m_Gap = 14.0f;
+				Header.m_Cross = EAlign::CENTER;
+				Row(Header, [&]() {
+					Spinner(24.0f, Accent());
+					SBox Labels;
+					Labels.m_W = Grow();
+					Labels.m_Gap = 6.0f;
+					Column(Labels, [&]() {
 						STextStyle Title;
+						Title.m_Size = XuiTheme::Font::TITLE;
 						Title.m_Font = EFont::SEMIBOLD;
-						Text(Localize(Downloading ? "Downloading map" : Client()->State() == IClient::STATE_LOADING ? "Loading map" : "Connecting"), Title);
+						Title.m_Wrap = true;
+						Text(Localize(Downloading ? "Downloading map" : Client()->State() == IClient::STATE_LOADING ? "Loading map" : "Connecting"), Title, {.m_W = Grow()});
 						STextStyle Detail;
 						Detail.m_Color = XuiTheme::Color::TEXT2;
-						Detail.m_Wrap = true;
-						Text(Client()->ConnectAddressString(), Detail, {.m_W = Grow()});
-						if(Downloading)
-						{
-							char aProgress[256];
-							str_format(aProgress, sizeof(aProgress), "%s · %d%% · %.1f / %.1f MiB", Client()->MapDownloadName(), (int)(100.0 * Amount / Total), Amount / 1048576.0, Total / 1048576.0);
-							Text(aProgress, Detail, {.m_W = Grow()});
-							ProgressBar("connect.progress", std::clamp((float)Amount / Total, 0.0f, 1.0f), std::min(404.0f, m_ScreenUnits.x - 84.0f));
-						}
-						else
-							Spinner(20.0f, Accent());
-						if(Button(Localize("Cancel"), {.m_Variant = EVariant::GHOST, .m_pKey = "connect.cancel"}).m_Clicked)
-							Client()->Disconnect(); }, XuiTheme::Radius::XL);
+						Text(Downloading ? Client()->MapDownloadName() : Client()->ConnectAddressString(), Detail, {.m_W = Grow()});
+					});
 				});
-			});
-		RenderShellPopup(Menus);
+				if(Downloading)
+				{
+					const float Progress = std::clamp((float)Amount / Total, 0.0f, 1.0f);
+					SBox Transfer;
+					Transfer.m_W = Grow();
+					Transfer.m_Gap = 10.0f;
+					Column(Transfer, [&]() {
+						SBox Line;
+						Line.m_W = Grow();
+						Line.m_Main = EAlign::BETWEEN;
+						Row(Line, [&]() {
+							STextStyle Detail;
+							Detail.m_Size = XuiTheme::Font::SMALL;
+							Detail.m_Color = XuiTheme::Color::TEXT2;
+							Detail.m_Tabular = true;
+							char aSize[64];
+							str_format(aSize, sizeof(aSize), "%.1f / %.1f MiB", Amount / 1048576.0, Total / 1048576.0);
+							Text(aSize, Detail);
+							char aPercent[16];
+							str_format(aPercent, sizeof(aPercent), "%d%%", (int)(Progress * 100.0f));
+							Text(aPercent, Detail);
+						});
+						ProgressBar("connect.progress", Progress, Width - Card.m_Padding.X());
+					});
+				}
+				if(Button(Localize("Cancel"), {.m_Variant = EVariant::GHOST, .m_W = Grow(), .m_pKey = "connect.cancel"}).m_Clicked)
+					Client()->Disconnect(); }, XuiTheme::Radius::XL);
+		});
 	});
 }

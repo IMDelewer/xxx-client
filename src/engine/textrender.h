@@ -58,6 +58,8 @@ enum ETextRenderFlags
 	TEXT_RENDER_FLAG_ONE_TIME_USE = 1 << 9,
 	// lay out with full glyph advances and bearings, like CSS text, instead of trimming to the ink extents
 	TEXT_RENDER_FLAG_FULL_ADVANCE = 1 << 10,
+	// Center each glyph's visible pixels in its advance and font-size cell (icons).
+	TEXT_RENDER_FLAG_CENTERED_GLYPH = 1 << 11,
 };
 
 enum class EFontPreset

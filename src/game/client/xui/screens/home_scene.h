@@ -24,6 +24,7 @@ class CHomeScene
 public:
 	void Unload(IGraphics *pGraphics);
 	void Render(CXui &Ui, CMenus &Menus, vec2 Size);
+	void Draw(CGameClient &Game, vec2 Position, vec2 Size);
 };
 
 #endif

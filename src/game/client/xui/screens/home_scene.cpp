@@ -42,50 +42,59 @@ void CHomeScene::Unload(IGraphics *pGraphics)
 void CHomeScene::Render(CXui &Ui, CMenus &, vec2 Size)
 {
 	CGameClient *pGame = Ui.Game();
+	SBox Background;
+	Background.m_Position = EPos::ABSOLUTE;
+	Background.m_Left = Background.m_Top = 0.0f;
+	Background.m_W = Px(Size.x);
+	Background.m_H = Px(Size.y);
+	Ui.Paint(Ui.Row(Background), [this, pGame](CXui &U, const SRect &Rc) {
+		U.DrawDirect(Rc, [this, pGame](const SRect &Px) {
+			Draw(*pGame, vec2(Px.m_X, Px.m_Y), vec2(Px.m_W, Px.m_H));
+		});
+	});
+}
+
+void CXui::RenderBackground(vec2 Size)
+{
+	m_HomeScene.Draw(*GameClient(), vec2(0, 0), Size);
+}
+
+void CHomeScene::Draw(CGameClient &Game, vec2 Position, vec2 Size)
+{
+	IGraphics *pGraphics = Game.Graphics();
 	const std::string Path = g_Config.m_XxUiBackground;
 	if(m_Loaded && m_LoadedPath != Path)
-		Unload(pGame->Graphics());
+		Unload(pGraphics);
 	if(!m_Loaded)
 	{
 		CImageInfo Image;
-		if(!Path.empty() && pGame->Graphics()->LoadPng(Image, Path.c_str(), IStorage::TYPE_ALL_OR_ABSOLUTE))
+		const bool Custom = !Path.empty() && pGraphics->LoadPng(Image, Path.c_str(), IStorage::TYPE_ALL_OR_ABSOLUTE);
+		if(Custom || pGraphics->LoadPng(Image, "xxx/menu_world.png", IStorage::TYPE_ALL))
 		{
 			m_ImageSize = vec2(Image.m_Width, Image.m_Height);
 			ConvertToRgba(Image);
-			m_Background = pGame->Graphics()->LoadTextureRawMove(Image, 0, "menu background");
+			m_Background = pGraphics->LoadTextureRawMove(Image, 0, "menu background");
 		}
 		m_Loaded = true;
 		m_LoadedPath = Path;
 	}
 	if(!m_Background.IsValid())
 	{
-		SBox Background;
-		Background.m_Position = EPos::ABSOLUTE;
-		Background.m_Left = Background.m_Top = Background.m_Right = Background.m_Bottom = 0.0f;
-		Ui.Paint(Ui.Row(Background), [](CXui &U, const SRect &Rc) {
-			U.DrawRect(Rc, CXui::SolidRect(XuiTheme::Color::BACKGROUND, 0));
-		});
+		IGraphics::SUiRect Background = CXui::SolidRect(XuiTheme::Color::BACKGROUND, 0);
+		Background.m_X = Position.x;
+		Background.m_Y = Position.y;
+		Background.m_W = Size.x;
+		Background.m_H = Size.y;
+		pGraphics->DrawUiRects(&Background, 1);
 		return;
 	}
 	const vec2 ImageSize = m_ImageSize;
 	const float Scale = std::max(Size.x / ImageSize.x, Size.y / ImageSize.y);
-	const vec2 Offset = (Size - ImageSize * Scale) * 0.5f;
-	SBox Background;
-	Background.m_Position = EPos::ABSOLUTE;
-	Background.m_Left = Offset.x;
-	Background.m_Top = Offset.y;
-	Background.m_W = Px(ImageSize.x * Scale);
-	Background.m_H = Px(ImageSize.y * Scale);
-	const auto Texture = m_Background;
-	Ui.Paint(Ui.Row(Background), [Texture, pGame](CXui &U, const SRect &Rc) {
-		U.DrawDirect(Rc, [Texture, pGame](const SRect &Px) {
-			IGraphics *pGraphics = pGame->Graphics();
-			pGraphics->TextureSet(Texture);
-			pGraphics->QuadsBegin();
-			pGraphics->SetColor(1, 1, 1, 1);
-			const IGraphics::CQuadItem Quad(Px.m_X, Px.m_Y, Px.m_W, Px.m_H);
-			pGraphics->QuadsDrawTL(&Quad, 1);
-			pGraphics->QuadsEnd();
-		});
-	});
+	const vec2 Offset = Position + (Size - ImageSize * Scale) * 0.5f;
+	pGraphics->TextureSet(m_Background);
+	pGraphics->QuadsBegin();
+	pGraphics->SetColor(1, 1, 1, 1);
+	const IGraphics::CQuadItem Quad(Offset.x, Offset.y, ImageSize.x * Scale, ImageSize.y * Scale);
+	pGraphics->QuadsDrawTL(&Quad, 1);
+	pGraphics->QuadsEnd();
 }

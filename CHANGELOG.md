@@ -3,7 +3,8 @@
 ## 0.2.0
 
 - Download Japanese, Korean and Chinese fonts when needed instead of bundling them.
-- Replace the vortex with a plain background; custom PNG backgrounds remain available.
+- Remove the vortex and keep the original PNG menu background with custom images supported.
+- Center menu icons by their visible pixels and simplify connection and map-loading screens.
 - Simplify liquid glass, borders and animations while keeping glass enabled by default.
 - Match the map editor panels, popups and fields to the client theme.
 - Reduce UI allocations and bound map preview textures and cache memory.

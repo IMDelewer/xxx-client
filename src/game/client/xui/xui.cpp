@@ -662,9 +662,10 @@ CXui::SText *CXui::GetText(const char *pText, float SizePx, EFont Font, float Wi
 	Entry.m_Used = m_Frame;
 
 	CTextCursor Cursor;
+	const bool Icon = Font == EFont::PHOSPHOR || Font == EFont::PHOSPHOR_FILL;
 	Cursor.m_FontSize = (float)SizeQ / 10.0f;
 	Cursor.m_LineWidth = WidthQ > 0 ? (float)WidthQ : -1.0f;
-	Cursor.m_LineSpacing = Cursor.m_FontSize * (Font::LINE_HEIGHT - 1.0f);
+	Cursor.m_LineSpacing = Icon ? 0.0f : Cursor.m_FontSize * (Font::LINE_HEIGHT - 1.0f);
 	Cursor.m_MaxLines = MaxLines;
 	if(WidthQ > 0 && !Wrap)
 		Cursor.m_Flags |= TEXTFLAG_ELLIPSIS_AT_END;
@@ -679,7 +680,7 @@ CXui::SText *CXui::GetText(const char *pText, float SizePx, EFont Font, float Wi
 		return &Entry;
 	}
 	const unsigned OldFlags = TextRender()->GetRenderFlags();
-	TextRender()->SetRenderFlags(TEXT_RENDER_FLAG_FULL_ADVANCE);
+	TextRender()->SetRenderFlags(TEXT_RENDER_FLAG_FULL_ADVANCE | (Icon ? TEXT_RENDER_FLAG_CENTERED_GLYPH : 0));
 	TextRender()->SetFontPreset(PresetOf(Font));
 	TextRender()->CreateTextContainer(Entry.m_Index, &Cursor, pText);
 	TextRender()->SetFontPreset(EFontPreset::DEFAULT_FONT);
@@ -750,11 +751,6 @@ void CXui::DrawText(const char *pText, const STextStyle &Style, const SRect &R)
 	else
 		Y = Origin.y + (HeightPx - pEntry->m_H) * 0.5f;
 	Y += Font::BASELINE_SHIFT * SizePx;
-	if(Style.m_Font == EFont::PHOSPHOR || Style.m_Font == EFont::PHOSPHOR_FILL)
-	{
-		X += Font::ICON_SHIFT_X * SizePx;
-		Y += Font::ICON_SHIFT_Y * SizePx;
-	}
 	X = std::round(X);
 	Y = std::round(Y);
 

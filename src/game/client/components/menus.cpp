@@ -92,41 +92,58 @@ void CMenus::RenderLoadingDirect(const char *pCaption, const char *pContent, std
 	m_LoadingState.m_LastRender = Now;
 
 	const CUIRect *pScreen = Ui()->Screen();
-	Graphics()->TextureClear();
-	pScreen->Draw(ColorRGBA(0.02f, 0.02f, 0.03f, 1.0f), IGraphics::CORNER_NONE, 0.0f);
+	XuiTheme::UpdateTheme(g_Config.m_XxUiTheme != 0 ? 1.0f : 0.0f);
+	GameClient()->m_Xui.RenderBackground(vec2(pScreen->w, pScreen->h));
+	pScreen->Draw(XuiTheme::Color::BACKGROUND.WithAlpha(0.65f), IGraphics::CORNER_NONE, 0.0f);
 
-	const float Cx = pScreen->x + pScreen->w / 2.0f;
-	const float Cy = pScreen->y + pScreen->h / 2.0f;
-	CUIRect Label = {pScreen->x, Cy - 48.0f, pScreen->w, 40.0f};
-	TextRender()->TextColor(ColorRGBA(1.0f, 1.0f, 1.0f, 0.95f));
-	Ui()->DoLabel(&Label, "xxx", 36.0f, TEXTALIGN_MC);
-	Label = {pScreen->x, Cy + 4.0f, pScreen->w, 16.0f};
+	const float Scale = pScreen->h / 900.0f * g_Config.m_XxUiScale / 100.0f;
+	const float Width = std::min(440.0f * Scale, pScreen->w - 48.0f * Scale);
+	const CUIRect Card = {pScreen->x + (pScreen->w - Width) * 0.5f, pScreen->y + (pScreen->h - 184.0f * Scale) * 0.5f, Width, 184.0f * Scale};
+	IGraphics::SUiRect Panel = CXui::HomePanel(XuiTheme::Radius::XL * Scale);
+	Panel.m_X = Card.x;
+	Panel.m_Y = Card.y;
+	Panel.m_W = Card.w;
+	Panel.m_H = Card.h;
+	Graphics()->DrawUiRects(&Panel, 1);
+
+	const float Padding = 28.0f * Scale;
+	const float ContentWidth = Width - 2.0f * Padding;
+	const SLabelProperties LabelProps = {.m_MaxWidth = ContentWidth, .m_EllipsisAtEnd = true};
+	CUIRect Label = {Card.x + Padding, Card.y + Padding, ContentWidth, 28.0f * Scale};
+	TextRender()->SetFontPreset(EFontPreset::UI_SEMIBOLD);
+	TextRender()->TextColor(XuiTheme::Color::TEXT);
+	Ui()->DoLabel(&Label, Client()->State() == IClient::STATE_LOADING ? Localize("Loading map") : pCaption, XuiTheme::Font::TITLE * Scale, TEXTALIGN_ML, LabelProps);
+	TextRender()->SetFontPreset(EFontPreset::UI_REGULAR);
+	Label.y += 36.0f * Scale;
+	Label.h = 20.0f * Scale;
 	TextRender()->TextColor(XuiTheme::Color::TEXT2);
-	Ui()->DoLabel(&Label, pCaption, 13.0f, TEXTALIGN_MC);
-	Label = {pScreen->x, Cy + 22.0f, pScreen->w, 14.0f};
-	TextRender()->TextColor(XuiTheme::Color::TEXT3);
-	Ui()->DoLabel(&Label, pContent, 11.0f, TEXTALIGN_MC);
-	TextRender()->TextColor(TextRender()->DefaultTextColor());
+	Ui()->DoLabel(&Label, pContent, XuiTheme::Font::BODY * Scale, TEXTALIGN_ML, LabelProps);
 
-	const float BarW = 180.0f;
-	const CUIRect Track = {Cx - BarW / 2.0f, Cy + 48.0f, BarW, 3.0f};
-	Track.Draw(ColorRGBA(1.0f, 1.0f, 1.0f, 0.08f), IGraphics::CORNER_ALL, 1.5f);
+	const CUIRect Track = {Card.x + Padding, Card.y + 118.0f * Scale, ContentWidth, 4.0f * Scale};
+	Track.Draw(XuiTheme::Color::TRACK, IGraphics::CORNER_ALL, Track.h * 0.5f);
 	const ColorRGBA Accent = color_cast<ColorRGBA>(ColorHSLA(g_Config.m_XxUiAccent));
 	if(Progress.has_value())
 	{
+		const float Value = std::clamp(Progress.value(), 0.0f, 1.0f);
 		CUIRect Fill = Track;
-		Fill.w = BarW * std::clamp(Progress.value(), 0.0f, 1.0f);
+		Fill.w *= Value;
 		if(Fill.w > 0.5f)
-			Fill.Draw(Accent, IGraphics::CORNER_ALL, 1.5f);
+			Fill.Draw(Accent, IGraphics::CORNER_ALL, Track.h * 0.5f);
+		char aPercent[16];
+		str_format(aPercent, sizeof(aPercent), "%d%%", (int)(Value * 100.0f));
+		Label.y = Card.y + 136.0f * Scale;
+		Ui()->DoLabel(&Label, aPercent, XuiTheme::Font::SMALL * Scale, TEXTALIGN_MR);
 	}
 	else
 	{
 		const float Phase = std::fmod(std::chrono::duration<float>(Now).count() * 0.8f, 1.0f);
 		CUIRect Fill = Track;
-		Fill.w = BarW * 0.3f;
-		Fill.x = Track.x + (BarW - Fill.w) * Phase;
-		Fill.Draw(Accent, IGraphics::CORNER_ALL, 1.5f);
+		Fill.w *= 0.3f;
+		Fill.x += (Track.w - Fill.w) * Phase;
+		Fill.Draw(Accent, IGraphics::CORNER_ALL, Track.h * 0.5f);
 	}
+	TextRender()->SetFontPreset(EFontPreset::DEFAULT_FONT);
+	TextRender()->TextColor(TextRender()->DefaultTextColor());
 
 	Graphics()->SetColor(1.0, 1.0, 1.0, 1.0);
 

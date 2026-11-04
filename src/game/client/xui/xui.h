@@ -375,6 +375,7 @@ public:
 	bool HudModulePos(const char *pId, vec2 *pOut);
 	bool IslandExtras(char *pBuf, int Size);
 	void RenderShell(class CMenus &Menus);
+	void RenderBackground(vec2 Size);
 	void RenderGrade();
 	void SetMasterTransform(float Scale, float Alpha)
 	{
@@ -666,6 +667,7 @@ private:
 	bool m_ClipWantOn = false;
 
 	void RunPage(const Xui::FPage &Page);
+	void RenderConnection(class CMenus &Menus);
 	void RenderScoreHud(float Alpha);
 	void HudPill(const char *pIcon, const char *pText, ColorRGBA IconColor, float Width = 0.0f);
 	void RenderPlayerStateModule(bool Preview);
