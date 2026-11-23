@@ -1008,7 +1008,7 @@ namespace
 			B.m_Gap = 8.0f;
 			B.m_Cross = EAlign::CENTER;
 			Ui.Row(B, [&]() {
-				if(Ui.Field(aKey, Command.m_aCommand, sizeof(Command.m_aCommand), {.m_W = Px(180.0f), .m_Right = true, .m_pIcon = Ph::TERMINAL}).m_Changed)
+				if(Ui.Field(aKey, Command.m_aCommand, sizeof(Command.m_aCommand), {.m_pIcon = Ph::TERMINAL, .m_W = Px(180.0f), .m_Right = true}).m_Changed)
 					TouchApplyProperty(TC);
 				char aDeleteKey[64];
 				str_format(aDeleteKey, sizeof(aDeleteKey), "%s.del%u", pPrefix, (unsigned)Index);
