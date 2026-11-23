@@ -21,8 +21,46 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
 
+  android:
+    uses: ./.github/workflows/android-apk.yml
+    with:
+      release: true
+
+  sign-android:
+    needs: android
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: xxx-android-unsigned
+          path: unsigned
+      - name: Install Android signing tools
+        run: sdkmanager "build-tools;36.1.0"
+      - name: Sign APK
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          : "${ANDROID_KEYSTORE_BASE64:?ANDROID_KEYSTORE_BASE64 is required}"
+          : "${ANDROID_KEYSTORE_PASSWORD:?ANDROID_KEYSTORE_PASSWORD is required}"
+          umask 077
+          signing_dir="$(mktemp -d "$RUNNER_TEMP/xxx-sign.XXXXXX")"
+          trap 'rm -f "$signing_dir/key.p12" "$signing_dir/aligned.apk"; rmdir "$signing_dir"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$signing_dir/key.p12"
+          unset ANDROID_KEYSTORE_BASE64
+          tools="$ANDROID_HOME/build-tools/36.1.0"
+          "$tools/zipalign" -P 16 -f 4 unsigned/Xxx.apk "$signing_dir/aligned.apk"
+          "$tools/apksigner" sign --ks "$signing_dir/key.p12" --ks-key-alias xxx-release \
+            --ks-pass env:ANDROID_KEYSTORE_PASSWORD --out xxx-android-arm64.apk "$signing_dir/aligned.apk"
+          "$tools/apksigner" verify xxx-android-arm64.apk
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: xxx-client-Android
+          path: xxx-android-arm64.apk
+          if-no-files-found: error
+
   publish:
-    needs: build
+    needs: [build, sign-android]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -47,10 +85,10 @@ jobs:
           tag = os.environ.get('RELEASE_TAG') or version
           if tag not in (version, 'v' + version):
               raise SystemExit('Release tag must match XXX_VERSION')
-          archives = sorted(p for p in Path('release').iterdir() if p.suffix in ('.zip', '.xz', '.dmg'))
-          groups = ('*-windows-*.zip', '*-darwin-*.dmg', '*-linux-*.tar.xz')
-          if len(archives) != 3 or any(len(list(Path('release').glob(pattern))) != 1 for pattern in groups):
-              raise SystemExit('Expected one package for each desktop platform')
+          archives = sorted(p for p in Path('release').iterdir() if p.suffix in ('.zip', '.xz', '.dmg', '.apk'))
+          groups = ('*-windows-*.zip', '*-darwin-*.dmg', '*-linux-*.tar.xz', 'xxx-android-arm64.apk')
+          if len(archives) != len(groups) or any(len(list(Path('release').glob(pattern))) != 1 for pattern in groups):
+              raise SystemExit('Expected one package for each desktop platform and Android')
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('tag=' + tag + '\n')
           Path('release/SHA256SUMS').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in archives))
@@ -67,5 +105,6 @@ jobs:
             release/*.zip
             release/*.dmg
             release/*.tar.xz
+            release/xxx-android-arm64.apk
             release/SHA256SUMS
           body_path: release/NOTES.md

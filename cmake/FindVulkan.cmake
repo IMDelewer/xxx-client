@@ -9,7 +9,16 @@ if(NOT CMAKE_CROSSCOMPILING)
 endif()
 
 if(NOT VULKAN_FOUND)
-  if(TARGET_OS STREQUAL "mac")
+  if(TARGET_OS STREQUAL "android")
+    find_library(VULKAN_LIBRARIES
+      NAMES vulkan
+    )
+
+    find_path(
+      VULKAN_INCLUDE_DIRS
+      NAMES vulkan/vulkan.h
+    )
+  elseif(TARGET_OS STREQUAL "mac")
     find_library(VULKAN_LIBRARIES
       NAMES MoltenVK
     )
@@ -56,7 +65,7 @@ if(NOT VULKAN_FOUND)
 
   if(VULKAN_INCLUDE_DIRS AND VULKAN_LIBRARIES)
     set(VULKAN_FOUND TRUE)
-  else()
+  else(VULKAN_INCLUDE_DIRS AND VULKAN_LIBRARIES)
     set(VULKAN_FOUND FALSE)
   endif(VULKAN_INCLUDE_DIRS AND VULKAN_LIBRARIES)
 endif()

@@ -798,6 +798,7 @@ void CXui::RenderShell(CMenus &Menus)
 			{Localize("Servers"), Ph::HARD_DRIVES, true},
 			{Localize("Clips"), Ph::FILM_SLATE, true},
 			{Localize("Settings"), Ph::SLIDERS_HORIZONTAL, true},
+			{Localize("Console"), Ph::TERMINAL_WINDOW, false},
 			{Localize("Editor"), Ph::PENCIL_SIMPLE, false},
 			{Localize("Quit"), Ph::POWER, false},
 		};
@@ -815,10 +816,14 @@ void CXui::RenderShell(CMenus &Menus)
 		}
 		else if(Clicked == 4)
 		{
+			GameClient()->m_GameConsole.Toggle(CGameConsole::CONSOLETYPE_LOCAL);
+		}
+		else if(Clicked == 5)
+		{
 			g_Config.m_ClEditor = 1;
 			Input()->MouseModeRelative();
 		}
-		else if(Clicked == 5)
+		else if(Clicked == 6)
 		{
 			if(GameClient()->Editor()->HasUnsavedData() || (GameClient()->CurrentRaceTime() / 60 >= g_Config.m_ClConfirmQuitTime && g_Config.m_ClConfirmQuitTime >= 0))
 				Menus.ShowQuitPopup();

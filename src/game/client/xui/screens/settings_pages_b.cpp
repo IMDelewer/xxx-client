@@ -437,3 +437,65 @@ namespace SettingsUi
 		S.Text("Run on join", g_Config.m_ClRunOnJoin, sizeof(g_Config.m_ClRunOnJoin)).Desc("Chat command (e.g. showall 1)");
 	}
 }
+
+namespace SettingsUi
+{
+	namespace
+	{
+		std::vector<std::string> DirectTouchIngameModes()
+		{
+			return {
+				Localize("Disabled", "Direct touch mode"),
+				Localize("Action", "Direct touch mode"),
+				Localize("Aim", "Direct touch mode"),
+				Localize("Relative aim", "Direct touch mode"),
+				Localize("Fire", "Direct touch mode"),
+				Localize("Hook", "Direct touch mode"),
+			};
+		}
+
+		std::vector<std::string> DirectTouchSpectateModes()
+		{
+			return {
+				Localize("Disabled", "Direct touch mode"),
+				Localize("Aim", "Direct touch mode"),
+			};
+		}
+	}
+
+	void BuildTouchControls(SSection &S)
+	{
+		S.Header("Touch buttons");
+		S.Toggle("Enable touch controls", &g_Config.m_ClTouchControls);
+		S.VirtualDropdown(
+			 "Direct touch in game",
+			 []() { return (int)Game()->m_TouchControls.DirectTouchIngame(); },
+			 [](int V) { Game()->m_TouchControls.SetDirectTouchIngame((CTouchControls::EDirectTouchIngameMode)V); },
+			 []() { return DirectTouchIngameModes(); })
+			.Desc("What a finger does on the game area while playing");
+		S.VirtualDropdown(
+			 "Direct touch while spectating",
+			 []() { return (int)Game()->m_TouchControls.DirectTouchSpectate(); },
+			 [](int V) { Game()->m_TouchControls.SetDirectTouchSpectate((CTouchControls::EDirectTouchSpectateMode)V); },
+			 []() { return DirectTouchSpectateModes(); })
+			.Desc("What a finger does on the game area while spectating");
+
+		S.Header("Editor");
+		S.Action("Edit touch buttons", "Edit", []() {
+			 Game()->m_TouchControls.SetPreviewAllButtons(false);
+			 Game()->m_TouchControls.ResetVirtualVisibilities();
+			 Game()->m_TouchControls.SetEditingActive(true);
+		 }).Desc("Move, resize, add, remove and rebind the on-screen buttons; the editor opens over the game");
+		S.Block("Editor help", []() {
+			CXui &U = Ui();
+			STextStyle Style;
+			Style.m_Size = 13.0f;
+			Style.m_Color = XuiTheme::Color::TEXT2;
+			Style.m_Wrap = true;
+			SBox HelpBox;
+			HelpBox.m_W = Grow();
+			HelpBox.m_Padding = SEdges(6.0f, 18.0f);
+			U.Text(Localize("In the editor: drag a button to move it, pinch with two fingers to resize it, long-press a button to select or deselect it. Tap an empty spot to deselect. Remember to save your changes with “Save changes” — only saved controls are kept after restarting."), Style, HelpBox);
+		});
+	}
+}

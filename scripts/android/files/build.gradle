@@ -1,0 +1,87 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+	repositories {
+		google()
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:8.13.0'
+	}
+}
+
+java {
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(21))
+	}
+}
+
+def unsignedRelease = System.getenv("TW_UNSIGNED_RELEASE") == "1"
+
+android {
+	compileSdkVersion 36
+	buildToolsVersion "36.1.0"
+	defaultConfig {
+		applicationId "org.ddnet.client"
+		namespace = "org.ddnet.client"
+		minSdkVersion 24
+		targetSdkVersion 36
+		versionCode TW_VERSION_CODE
+		versionName "TW_VERSION_NAME"
+	}
+	signingConfigs {
+		if (!unsignedRelease) {
+			release {
+				storeFile file(System.getenv("TW_KEY_NAME"))
+				storePassword System.getenv("TW_KEY_PW")
+				keyAlias System.getenv("TW_KEY_ALIAS")
+				keyPassword System.getenv("TW_KEY_PW")
+			}
+		}
+	}
+	buildTypes {
+		release {
+			if (!unsignedRelease) {
+				signingConfig = signingConfigs.release
+			}
+			minifyEnabled = true
+			shrinkResources = true
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+		}
+		debug {
+			debuggable = true
+			minifyEnabled = false
+			shrinkResources = false
+		}
+	}
+	packagingOptions {
+		doNotStrip '**/*.so'
+		jniLibs {
+			useLegacyPackaging = true
+		}
+	}
+	sourceSets {
+		main {
+			assets.srcDirs = ['assets']
+			jniLibs.srcDirs = ['lib']
+		}
+	}
+	lintOptions {
+		abortOnError = false
+	}
+	dependencies {
+		implementation 'androidx.core:core:1.17.0'
+	}
+}
+
+allprojects {
+	repositories {
+		google()
+		mavenCentral()
+	}
+	gradle.projectsEvaluated {
+		tasks.withType(JavaCompile) {
+			options.compilerArgs << "-Xlint:deprecation"
+		}
+	}
+}

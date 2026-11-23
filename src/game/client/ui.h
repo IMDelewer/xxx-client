@@ -440,7 +440,8 @@ private:
 	vec2 m_UpdatedMouseDelta = vec2(0.0f, 0.0f); // in window screen space
 	vec2 m_MousePos = vec2(0.0f, 0.0f); // in gui space
 	vec2 m_MouseDelta = vec2(0.0f, 0.0f); // in gui space
-	unsigned m_UpdatedMouseButtons = 0;
+	unsigned m_TouchMouseButtons = 0;
+	unsigned m_NextTouchMouseButtons = 0;
 	unsigned m_MouseButtons = 0;
 	unsigned m_LastMouseButtons = 0;
 	CTouchState m_TouchState;
@@ -565,6 +566,7 @@ public:
 	float MouseDeltaY() const { return m_MouseDelta.y; }
 	vec2 UpdatedMousePos() const { return m_UpdatedMousePos; }
 	vec2 UpdatedMouseDelta() const { return m_UpdatedMouseDelta; }
+	bool TouchMouseButton(int Index) const { return (m_TouchMouseButtons >> Index) & 1; }
 	int MouseButton(int Index) const { return (m_MouseButtons >> Index) & 1; }
 	int MouseButtonClicked(int Index) const { return MouseButton(Index) && !((m_LastMouseButtons >> Index) & 1); }
 	bool CheckMouseLock()

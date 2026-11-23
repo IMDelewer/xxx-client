@@ -263,6 +263,7 @@ namespace SettingsUi
 	void BuildChat(SSection &S);
 	void BuildNamePlates(SSection &S);
 	void BuildControls(SSection &S);
+	void BuildTouchControls(SSection &S);
 	void BuildGraphics(SSection &S);
 	void BuildSound(SSection &S);
 	void BuildDdnet(SSection &S);

@@ -67,8 +67,10 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(TARGET_OS "linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_OSX_SYSROOT MATCHES "[iI][pP][hH][oO][nN][eE]|[aA][pP][pP][lL][eE][tT][vV]|[wW][aA][tT][cC][hH]|[xX][rR][oO][sS]")
   set(TARGET_OS "mac")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+  set(TARGET_OS "android")
 else()
-  message(FATAL_ERROR "xxx supports only Windows, Linux and macOS")
+  message(FATAL_ERROR "xxx supports only Windows, Linux, macOS and Android")
 endif()
 
 include(CheckCCompilerFlag)
@@ -517,7 +519,12 @@ function(set_extra_dirs_include VARIABLE NAME LIBRARY)
 endfunction()
 
 if(CMAKE_CROSSCOMPILING)
-  set(CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH NO_CMAKE_SYSTEM_PATH)
+  if(TARGET_OS STREQUAL "android")
+    # be more aggressive with android toolchain
+    set(CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH NO_CMAKE_SYSTEM_PATH NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+  else()
+    set(CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH NO_CMAKE_SYSTEM_PATH)
+  endif()
 else()
   set(CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH)
 endif()
@@ -539,6 +546,9 @@ if(NOT CMAKE_CROSSCOMPILING)
   # Check for PkgConfig once so all the other `find_package` calls can do it
   # quietly.
   find_package(PkgConfig)
+endif()
+if(TARGET_OS STREQUAL "android")
+  find_package(Android)
 endif()
 find_package(ZLIB)
 find_package(Crypto)
@@ -720,6 +730,9 @@ endif()
 if(CLIENT AND NOT(SDL2_FOUND))
   message(SEND_ERROR "You must install SDL2 to compile the ${CMAKE_PROJECT_NAME} client")
 endif()
+if(TARGET_OS STREQUAL "android" AND NOT(CRYPTO_FOUND))
+  message(SEND_ERROR "You must install BoringSSL to compile ${CMAKE_PROJECT_NAME} for Android")
+endif()
 if(NOT(GTEST_FOUND))
   if(DOWNLOAD_GTEST)
     if(GIT_FOUND)
@@ -774,6 +787,13 @@ elseif(TARGET_OS STREQUAL "mac")
   )
   set(PLATFORM_CLIENT_LIBS ${COCOA})
   set(PLATFORM_LIBS ${CARBON} ${SECURITY})
+elseif(TARGET_OS STREQUAL "android")
+  set(PLATFORM_CLIENT
+    src/android/android_main.cpp
+  )
+  set(PLATFORM_LIBS ${TW_ANDROID_LIBS})
+  set(PLATFORM_CLIENT_LIBS ${TW_ANDROID_LIBS_CLIENT})
+  set(PLATFORM_CLIENT_INCLUDE_DIRS)
 else()
   find_package(Notify)
   set(PLATFORM_CLIENT_LIBS ${NOTIFY_LIBRARIES})
@@ -923,9 +943,15 @@ set_glob(RUST_MASTERSRV GLOB "rs;toml" src/mastersrv/src
 add_library(rust-bridge-shared EXCLUDE_FROM_ALL OBJECT ${RUST_BRIDGE_SHARED})
 list(APPEND TARGETS_OWN rust-bridge-shared)
 
-set(CARGO_BUILD_DIR "")
-set(CARGO_BUILD ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${PROJECT_BINARY_DIR} DDNET_TEST_NO_LINK=1 ${RUST_CARGO} build --locked --manifest-path "${PROJECT_SOURCE_DIR}/Cargo.toml")
-set(CARGO_TEST ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${PROJECT_BINARY_DIR} ${RUST_CARGO} test --locked)
+if(TARGET_OS STREQUAL "android")
+  set(CARGO_BUILD_DIR "${CARGO_NDK_TARGET}/")
+  set(CARGO_BUILD ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${PROJECT_BINARY_DIR} DDNET_TEST_NO_LINK=1 ${RUST_CARGO} ndk --manifest-path "${PROJECT_SOURCE_DIR}/Cargo.toml" --target ${CARGO_NDK_TARGET} --platform ${CARGO_NDK_API} build --locked)
+  set(CARGO_TEST ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${PROJECT_BINARY_DIR} ${RUST_CARGO} ndk --target ${CARGO_NDK_TARGET} --platform ${CARGO_NDK_API} test --locked)
+else()
+  set(CARGO_BUILD_DIR "")
+  set(CARGO_BUILD ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${PROJECT_BINARY_DIR} DDNET_TEST_NO_LINK=1 ${RUST_CARGO} build --locked --manifest-path "${PROJECT_SOURCE_DIR}/Cargo.toml")
+  set(CARGO_TEST ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${PROJECT_BINARY_DIR} ${RUST_CARGO} test --locked)
+endif()
 if(MSVC)
   list(INSERT CARGO_BUILD 0 ${CMAKE_COMMAND} -E env $<$<CONFIG:Debug>:CFLAGS=/MTd> $<$<CONFIG:Debug>:CXXFLAGS=/MTd>)
   list(INSERT CARGO_TEST 0 ${CMAKE_COMMAND} -E env RUSTFLAGS=-Ctarget-feature=+crt-static)
@@ -2856,19 +2882,35 @@ if(CLIENT)
   endif()
 
   # Target
-  add_executable(game-client WIN32
-    ${CLIENT_SRC}
-    ${CLIENT_ICON}
-    ${CLIENT_VERSIONINFO}
-    ${CLIENT_MANIFEST}
-    ${DEPS_CLIENT}
-    # tidy-alphabetical-start
-    $<TARGET_OBJECTS:engine-gfx>
-    $<TARGET_OBJECTS:engine-shared>
-    $<TARGET_OBJECTS:game-shared>
-    $<TARGET_OBJECTS:rust-bridge-shared>
-    # tidy-alphabetical-end
-  )
+  if(TARGET_OS STREQUAL "android")
+    add_library(game-client SHARED
+      ${CLIENT_SRC}
+      ${CLIENT_ICON}
+      ${CLIENT_VERSIONINFO}
+      ${CLIENT_MANIFEST}
+      ${DEPS_CLIENT}
+      # tidy-alphabetical-start
+      $<TARGET_OBJECTS:engine-gfx>
+      $<TARGET_OBJECTS:engine-shared>
+      $<TARGET_OBJECTS:game-shared>
+      $<TARGET_OBJECTS:rust-bridge-shared>
+      # tidy-alphabetical-end
+    )
+  else()
+    add_executable(game-client WIN32
+      ${CLIENT_SRC}
+      ${CLIENT_ICON}
+      ${CLIENT_VERSIONINFO}
+      ${CLIENT_MANIFEST}
+      ${DEPS_CLIENT}
+      # tidy-alphabetical-start
+      $<TARGET_OBJECTS:engine-gfx>
+      $<TARGET_OBJECTS:engine-shared>
+      $<TARGET_OBJECTS:game-shared>
+      $<TARGET_OBJECTS:rust-bridge-shared>
+      # tidy-alphabetical-end
+    )
+  endif()
   add_dependencies(game-client generate_content_types)
   add_dependencies(game-client build_vulkan_shaders)
   set_property(TARGET game-client
@@ -3073,18 +3115,33 @@ if(SERVER)
   list(APPEND TARGETS_LINK game-server-without-main)
 
   # Target
-  add_executable(game-server
-    ${DEPS}
-    "${PROJECT_SOURCE_DIR}/src/engine/server/main.cpp"
-    ${SERVER_ICON}
-    ${SERVER_VERSIONINFO}
-    $<TARGET_OBJECTS:game-server-without-main>
-    # tidy-alphabetical-sort
-    $<TARGET_OBJECTS:engine-shared>
-    $<TARGET_OBJECTS:game-shared>
-    $<TARGET_OBJECTS:rust-bridge-shared>
-    # tidy-alphabetical-sort
-  )
+  if(TARGET_OS STREQUAL "android")
+    add_library(game-server SHARED
+      ${DEPS}
+      "${PROJECT_SOURCE_DIR}/src/engine/server/main.cpp"
+      ${SERVER_ICON}
+      ${SERVER_VERSIONINFO}
+      $<TARGET_OBJECTS:game-server-without-main>
+      # tidy-alphabetical-sort
+      $<TARGET_OBJECTS:engine-shared>
+      $<TARGET_OBJECTS:game-shared>
+      $<TARGET_OBJECTS:rust-bridge-shared>
+      # tidy-alphabetical-sort
+    )
+  else()
+    add_executable(game-server
+      ${DEPS}
+      "${PROJECT_SOURCE_DIR}/src/engine/server/main.cpp"
+      ${SERVER_ICON}
+      ${SERVER_VERSIONINFO}
+      $<TARGET_OBJECTS:game-server-without-main>
+      # tidy-alphabetical-sort
+      $<TARGET_OBJECTS:engine-shared>
+      $<TARGET_OBJECTS:game-shared>
+      $<TARGET_OBJECTS:rust-bridge-shared>
+      # tidy-alphabetical-sort
+    )
+  endif()
   set_property(TARGET game-server
       PROPERTY OUTPUT_NAME ${SERVER_EXECUTABLE}
   )
@@ -4070,6 +4127,18 @@ foreach(target ${TARGETS_OWN})
   endif()
   if(VERSION)
     target_compile_definitions(${target} PRIVATE GAME_RELEASE_VERSION_INTERNAL=${VERSION})
+  endif()
+  if(TARGET_OS STREQUAL "android")
+    if(ANDROID_PACKAGE_NAME)
+      target_compile_definitions(${target} PRIVATE ANDROID_PACKAGE_NAME="${ANDROID_PACKAGE_NAME}")
+    else()
+      message(FATAL_ERROR "ANDROID_PACKAGE_NAME must define the package name when compiling for Android (e.g. org.example.app)")
+    endif()
+    if(ANDROID_PACKAGE_NAME_JNI)
+      target_compile_definitions(${target} PRIVATE ANDROID_PACKAGE_NAME_JNI=${ANDROID_PACKAGE_NAME_JNI})
+    else()
+      message(FATAL_ERROR "ANDROID_PACKAGE_NAME_JNI must define the package name when compiling for Android (using underscores instead of dots, e.g. org_example_app)")
+    endif()
   endif()
 endforeach()
 
