@@ -46,7 +46,7 @@ jobs:
           export JAVA_HOME="$JAVA_HOME_21_X64"
           echo "JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
           echo "$JAVA_HOME/bin" >> "$GITHUB_PATH"
-          sdkmanager "ndk;29.0.14206865" "build-tools;36.1.0" "platforms;android-36"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;29.0.14206865" "build-tools;36.1.0" "platforms;android-36"
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/29.0.14206865" >> "$GITHUB_ENV"
           sudo apt-get update
           sudo apt-get install -y ninja-build

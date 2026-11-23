@@ -35,7 +35,10 @@ jobs:
           name: xxx-android-unsigned
           path: unsigned
       - name: Install Android signing tools
-        run: sdkmanager "build-tools;36.1.0"
+        run: |
+          if [[ ! -x "$ANDROID_HOME/build-tools/36.1.0/apksigner" ]]; then
+            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "build-tools;36.1.0"
+          fi
       - name: Sign APK
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
