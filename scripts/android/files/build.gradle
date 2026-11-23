@@ -16,6 +16,8 @@ java {
 	}
 }
 
+def unsignedRelease = System.getenv("TW_UNSIGNED_RELEASE") == "1"
+
 android {
 	compileSdkVersion 36
 	buildToolsVersion "36.1.0"
@@ -28,16 +30,20 @@ android {
 		versionName "TW_VERSION_NAME"
 	}
 	signingConfigs {
-		release {
-			storeFile file("TW_KEY_NAME")
-			storePassword "TW_KEY_PW"
-			keyAlias "TW_KEY_ALIAS"
-			keyPassword "TW_KEY_PW"
+		if (!unsignedRelease) {
+			release {
+				storeFile file(System.getenv("TW_KEY_NAME"))
+				storePassword System.getenv("TW_KEY_PW")
+				keyAlias System.getenv("TW_KEY_ALIAS")
+				keyPassword System.getenv("TW_KEY_PW")
+			}
 		}
 	}
 	buildTypes {
 		release {
-			signingConfig = signingConfigs.release
+			if (!unsignedRelease) {
+				signingConfig = signingConfigs.release
+			}
 			minifyEnabled = true
 			shrinkResources = true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- Add an Android build (arm64).
+
 ## 0.2.1
 
 - Rework the map editor header, brush tools and layer list with more room for the map.

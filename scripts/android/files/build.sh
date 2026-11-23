@@ -38,14 +38,6 @@ sed -i "s/DDNet/${APK_BASENAME}/g" settings.gradle
 
 sed -i "s/org.ddnet.client/${APK_PACKAGE_NAME}/g" build.gradle
 
-TW_KEY_NAME_ESCAPED=$(echo "$TW_KEY_NAME" | sed 's/\//\\\//g')
-TW_KEY_PW_ESCAPED=$(echo "$TW_KEY_PW" | sed 's/\//\\\//g')
-TW_KEY_ALIAS_ESCAPED=$(echo "$TW_KEY_ALIAS" | sed 's/\//\\\//g')
-
-sed -i "s/TW_KEY_NAME/${TW_KEY_NAME_ESCAPED}/g" build.gradle
-sed -i "s/TW_KEY_PW/${TW_KEY_PW_ESCAPED}/g" build.gradle
-sed -i "s/TW_KEY_ALIAS/${TW_KEY_ALIAS_ESCAPED}/g" build.gradle
-
 sed -i "s/TW_VERSION_CODE/${TW_VERSION_CODE}/g" build.gradle
 sed -i "s/TW_VERSION_NAME/${TW_VERSION_NAME}/g" build.gradle
 
@@ -85,15 +77,13 @@ if [[ "${APK_BUILD_TYPE}" == "Debug" ]]; then
         sed -i "s/android.enableR8.fullMode=true/android.enableR8.fullMode=false/g" gradle.properties
 fi
 
-function build_gradle() {
-        ./gradlew --warning-mode all "$1"
-}
-
 if [[ "${APK_BUILD_TYPE}" == "Debug" ]]; then
-        build_gradle builddebug || true # helper task, not always defined, ignore if missing
-        build_gradle assembleDebug
+        ./gradlew --no-daemon --warning-mode all assembleDebug
 else
-        build_gradle buildrelease || true # helper task, not always defined, ignore if missing
-        build_gradle assembleRelease
+        ./gradlew --no-daemon --warning-mode all assembleRelease
 fi
-cp build/outputs/apk/"$RELEASE_TYPE_NAME"/"$APK_BASENAME"-"$RELEASE_TYPE_NAME".apk "$APK_BASENAME".apk
+APK_SUFFIX="$RELEASE_TYPE_NAME"
+if [[ "$APK_BUILD_TYPE" == "Release" && "${TW_UNSIGNED_RELEASE:-}" == "1" ]]; then
+        APK_SUFFIX=release-unsigned
+fi
+cp "build/outputs/apk/$RELEASE_TYPE_NAME/$APK_BASENAME-$APK_SUFFIX.apk" "$APK_BASENAME.apk"

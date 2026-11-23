@@ -67,8 +67,8 @@ ANDROID_HOME="${ANDROID_HOME:-$HOME/Android/Sdk}"
 export ANDROID_HOME
 
 export ANDROID_NDK_FOUND=0
-if [ -d "$ANDROID_HOME/ndk" ]; then
-	ANDROID_NDK_ROOT="$(find "${ANDROID_HOME}/ndk" -mindepth 1 -maxdepth 1 | sort -n | tail -1)"
+if [ -d "${ANDROID_NDK_HOME:-$ANDROID_HOME/ndk}" ]; then
+	ANDROID_NDK_ROOT="${ANDROID_NDK_HOME:-$(find "${ANDROID_HOME}/ndk" -mindepth 1 -maxdepth 1 | sort -n | tail -1)}"
 	if [ -n "$ANDROID_NDK_ROOT" ]; then
 		export ANDROID_NDK_ROOT
 		# ANDROID_NDK_HOME must be exported for cargo-ndk

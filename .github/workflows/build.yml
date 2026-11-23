@@ -1,6 +1,9 @@
 name: Desktop builds
 
 on:
+  push:
+    branches: [main, master]
+  pull_request:
   workflow_dispatch:
   workflow_call:
 
@@ -31,7 +34,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake ninja-build pkg-config python3 cargo rustc libcurl4-openssl-dev libfreetype6-dev libogg-dev libopus-dev libopusfile-dev libpng-dev libsdl2-dev libsqlite3-dev libssl-dev libwavpack-dev zlib1g-dev libvulkan-dev glslang-tools spirv-tools libnotify-dev libgtest-dev libgmock-dev
+          sudo apt-get install -y build-essential cmake ninja-build pkg-config python3 libcurl4-openssl-dev libfreetype6-dev libogg-dev libopus-dev libopusfile-dev libpng-dev libsdl2-dev libsqlite3-dev libssl-dev libwavpack-dev zlib1g-dev libvulkan-dev glslang-tools spirv-tools libnotify-dev libgtest-dev libgmock-dev
       - name: macOS dependencies
         if: runner.os == 'macOS'
         run: brew install cmake ninja pkg-config vulkan-headers glslang spirv-tools dylibbundler
@@ -51,7 +54,9 @@ jobs:
         with:
           version: 1.4.309.0
           cache: true
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca
+        with:
+          toolchain: "1.92.0"
       - uses: Swatinem/rust-cache@v2
       - name: Check source tree
         run: python scripts/check_public_tree.py

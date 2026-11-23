@@ -1,3 +1,12 @@
+Android CI and releases
+=======================
+
+Pull requests and manual runs produce a test APK. The main release workflow signs
+the arm64 APK in a separate job and publishes it alongside the desktop packages
+and SHA256SUMS. Set the repository secrets ANDROID_KEYSTORE_BASE64 to a
+base64-encoded PKCS12 keystore with alias xxx-release and ANDROID_KEYSTORE_PASSWORD
+to its password. Keep an offline backup of the keystore and password.
+
 Requirements for building for Android on Linux
 ==============================================
 
@@ -18,7 +27,7 @@ Requirements for building for Android on Linux
 	```
 -	Install cargo-ndk and add the Android targets to rustup to build Rust with the Android NDK *after* setting the Rust version:
 	```shell
-	cargo install cargo-ndk
+	cargo install cargo-ndk --locked --version 3.5.0
 	rustup target add armv7-linux-androideabi
 	rustup target add i686-linux-android
 	rustup target add aarch64-linux-android
@@ -51,7 +60,7 @@ Requirements for building for Android on Windows using MSYS2
 -	Note: All commands in this README must be executed in a `bash` terminal (e.g., from MSYS2) and not in `cmd.exe` or PowerShell.
 -	Install cargo-ndk and add Android targets to rustup to build Rust with the Android NDK:
 	```shell
-	cargo install cargo-ndk
+	cargo install cargo-ndk --locked --version 3.5.0
 	rustup target add armv7-linux-androideabi
 	rustup target add i686-linux-android
 	rustup target add aarch64-linux-android
