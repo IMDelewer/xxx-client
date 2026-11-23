@@ -4,7 +4,7 @@
 
 A DDNet client with XUI, a Vulkan interface with glass panels and an editable HUD.
 
-[![Version](https://img.shields.io/badge/version-0.2.1-ac6cff?style=for-the-badge&labelColor=20202b)](#download)
+[![Version](https://img.shields.io/badge/version-0.2.2-ac6cff?style=for-the-badge&labelColor=20202b)](#download)
 [![Vulkan](https://img.shields.io/badge/Vulkan-1.1-ac6cff?style=for-the-badge&labelColor=20202b)](#requirements)
 [![C++](https://img.shields.io/badge/C%2B%2B-20-8d93a6?style=for-the-badge&labelColor=20202b)](docs/BUILDING.md)
 [![License](https://img.shields.io/badge/license-XUI_attribution-8d93a6?style=for-the-badge&labelColor=20202b)](LICENSE)

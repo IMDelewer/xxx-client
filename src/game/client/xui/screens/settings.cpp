@@ -393,6 +393,7 @@ namespace SettingsUi
 			{"chat", nullptr, "Chat", "Messages, filters and colours", Ph::CHAT_CIRCLE, BuildChat, 0x34C759},
 			{"nameplates", nullptr, "Name plates", "Names, hook lines and lasers", Ph::TAG, BuildNamePlates, 0xAC8E68},
 			{"controls", "controls", "Controls", "Keys and mouse", Ph::MOUSE_SIMPLE, BuildControls, 0x30D158},
+			{"touch", "controls", "Touch controls", "On-screen buttons and direct touch", Ph::HAND_POINTING, BuildTouchControls, 0x30D158},
 			{"graphics", nullptr, "Graphics", "Display and renderer", Ph::MONITOR, BuildGraphics, 0x64D2FF},
 			{"sound", nullptr, "Sound", "Volume and sources", Ph::SPEAKER_HIGH, BuildSound, 0xFF375F},
 			{"ddnet", "ddnet", "DDNet", "Race, ghost and replays", Ph::FLAG, BuildDdnet, 0xFF453A},

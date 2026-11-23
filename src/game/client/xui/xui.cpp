@@ -205,6 +205,16 @@ void CXui::ProcessEvents()
 	m_Wheel = 0.0f;
 	m_vKeysThisFrame.clear();
 
+	for(int Button = 0; Button < 2; Button++)
+	{
+		const bool Pressed = Ui()->TouchMouseButton(Button);
+		if(Pressed && !m_aTouchMouseButtons[Button])
+			m_vEvents.push_back({SInputEvent::EType::MOUSE_DOWN, KEY_MOUSE_1 + Button});
+		else if(!Pressed && m_aTouchMouseButtons[Button])
+			m_vEvents.push_back({SInputEvent::EType::MOUSE_UP, KEY_MOUSE_1 + Button});
+		m_aTouchMouseButtons[Button] = Pressed;
+	}
+
 	for(const SInputEvent &Event : m_vEvents)
 	{
 		switch(Event.m_Type)

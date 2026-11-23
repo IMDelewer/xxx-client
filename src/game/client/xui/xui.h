@@ -604,6 +604,9 @@ private:
 	};
 	std::vector<SInputEvent> m_vEvents;
 	std::vector<int> m_vKeysThisFrame;
+	// Last per-frame mouse button state seen from CUi; used to synthesize
+	// mouse events on touch devices (see ProcessEvents).
+	bool m_aTouchMouseButtons[2] = {};
 	vec2 m_Mouse = vec2(0, 0);
 	bool m_MouseDown = false;
 	bool m_PrevMouseDown = false;
@@ -668,6 +671,7 @@ private:
 
 	void RunPage(const Xui::FPage &Page);
 	void RenderConnection(class CMenus &Menus);
+	void RenderTouchControlsEditor(class CMenus &Menus);
 	void RenderScoreHud(float Alpha);
 	void HudPill(const char *pIcon, const char *pText, ColorRGBA IconColor, float Width = 0.0f);
 	void RenderPlayerStateModule(bool Preview);

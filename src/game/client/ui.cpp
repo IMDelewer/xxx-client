@@ -189,7 +189,8 @@ void CUi::Update()
 	const vec2 WindowSize = vec2(Graphics()->WindowWidth(), Graphics()->WindowHeight());
 	const CUIRect *pScreen = Screen();
 
-	unsigned UpdatedMouseButtonsNext = 0;
+	unsigned MouseButtons = 0;
+	unsigned NextTouchMouseButtons = 0;
 	if(Enabled())
 	{
 		// Update mouse buttons based on mouse keys
@@ -197,7 +198,7 @@ void CUi::Update()
 		{
 			if(Input()->KeyIsPressed(MouseKey))
 			{
-				m_UpdatedMouseButtons |= 1 << (MouseKey - KEY_MOUSE_1);
+				MouseButtons |= 1 << (MouseKey - KEY_MOUSE_1);
 			}
 		}
 
@@ -227,11 +228,11 @@ void CUi::Update()
 			// elements because click and hover would happen at the same time for touch events.
 			if(m_TouchState.m_PrimaryPressed)
 			{
-				UpdatedMouseButtonsNext |= 1;
+				NextTouchMouseButtons |= 1;
 			}
 			if(m_TouchState.m_SecondaryPressed)
 			{
-				UpdatedMouseButtonsNext |= 2;
+				NextTouchMouseButtons |= 2;
 			}
 		}
 	}
@@ -240,8 +241,9 @@ void CUi::Update()
 	m_MouseDelta = m_UpdatedMouseDelta;
 	m_UpdatedMouseDelta = vec2(0.0f, 0.0f);
 	m_LastMouseButtons = m_MouseButtons;
-	m_MouseButtons = m_UpdatedMouseButtons;
-	m_UpdatedMouseButtons = UpdatedMouseButtonsNext;
+	m_TouchMouseButtons = m_NextTouchMouseButtons;
+	m_MouseButtons = MouseButtons | m_TouchMouseButtons;
+	m_NextTouchMouseButtons = NextTouchMouseButtons;
 
 	m_pHotItem = m_pBecomingHotItem;
 	if(m_pActiveItem)
