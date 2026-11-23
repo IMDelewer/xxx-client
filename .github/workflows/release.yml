@@ -1,12 +1,10 @@
 name: Release
 
 on:
-  push:
-    tags: ['v*', '[0-9]*']
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (leave empty to use XXX_VERSION)'
+        description: "Release tag (optional, defaults to XXX_VERSION from src/game/version.h)"
         required: false
         type: string
 

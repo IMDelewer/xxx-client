@@ -8,6 +8,31 @@ if(NOT PREFER_BUNDLED_LIBS)
   endif()
 endif()
 
+if(PREFER_BUNDLED_LIBS AND TARGET_OS STREQUAL "android")
+  set_extra_dirs_lib(CRYPTO boringssl)
+  find_library(CRYPTO_LIBRARY
+    NAMES crypto
+    HINTS ${HINTS_CRYPTO_LIBDIR} ${PC_CRYPTO_LIBDIR} ${PC_CRYPTO_LIBRARY_DIRS}
+    PATHS ${PATHS_CRYPTO_LIBDIR}
+    ${CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH}
+  )
+  find_library(SSL_LIBRARY
+    NAMES ssl
+    HINTS ${HINTS_CRYPTO_LIBDIR} ${PC_CRYPTO_LIBDIR} ${PC_CRYPTO_LIBRARY_DIRS}
+    PATHS ${PATHS_CRYPTO_LIBDIR}
+    ${CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH}
+  )
+  set(CRYPTO_LIBRARY ${CRYPTO_LIBRARY} ${SSL_LIBRARY})
+
+  set(CMAKE_FIND_FRAMEWORK FIRST)
+  set_extra_dirs_include(CRYPTO boringssl "${CRYPTO_LIBRARY}")
+  find_path(CRYPTO_INCLUDEDIR openssl/ssl.h openssl/base.h openssl/hkdf.h openssl/opensslconf.h
+    PATH_SUFFIXES CRYPTO
+    HINTS ${HINTS_CRYPTO_INCLUDEDIR} ${PC_CRYPTO_INCLUDE_DIRS}
+    PATHS ${PATHS_CRYPTO_INCLUDEDIR}
+    ${CROSSCOMPILING_NO_CMAKE_SYSTEM_PATH}
+  )
+endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Crypto DEFAULT_MSG CRYPTO_LIBRARY CRYPTO_INCLUDEDIR)
